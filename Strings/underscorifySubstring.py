@@ -3,8 +3,8 @@ def put_underscores(string, array):
     for el in array:
         s, e = el
 
-        string = string[:s + i] + "_" + string[s + i:]
-        string = string[:e + 1 + i] + "_" + string[e + 1 + i:]
+        string = string[: s + i] + "_" + string[s + i :]
+        string = string[: e + 1 + i] + "_" + string[e + 1 + i :]
 
         i += 2
 
@@ -12,7 +12,7 @@ def put_underscores(string, array):
 
 
 def collapse_array(string, array):
-    print(array)
+    # print(array)
     new_array = []
     new_array_index = 0
 
@@ -27,7 +27,7 @@ def collapse_array(string, array):
         # [[1, 5], [4, 6]]
 
         if pe[1] >= element[0]:
-            print(index, new_array_index, new_array)
+            # print(index, new_array_index, new_array)
             new_array[new_array_index - 1][1] = element[1]
 
         else:
@@ -47,11 +47,11 @@ def make_array(string, substring):
         if index == -1:
             break
 
-        array.append([index+i, index + len(substring) + i])
+        array.append([index + i, index + len(substring) + i])
 
         i += index + 1
 
     return collapse_array(string, array)
 
 
-print(make_array("testthis is a testtest to see if testestest it works", 'test'))
+print(make_array("testthis is a testtest to see if testestest it works", "test"))

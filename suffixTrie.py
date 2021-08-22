@@ -36,6 +36,6 @@ class SuffixTrie:
 
 s = SuffixTrie()
 
-s.create("hello")
+s.create("suffix")
 
 s.print_tree()
