@@ -1,13 +1,13 @@
-'''
+"""
 function returns a bool indicating whether it is possible to 
 get the target word from the strings in the array. Strings can
 be used multiple times.
-'''
+"""
 
 # for some reason didn't need DP for this. This ran fast
 
 
-def can_construct(target_word, array):
+def can_construct(target_word: str, array: "list[str]"):
     print(target_word)
 
     if target_word == "":
@@ -28,4 +28,4 @@ def can_construct(target_word, array):
     return False
 
 
-print(can_construct('abcdef', ['ab', 'abc', 'cd', 'def', 'abcd']))
+print(can_construct("abcdef", ["ab", "abc", "cd", "def", "abcd"]))
