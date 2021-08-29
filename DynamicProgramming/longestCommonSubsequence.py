@@ -1,6 +1,3 @@
-from typing import NamedTuple
-
-
 def lcs_more_space(s1: str, s2: str) -> str:
     table = [["" for _ in range(len(s1) + 1)] for _ in range(len(s2) + 1)]
 

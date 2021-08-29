@@ -1,10 +1,10 @@
 import os
 import re
 
-path = "D:\\Programming\\Algo Expert"
+path = r"D:\\Programming\\Algo Expert"
 
 filenames = []
-bad = ['Easy', "Medium", "Hard", "Very Hard"]
+bad = ["Easy", "Medium", "Hard", "Very Hard"]
 
 with open("filenames.txt", "r") as file:
     badNames = file.readlines()
@@ -25,11 +25,13 @@ for f in os.listdir(path):
         for f2 in os.listdir(os.path.join(path, f)):
             res = re.search(pattern, f2)
             if res:
-                path_files.add(f2[res.span()[0]:res.span()[1]].strip()[:-4])
+                s, e = res.span()
+                path_files.add(f2[s:e].strip()[:-4])
 
     res = re.search(pattern, f)
     if res:
-        path_files.add(f[res.span()[0]:res.span()[1]].strip()[:-4])
+        s, e = res.span()
+        path_files.add(f[s:e].strip()[:-4])
 
 
 for filename in filenames:
