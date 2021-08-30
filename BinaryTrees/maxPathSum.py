@@ -1,4 +1,3 @@
-from typing import Union
 from binaryTree import BinaryTree, Node
 
 _ = """  
@@ -29,7 +28,7 @@ for i in range(1, 9):
     tree.insert(i)
 
 
-def max_path_helper(current_node: Node):
+def max_path_helper(current_node: Node) -> "tuple[int, int]":
     """
     1. Get the left branch sum of the current node
     2. Get the right branch sum of the current node
@@ -46,6 +45,7 @@ def max_path_helper(current_node: Node):
 
     value = current_node.value
 
+    # taking the max as max_child_sum_as_branch could be negative
     max_sum_as_branch = max(max_child_sum_as_branch + value, value)
 
     # max sum using the parent node
