@@ -5,7 +5,7 @@
 #         self.next = None
 
 # there may or may not be a loop
-def detectCycle(self, head):
+def detectCycle(head):
     first = head
     second = head
 

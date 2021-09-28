@@ -1,5 +1,5 @@
 from typing import List
-
+import sys
 
 # O(n! * n^2) time | O(n! * n) space
 def permutations(array: "list") -> "list[list]":
@@ -46,3 +46,5 @@ def helper_perm_better(index: int, array: "list", all_permutations: "list[list]"
             swap(array, index, j)
             helper_perm_better(index + 1, array, all_permutations)
             swap(array, index, j)
+
+print(permuatations_better([ i for i in range( int( sys.argv[1] ) ) ]))
