@@ -19,14 +19,17 @@ _ = """
 v
 [item_value, item_weight]
 
+Two choices
+1. values[i - 1][j] = current item has a weight larger than the knapsack OR putting in the current item as no increase in profit
+
+2.
+
 values[i][j] = max (
     values[i - 1][j],
-    values[i - 1][j - w] + v # w = weight of current item, v = value of current item
+    values[i - 1][j - w] + v    # w = weight of current item, v = value of current item
 )
 
-1. values[i - 1][j] = current item as a weight larger than the knapsack OR putting in the current item as no increase in profit
-
-2. values[i - 1][j - w] + v = current item can fit in the knapsack. So we check if we removed a weight equivalent to the current item's weight from the previous row, will that sum be higher than just not adding the current item
+values[i - 1][j - w] + v = current item can fit in the knapsack. So we check if we removed a weight equivalent to the current item's weight from the previous row, will that sum be higher than just not adding the current item
 """
 
 

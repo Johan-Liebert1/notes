@@ -5,6 +5,7 @@ consider an increasing subsequence of the array.
 
 
 def max_sum_increasing_subsequence(array: "list[int]"):
+    print(array, "\n\n")
     sum_until_index = [float("-inf")] * len(array)
     sequences = [None] * len(array)  # to store what numbers gave us the max sum
 
@@ -19,6 +20,8 @@ def max_sum_increasing_subsequence(array: "list[int]"):
                     sum_until_index[i] = sum_until_index[j] + current_element
                     sequences[i] = j
 
+        print(sum_until_index)
+
         max_sum_index = (
             i if sum_until_index[i] > sum_until_index[max_sum_index] else max_sum_index
         )
@@ -30,7 +33,7 @@ def max_sum_increasing_subsequence(array: "list[int]"):
         elements.append(array[i])
         i = sequences[i]
 
-    print(sum_until_index, elements)
+    print(sum_until_index, sequences)
 
 
 max_sum_increasing_subsequence([8, 12, 2, 3, 15, 5, 7])
