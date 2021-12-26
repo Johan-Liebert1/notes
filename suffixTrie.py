@@ -1,6 +1,3 @@
-import pprint
-
-
 class SuffixTrie:
     def __init__(self) -> None:
         self.root = {}
