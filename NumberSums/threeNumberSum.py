@@ -1,11 +1,10 @@
 def three_number_sum(array, target):
-    p2 = 0
-    p3 = len(array) - 1
-
     values = []
 
     array = sorted(array)
 
+    # take any element from the array and hold it
+    # now solve two sum for the rest of the array
     for p1 in range(len(array) - 2):
         p2 = p1 + 1
         p3 = len(array) - 1

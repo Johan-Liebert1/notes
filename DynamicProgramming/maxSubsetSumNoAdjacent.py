@@ -20,6 +20,8 @@ def function(array):
             )
         )
 
+    print(f"{helper = }")
+
     return helper[-1]
 
 

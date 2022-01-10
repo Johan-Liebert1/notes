@@ -43,6 +43,8 @@ def levenshtein_distance(str1, str2):
                     table[row][col - 1], table[row - 1][col], table[row - 1][col - 1]
                 )
 
+    return table[-1][-1]
+
     # row_string = str2
     # col_string = str1
 
@@ -64,4 +66,4 @@ def levenshtein_distance(str1, str2):
     #         print(table[row][c], end=" " * spaces)
 
 
-levenshtein_distance("abc", "yabd")
+print(f"{levenshtein_distance('abc', 'yabd') = }")
