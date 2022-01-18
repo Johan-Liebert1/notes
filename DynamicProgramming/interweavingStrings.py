@@ -60,7 +60,7 @@ def interweaving_strings_with_cache(s1: str, s2: str, s3: str):
 
 
 def are_interwoven_cache(
-    s1: str, s2: str, s3: str, i: int, j: int, cache: "list[list[bool]]"
+    s1: str, s2: str, s3: str, i: int, j: int, cache: list[list[bool]]
 ):
     if cache[i][j] is not None:
         return cache[i][j]
