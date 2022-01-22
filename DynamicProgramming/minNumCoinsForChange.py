@@ -22,10 +22,7 @@ def min_num_of_coins_for_change(coins_available: list[int], target: int):
     for coin in coins_available:
         for i in range(target + 1):
             if coin <= i:
-                print(coin, i)
                 result[i] = min(result[i], result[i - coin] + 1)
-
-    print(result)
 
     return result[target]
 
