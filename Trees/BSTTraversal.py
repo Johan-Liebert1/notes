@@ -184,17 +184,6 @@ def deleteNode(root, key):
     return root
 
 
-root = None
-root = insert(root, 8)
-root = insert(root, 3)
-root = insert(root, 1)
-root = insert(root, 6)
-root = insert(root, 7)
-root = insert(root, 10)
-root = insert(root, 14)
-root = insert(root, 4)
-
-
 s = """ 
                 8
               /   \
@@ -205,28 +194,37 @@ s = """
              4   7 
 """
 
+if __name__ == "__main__":
+    root = None
+    root = insert(root, 8)
+    root = insert(root, 3)
+    root = insert(root, 1)
+    root = insert(root, 6)
+    root = insert(root, 7)
+    root = insert(root, 10)
+    root = insert(root, 14)
+    root = insert(root, 4)
 
-print("Inorder traversal: ", end=" ")
-inorder(root)
-print("\nIterative Inorder: ", end=" ")
-iterative_inorder(root)
+    print("Inorder traversal: ", end=" ")
+    inorder(root)
+    print("\nIterative Inorder: ", end=" ")
+    iterative_inorder(root)
 
-print()
+    print()
 
-print("preorder traversal: ", end=" ")
-preorder(root)
-print("\nIterative preorder: ", end=" ")
-iterative_preorder(root)
+    print("preorder traversal: ", end=" ")
+    preorder(root)
+    print("\nIterative preorder: ", end=" ")
+    iterative_preorder(root)
 
-print()
+    print()
 
-print("Postorder traversal: ", end=" ")
-postorder(root)
-print("\nIterative Postorder: ", end=" ")
-iterative_postorder(root)
+    print("Postorder traversal: ", end=" ")
+    postorder(root)
+    print("\nIterative Postorder: ", end=" ")
+    iterative_postorder(root)
 
-
-# print("\nDelete 10")
-# root = deleteNode(root, 10)
-# print("Inorder traversal: ", end=" ")
-# inorder(root)
+    # print("\nDelete 10")
+    # root = deleteNode(root, 10)
+    # print("Inorder traversal: ", end=" ")
+    # inorder(root)
