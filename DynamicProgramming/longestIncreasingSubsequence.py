@@ -2,9 +2,6 @@
 
 
 # Time: O(n ^ 2) | Space: O(n)
-from black import NewLine
-
-
 def longest_increasing_subsequence_dp(array: list[int]) -> list[int]:
     sequences: list[None | int] = [None] * len(array)
 
@@ -38,7 +35,7 @@ def binary_search(
     array: list[int],
     current_number: int,
 ):
-    if start < end:
+    if start > end:
         return start
 
     middle = (start + end) // 2
@@ -82,6 +79,9 @@ def build_sequence(
 
     while current_idx is not None:
         sequence.append(array[current_idx])
-        current_idx = sequence[current_idx]
+        current_idx = sequences[current_idx]
 
     return sequence[::-1]
+
+
+print(longest_increasing_subsequence_clever([10, 9, 2, 5, 3, 7, 101, 18]))

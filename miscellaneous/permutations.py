@@ -37,7 +37,7 @@ def swap(list: List, i: int, j: int):
     list[i], list[j] = list[j], list[i]
 
 
-def helper_perm_better(index: int, array: "list", all_permutations: "list[list]"):
+def helper_perm_better(index: int, array: "list", all_permutations: "list[list[int]]"):
     if index == len(array) - 1:
         all_permutations.append(array[:])
 
@@ -47,4 +47,5 @@ def helper_perm_better(index: int, array: "list", all_permutations: "list[list]"
             helper_perm_better(index + 1, array, all_permutations)
             swap(array, index, j)
 
-print(permuatations_better([ i for i in range( int( sys.argv[1] ) ) ]))
+
+print(permuatations_better([i for i in range(int(sys.argv[1]))]))
