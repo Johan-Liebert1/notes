@@ -53,7 +53,8 @@ def longest_increasing_subsequence_clever(array: list[int]) -> list[int]:
     sequences: list[None | int] = [None] * len(array)
 
     """  
-    indicies[i] = longest increasing subsequence of length i if it exists, else None
+    indicies[i] = which index does longest increasing subsequence of length i ends at if it exists, else None
+    The samllest number that can end an increasing subsequence of length i
     """
     indicies: list[None | int] = [None] * (len(array) + 1)
 

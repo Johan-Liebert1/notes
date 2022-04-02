@@ -28,7 +28,7 @@ def perm_helper(
 # O(n! * n) time | O(n! * n) space
 def permuatations_better(array) -> "list[list]":
     permuatations = []
-    helper_perm_better(0, array, permuatations)
+    helper_perm_better(0, array, permuatations, 0)
 
     return permuatations
 
@@ -37,14 +37,19 @@ def swap(list: List, i: int, j: int):
     list[i], list[j] = list[j], list[i]
 
 
-def helper_perm_better(index: int, array: "list", all_permutations: "list[list[int]]"):
+def helper_perm_better(
+    index: int, array: "list", all_permutations: "list[list[int]]", depth: int
+):
+
+    print(f"{depth = } \n\t{index = } \n\t{array = } \n\t{all_permutations} \n\n")
+
     if index == len(array) - 1:
         all_permutations.append(array[:])
 
     else:
         for j in range(index, len(array)):
             swap(array, index, j)
-            helper_perm_better(index + 1, array, all_permutations)
+            helper_perm_better(index + 1, array, all_permutations, depth + 1)
             swap(array, index, j)
 
 
