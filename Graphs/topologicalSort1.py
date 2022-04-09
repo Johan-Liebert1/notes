@@ -12,10 +12,13 @@ task dependencies = [[2,1], [3,2]]
 
 class JobNode:
     def __init__(self, job) -> None:
-        self.job = job
-        self.prereqs = []
+        self.job: int = job
+        self.prereqs: list[JobNode] = []
         self.visited = False
         self.visiting = False
+
+    def __repr__(self) -> str:
+        return f"Job: {self.job} Prerequisites: {self.prereqs}"
 
 
 class JobGraph:
@@ -42,6 +45,9 @@ class JobGraph:
 
         return self.graph[job]
 
+    def __repr__(self) -> str:
+        return f"nodes: {self.nodes} graph: {self.graph}"
+
 
 def create_job_graph(jobs, deps):
     graph = JobGraph(jobs)
@@ -50,6 +56,17 @@ def create_job_graph(jobs, deps):
     for prereq, job in deps:
         # adding edges
         graph.add_prereq(job, prereq)
+
+    s = "digraph { \n"
+
+    for key, node in graph.graph.items():
+        for prereq in node.prereqs:
+            s += f'{key} -> {prereq.job}  [label="depends on"] \n'
+
+    s += "}"
+
+    with open("graph.dot", "w") as f:
+        f.write(s)
 
     return graph
 
@@ -99,3 +116,6 @@ def get_ordered_jobs(graph: JobGraph):
 def topological_sort_dfs(jobs, deps):
     job_graph = create_job_graph(jobs, deps)
     return get_ordered_jobs(job_graph)
+
+
+topological_sort_dfs([1, 2, 3, 4], [[1, 2], [1, 3], [3, 2], [4, 2], [4, 3]])
