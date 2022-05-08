@@ -1,6 +1,6 @@
-'''
+"""
 find the max sum of subset of an array such that the elements are not adjacent
-'''
+"""
 
 
 def maxSum(array):
@@ -12,7 +12,10 @@ def maxSum(array):
     for i in range(2, len(array)):
         new_array[i] = max(new_array[i - 1], new_array[i - 2] + array[i])
 
+    print(new_array)
+
     return new_array[-1]
 
 
-print(maxSum([3, 64, 12, 32, 0, 91, 0, 0, 0, 1, 2, 3, 4, -64, 23, 1]))
+# print(maxSum([3, 64, 12, 32, 0, 91, 0, 0, 0, 1, 2, 3, 4, -64, 23, 1]))
+print(maxSum([9, 6, -3, 4, 2, 1]))

@@ -1,5 +1,6 @@
 # Product Of Array Except Self
 
+
 def prod(arr):
     new_arr = [1] * len(arr)
     for i in range(len(arr)):
@@ -18,7 +19,6 @@ def better_prod(arr):
         if i != 0:
             max_prod *= i
 
-        
     for i in range(len(arr)):
         arr[i] = max_prod // arr[i]
 
@@ -26,6 +26,7 @@ def better_prod(arr):
 
 
 # solving without divsion
+
 
 def better_prod_without_division(arr):
     left_array_prod = [1] * len(arr)
@@ -42,8 +43,8 @@ def better_prod_without_division(arr):
         right_prod *= arr[j + 1]
         right_array_prod[j] = right_prod
 
-    # print(left_array_prod)
-    # print(right_array_prod)
+    print(left_array_prod)
+    print(right_array_prod)
 
     for k in range(len(arr)):
         total_prod.append(left_array_prod[k] * right_array_prod[k])
@@ -51,4 +52,4 @@ def better_prod_without_division(arr):
     return total_prod
 
 
-print(better_prod_without_division([1,2,3,4]))
+print(better_prod_without_division([1, 2, 3, 4]))

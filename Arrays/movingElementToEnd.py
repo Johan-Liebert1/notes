@@ -1,5 +1,10 @@
 from typing import List
 
+"""  
+given an array a and an element e in the array, move all occurences of e to the end of the array without 
+preserving relative order
+"""
+
 
 def movingElementToEnd(array: List[int], element: int):
     front, back = 0, len(array) - 1
@@ -37,5 +42,5 @@ def move_zeros(array):
     print(array)
 
 
-# print(movingElementToEnd([2, 1, 2, 2, 2, 3, 4, 2], 1))
+print(movingElementToEnd([2, 1, 2, 5, 1, 3, 4, 2], 1))
 move_zeros([0, 1, 0, 3, 12])
