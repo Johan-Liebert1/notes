@@ -22,6 +22,7 @@ def swap(array: "list", i: int, j: int):
     array[i], array[j] = array[j], array[i]
 
 
+# Time: O(n) | Space: O(1)
 def quickselect(array: "list[int]", k: int, left: int, right: int):
     while True:
         if left > right:

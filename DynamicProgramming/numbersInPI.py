@@ -14,7 +14,7 @@ answer = 2 spaces
 
 """
 
-
+# Time: O(n^3) | Space: O(n + m) n = len(digits) stored in set, m = cache
 def get_min_spaces_for_number(
     digits: str, start: int, end: int, fav_numbers: set[int], cache: dict[str, int]
 ):

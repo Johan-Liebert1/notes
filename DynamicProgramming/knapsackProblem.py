@@ -20,7 +20,7 @@ v
 [item_value, item_weight]
 
 Two choices
-1. values[i - 1][j] = current item has a weight larger than the knapsack OR putting in the current item as no increase in profit
+1. values[i - 1][j] = current item has a weight larger than the knapsack OR putting in the current item has no increase in profit
 
 2.
 
@@ -58,4 +58,12 @@ def knapsack_problem(items: "list[list[int]]", knapsack_size: int):
         print(v)
 
 
-knapsack_problem([[1, 2], [4, 3], [5, 6], [6, 7]], 10)
+knapsack_problem(
+    [
+        [4, 3],
+        [6, 7],
+        [5, 6],
+        [1, 2],
+    ],
+    5,
+)

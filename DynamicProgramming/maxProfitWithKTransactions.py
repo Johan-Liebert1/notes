@@ -33,7 +33,6 @@ f = max (
     profit[t][d - 1],
 
     prices[d] +  max( [ -prices[x] + profit[t - 1][d]  for x in range(0, d) ] ) 
-
 )
 
 max( [ -prices[x] + profit[t - 1][x]  for x in range(0, d) ] )
@@ -41,7 +40,8 @@ max( [ -prices[x] + profit[t - 1][x]  for x in range(0, d) ] )
 let's say we want to calculate at 60 for the 2nd transaction. 
 
 -prices[x] = we buy the stock at x, so we're prices[x] down
-+profit[t - 1][x] = we sell at  x so whatever profit we made will be added
++profit[t - 1][x] = since on the second transaction we bought at x, in the previous transaction we must sell at or 
+before x, but since we'll be putting max profit anyway even if we sold before x, x will have the highest profit
 
 Example calculating profit at 60 on 2nd transaction, buy 50 so down by 50, but got 47 by selling 50
 
