@@ -22,6 +22,8 @@ def sumInRange(nums, queries):
     prefix_array = []
     total = 0
 
+    d = {}
+
     for num in nums:
         total += num
         prefix_array.append(total)
