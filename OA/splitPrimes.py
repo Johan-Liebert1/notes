@@ -23,7 +23,7 @@ def helper(
     input_str: str, start: int, cache: "dict[int, bool]", primes: "dict[int, bool]"
 ):
     if start > len(input_str) - 1:
-        return 1
+        return 0
 
     number = input_str[start:]
 
@@ -45,7 +45,9 @@ def helper(
 
             print(f"suffix = {input_str[i:]}, {ways_to_split_for_suffix = }")
 
-            ways_to_split = max(ways_to_split, ways_to_split_for_suffix + 1)
+            ways_to_split += ways_to_split_for_suffix
+
+            # ways_to_split = max(ways_to_split, ways_to_split_for_suffix + 1)
 
     cache[number] = ways_to_split
 
@@ -63,6 +65,6 @@ def split_primes(input_str: str) -> int:
     return r
 
 
-print(split_primes("31173"))
+# print(split_primes("31173"))
 
-# print([i for i in range(1, 400) if is_prime(i, {})])
+print([i for i in range(1, 400) if is_prime(i, {1: False})])
