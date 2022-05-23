@@ -11,6 +11,8 @@ def gcd_iterative(a, b):
         return max(a, b)
 
     while a != b:
+        print(f"{a = } {b = }")
+
         if a > b:
             a -= b
         else:
@@ -19,4 +21,4 @@ def gcd_iterative(a, b):
     return b
 
 
-print(gcd_iterative(360, 71))
+print(gcd_iterative(1, 2))

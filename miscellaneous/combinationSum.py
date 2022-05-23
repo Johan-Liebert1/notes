@@ -25,7 +25,7 @@ Input: candidates = [2], target = 1
 Output: []
 """
 
-from typing import List, Tuple
+from typing import List
 
 
 class Solution:
