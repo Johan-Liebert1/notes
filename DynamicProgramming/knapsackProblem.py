@@ -54,11 +54,55 @@ def knapsack_problem(items: "list[list[int]]", knapsack_size: int):
                     values[i - 1][col - current_item_weight] + current_item_value,
                 )
 
-    for v in values:
-        print(v)
+    # for v in values:
+    # print(v)
+
+    return values[-1][-1]
 
 
-knapsack_problem(
+def knapsack_recursion(items: list[list[int]], knapsack_size: int):
+    def recurse(
+        item_index: int, current_knapsack_size: int, max_profit_yet: list[int]
+    ) -> int:
+        if item_index > len(items) - 1 or current_knapsack_size == 0:
+            return 0
+
+        if item_index == len(items) - 1:
+            return (
+                max_profit_yet[0] + items[-1][0]
+                if items[-1][1] <= current_knapsack_size
+                else max_profit_yet[0] + 0
+            )
+
+        max_profit = 0
+
+        # do not iterate, since this is a recursive solution, we only process one item at a time
+        # for item in items[item_index:]:
+        value, weight = items[item_index]
+
+        if weight > current_knapsack_size:
+            max_profit = recurse(item_index + 1, current_knapsack_size, max_profit_yet)
+
+        else:
+            max_profit = max(
+                value
+                + recurse(
+                    item_index + 1, current_knapsack_size - weight, max_profit_yet
+                ),
+                recurse(item_index + 1, current_knapsack_size, max_profit_yet),
+            )
+
+        max_profit_yet[0] = max(max_profit, max_profit_yet[0])
+
+        return max_profit
+
+    a = [0]
+    recurse(0, knapsack_size, a)
+
+    return a[0]
+
+
+memo = knapsack_problem(
     [
         [4, 3],
         [6, 7],
@@ -67,3 +111,15 @@ knapsack_problem(
     ],
     5,
 )
+
+recurse = knapsack_recursion(
+    [
+        [4, 3],
+        [6, 7],
+        [5, 6],
+        [1, 2],
+    ],
+    5,
+)
+
+print(f"{memo = } | {recurse = }")

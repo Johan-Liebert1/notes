@@ -7,25 +7,19 @@ be used multiple times.
 # for some reason didn't need DP for this. This ran fast
 
 
-def can_construct(target_word: str, array: "list[str]"):
+def can_construct(target_word: str, array: "list[str]") -> bool:
     print(target_word)
 
     if target_word == "":
         return True
 
-    i = 0
+    can_do = False
 
-    while i < len(array):
-        string = array[i]
-        string_len = len(string)
+    for string in array:
+        if len(string) > 0 and target_word.startswith(string):
+            can_do = can_do or can_construct(target_word[len(string) :], array)
 
-        if string_len > 0 and target_word.startswith(string):
-            return can_construct(target_word[string_len:], array)
-
-        else:
-            i += 1
-
-    return False
+    return can_do
 
 
 print(can_construct("abcdef", ["ab", "abc", "cd", "def", "abcd"]))

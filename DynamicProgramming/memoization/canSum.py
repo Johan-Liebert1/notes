@@ -6,7 +6,6 @@ be used multiple times.
 
 
 def targetSum(target, array, memo={}):
-    print(memo)
     if target in memo:
         return memo[target]
 
