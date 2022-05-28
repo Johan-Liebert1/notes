@@ -40,7 +40,9 @@ def levenshtein_distance(str1, str2):
                 table[row][col] = table[row - 1][col - 1]
             else:
                 table[row][col] = 1 + min(
-                    table[row][col - 1], table[row - 1][col], table[row - 1][col - 1]
+                    table[row][col - 1],
+                    table[row - 1][col],
+                    table[row - 1][col - 1],
                 )
 
     return table[-1][-1]

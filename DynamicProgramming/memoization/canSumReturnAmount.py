@@ -1,5 +1,6 @@
 """  
 Given an array A, and target T, return how many subsets of the array can sum up to the target
+Not allowed to use same element twice
 """
 
 # recursive approach
@@ -7,7 +8,7 @@ Given an array A, and target T, return how many subsets of the array can sum up 
 def can_sum_return_amount_recursive(array: list[int], target: int) -> int:
     count = 0
 
-    def recurse(current_index: int, current_target: int):
+    def recurse(current_index: int, current_target: int, depth: int = 0):
         nonlocal count
 
         local_count = 0
@@ -19,16 +20,16 @@ def can_sum_return_amount_recursive(array: list[int], target: int) -> int:
 
         # two choices for each element, whether to include it or not in the final sum
         if current_index == len(array) - 1:
-            count += 1 if array[-1] == current_target else 0
+            count += 1 if current_target % array[-1] == 0 else 0
             return
 
         if current_target < array[current_index]:
             # skip this element as it's larger than the target sum
-            recurse(current_index + 1, current_target)
+            recurse(current_index + 1, current_target, depth + 1)
 
         else:
             # skip the current element and check if rest of the elements can sum up to the target sum
-            recurse(current_index + 1, current_target)
+            recurse(current_index + 1, current_target, depth + 1)
             # don't skip the current element and check if rest of the elements can sum up to
             # the new target (current_target - array[current_index])
             recurse(
@@ -39,6 +40,7 @@ def can_sum_return_amount_recursive(array: list[int], target: int) -> int:
                     if array[current_index] > 0
                     else -array[current_index]
                 ),
+                depth + 1,
             )
 
         return local_count
@@ -74,10 +76,6 @@ def can_sum_return_amount_iterative(array: list[int], target: int) -> int:
             # go array[row - 1] columns to the left and check how many ways we could sum that up and add that
             # value to values[row][current_target]
             else:
-                print(
-                    f"{current_target - array_value = } {array_value = } {current_target = } {row = }"
-                )
-
                 values[row][current_target] = (
                     values[row - 1][current_target]
                     + values[row - 1][
@@ -94,9 +92,44 @@ def can_sum_return_amount_iterative(array: list[int], target: int) -> int:
     return values[-1][-1]
 
 
-array = [1, 2, 4, -1, 1]
-target = 3
+array = [5]
+target = 10
 
 print(
-    f"{can_sum_return_amount_recursive(array, target) = } | {can_sum_return_amount_iterative(array, target)}"
+    f"{can_sum_return_amount_recursive(array, target) = } | {can_sum_return_amount_iterative(array, target) = }"
 )
+
+
+"""  
+Given an array A, and target T, return how many subsets of the array can sum up to the target
+Allowed to use same element twice
+"""
+
+
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        cache = {}
+
+        def recurse(index: int, target: int):
+            if (index, target) in cache:
+                return cache[(index, target)]
+
+            if target == 0:
+                return 1
+
+            if index == len(coins) - 1:
+                return 1 if target % coins[-1] == 0 else 0
+
+            if target < 0:
+                return 0
+
+            cache[(index, target)] = recurse(index, target - coins[index]) + recurse(
+                index + 1, target
+            )
+
+            return cache[(index, target)]
+
+        return recurse(0, amount)
+
+
+print(Solution().change(4, [1, 2]))
