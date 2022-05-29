@@ -5,6 +5,11 @@ class Node:
         self.visiting = False
 
 
+"""  
+FIXME We can use graph coloring to detect odd length vs even length cycle by only taking 2 colors
+"""
+
+
 def dfs_traverse(node: Node):
     """
     Traverses a node in DFS manner and returns a bool indicating whether it found a cycle or not
