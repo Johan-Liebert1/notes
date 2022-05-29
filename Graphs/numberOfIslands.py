@@ -1,31 +1,36 @@
-"""  
-Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
-
-An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water. 
-
-Example 1:
-
-Input: grid = [
-  ["1","1","1","1","0"],
-  ["1","1","0","1","0"],
-  ["1","1","0","0","0"],
-  ["0","0","0","0","0"]
-]
-Output: 1
-Example 2:
-
-Input: grid = [
-  ["1","1","0","0","0"],
-  ["1","1","0","0","0"],
-  ["0","0","1","0","0"],
-  ["0","0","0","1","1"]
-]
-Output: 3
-"""
-
 from typing import List, Tuple
 
+# solve it using graph coloring approach
+# if we ever find a '1' we'll visit all the connected '1's in one go and count that as a single huge island
+# that way we'll never visit those islands again as we'll set the visited dots to '2'
+def numIslands(grid: List[List[str]]) -> int:
+    total = 0
 
+    def dfs(row, col):
+        if row < 0 or row >= len(grid) or col < 0 or col >= len(grid[0]):
+            return
+
+        if grid[row][col] != "1":
+            return
+
+        if grid[row][col] == "1":
+            grid[row][col] = "2"
+
+        dfs(row - 1, col)
+        dfs(row + 1, col)
+        dfs(row, col - 1)
+        dfs(row, col + 1)
+
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == "1":
+                dfs(i, j)
+                total += 1
+
+    return total
+
+
+# slow af
 class Solution:
     def get_neighbors(self, pos: Tuple[int], rows: int, cols: int) -> Tuple[int]:
         n = []
@@ -50,7 +55,7 @@ class Solution:
 
         visited = set()
         queue = []
-        index_into_queue = -1
+        index_into_queue = 0
         num_islands = 0
 
         for row in range(grid_rows):
@@ -60,7 +65,6 @@ class Solution:
 
                 queue.append((row, col))
                 visited.add((row, col))
-                index_into_queue += 1
 
                 while index_into_queue < len(queue):
                     pos = queue[index_into_queue]
@@ -74,17 +78,3 @@ class Solution:
                 num_islands += 1
 
         return num_islands
-
-
-sol = Solution()
-
-print(
-    sol.numIslands(
-        [
-            ["1", "1", "0", "0", "0"],
-            ["1", "1", "0", "0", "0"],
-            ["0", "0", "1", "0", "0"],
-            ["0", "0", "0", "1", "1"],
-        ]
-    )
-)

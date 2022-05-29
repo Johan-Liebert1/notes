@@ -1,6 +1,31 @@
 from typing import List
 
-from matplotlib.pyplot import margins
+"""  
+exact same apporach as mine, but instead of treating this as a graph problem we're treating this
+as a dp problem
+"""
+
+
+def maximalSquare(matrix: List[List[str]]) -> int:
+    table = [[0 for _ in range(len(matrix[0]) + 1)] for _ in range(len(matrix) + 1)]
+
+    largest = 0
+
+    for i in range(1, len(table)):
+        for j in range(1, len(table[0])):
+            # we can only extend diagonally downwards if the upper diagonal element is a 1
+            # if it's a 0 then we can't use that in our square
+            if matrix[i - 1][j - 1] == "1":
+                table[i][j] = 1 + min(
+                    table[i - 1][j - 1],
+                    table[i - 1][j],
+                    table[i][j - 1],
+                )
+
+                if table[i][j] > largest:
+                    largest = table[i][j]
+
+    return largest * largest
 
 
 class Solution:

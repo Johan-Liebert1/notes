@@ -8,25 +8,9 @@ op -> /foo/bar/baz
 
 
 def parser(path: str) -> "list[str]":
-    prev_slash_pos = 0
-    current_slash_pos = 0
-
-    paths = []
-
-    for i in range(1, len(path)):
-        char = path[i]
-
-        if char == "/":
-            current_slash_pos = i
-            paths.append(path[prev_slash_pos + 1 : current_slash_pos])
-            prev_slash_pos = current_slash_pos
-
-    if current_slash_pos != len(path) - 1:
-        paths.append(path[current_slash_pos + 1 :])
-
     new_paths = []
 
-    for (index, dir) in enumerate(paths):
+    for (index, dir) in enumerate(path.split("/")):
         if dir == "." or dir == " " or dir == "":
             continue
 
