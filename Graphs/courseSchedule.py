@@ -15,43 +15,46 @@ class Solution:
             if course not in d:
                 d[course] = []
 
-        visited = {n: -1 for n in d}
+        # Time limit exeeds if we only keep track of visited nodes as they will be processed again and again
+        # on each iteration
+        visited = {n: {"visited": False, "visiting": False} for n in d}
 
         if len(d.keys()) == 0:
             return True
 
-        queue = [prerequisites[0][0]]
+        def cycle(node):
+            if visited[node]["visited"]:
+                return False
 
-        print(d, visited)
+            if visited[node]["visiting"]:
+                return True
 
-        """
-        -1 -> node is unvisited
-         1 -> Node is processed
-         2 -> Node is being processed
-        """
+            c = False
 
-        for vertex in d:
-            print(queue)
+            visited[node]["visiting"] = True
 
-            node = vertex if len(queue) == 0 else queue[0]
+            for neighbor in d[node]:
+                if cycle(neighbor):
+                    return True
 
-            if visited[node] == 1:
-                queue = queue[1:]
-                continue
+            visited[node]["visiting"] = False
+            visited[node]["visited"] = True
 
-            # processing the current node
-            visited[node] = 2
+            return False
 
-            for prereq in d[node]:
-                if visited[prereq] != -1:
-                    # reached a node while it's being processed, i.e. found a loop
+        ccycle = False
+
+        for node in d:
+            visited[node]["visiting"] = True
+
+            for neighbor in d[node]:
+                ccycle = cycle(neighbor)
+
+                if ccycle:
                     return False
 
-                queue.append(prereq)
-
-            visited[node] = 1
-            if len(queue) > 0:
-                queue = queue[1:]
+            visited[node]["visiting"] = False
+            visited[node]["visited"] = True
 
         return True
 
