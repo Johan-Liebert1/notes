@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-from graphql import visit
-
 
 class Node:
     def __init__(self) -> None:
@@ -91,6 +89,7 @@ def detect_cycle_directed_graph(adj: list[list[int]]):
 
     # NOTE this thing is too slow for large grpahs. For better performance keep track
     # of nodes we've visited and nodes we're visiting
+    # see courseSchedule.py for that
     def detect_cycle(current, visited):
         if visited[current]:
             # visited this node but we came back to it so there's a cycle

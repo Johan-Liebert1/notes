@@ -40,7 +40,7 @@ class Solution:
 
 # My approach
 class Solution:
-    def update_pointers(self, ptr_into_lists, lists):
+    def update_pointers(self, ptr_into_lists):
         i = -1
         minimum = float("inf")
 
@@ -61,7 +61,7 @@ class Solution:
         ptr_into_lists = [l for l in lists]
 
         while True:
-            min_element_index = self.update_pointers(ptr_into_lists, lists)
+            min_element_index = self.update_pointers(ptr_into_lists)
 
             if min_element_index == -1:
                 break
