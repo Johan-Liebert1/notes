@@ -46,3 +46,20 @@ Vertical movement
 <number>w -> Move by the w th word
 <number>k -> Move up by number
 %         -> Move to the matching bracket 
+
+
+Files and Buffers
+
+:e <fuzzy search> -> to open a file 
+ctrl + ^          -> switch between the current and the last file
+ctrl + o          -> Walk backwards in your history
+ctrl + i          -> Walk forwards in your history
+ctrl + l          -> redraw the screen (clear any and all search selections etc)
+ctrl + w          -> anything window related
+ctrl + w + v      -> open a vertical split
+ctrl + w + s      -> open a horizontal split
+ctrl + w + l,h,j,k      -> move cursor to the right, left, up, down buffer
+
+:resize <size>          -> resize to <size> number of rows
+:vertical resize <size> -> resize to <size> number of columns
+

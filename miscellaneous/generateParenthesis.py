@@ -13,30 +13,38 @@ Output: ["()"]
 """
 
 
-from pprint import pprint
-
-
-def params_helper(n: int, string: str, stats: dict[str, int]):
-    print(f"{n = }")
-    pprint(stats, indent=4)
-
-    if n == 0:
-        return string
-
-    if stats["num_open"] < n:
-        string += "("
-        stats["num_open"] += 1
-    elif stats["num_close"] < stats["num_open"]:
-        string += ")"
-        stats["num_close"] += 1
-
-    return params_helper(n - 1, string, stats)
-
-
 def generate_parens(n: int):
-    stats = {"num_open": 0, "num_close": 0}
+    stats = {"open": 0, "close": 0}
 
-    return params_helper(n, "", stats)
+    all_parens = []
+
+    def recurse(i: int, current_str: list[str]):
+        if i == 2 * n:
+            all_parens.append("".join(current_str))
+            return
+
+        if stats["open"] < n:
+            current_str.append("(")
+            stats["open"] += 1
+
+            recurse(i + 1, current_str)
+
+            current_str.pop()
+            stats["open"] -= 1
+
+        # we can only close and have valid parens if more have opened
+        if stats["open"] > stats["close"]:
+            current_str.append(")")
+            stats["close"] += 1
+
+            recurse(i + 1, current_str)
+
+            current_str.pop()
+            stats["close"] -= 1
+
+    recurse(0, [])
+
+    return all_parens
 
 
-print(generate_parens(3))
+print(generate_parens(8))
