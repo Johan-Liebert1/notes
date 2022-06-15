@@ -9,10 +9,15 @@ array = [abc, de, ac]
 
 longest string chain = abc, ac
 reomving b from abc gives ac
+
+return the chain
 """
+
+from typing import List, Union
 
 
 class Value:
+
     def __init__(self) -> None:
         self.computed = False
         self.longest_chain_len_starting = 0
@@ -26,15 +31,17 @@ def calculate_string_chain(key: str, lookup: "dict[str, Value]"):
     max_chain_length = 0
 
     for i in range(len(key)):
-        to_check = key[:i] + key[i + 1 :]
+        to_check = key[:i] + key[i + 1:]
 
         if to_check in lookup:
             # a string found in the table after removing a letter from the current string
             if not lookup[to_check].computed:
                 calculate_string_chain(to_check, lookup)
 
-            if max_chain_length < 1 + lookup[to_check].longest_chain_len_starting:
-                max_chain_length = 1 + lookup[to_check].longest_chain_len_starting
+            if max_chain_length < 1 + lookup[
+                    to_check].longest_chain_len_starting:
+                max_chain_length = 1 + lookup[
+                    to_check].longest_chain_len_starting
                 lookup[key].next_in_chain = to_check
 
                 print(
@@ -45,8 +52,8 @@ def calculate_string_chain(key: str, lookup: "dict[str, Value]"):
     lookup[key].longest_chain_len_starting = max_chain_length
 
 
-def longest_string_chain(strings: "list[str]") -> "list[str]":
-    return_array = []
+def longest_string_chain(strings: List[str]) -> Union[None, List[str]]:
+    # return_array = []
 
     # [string]: whether a longest chain for this strings has been computed or not
     lookup: "dict[str, Value]" = {k: Value() for k in strings}
@@ -58,4 +65,5 @@ def longest_string_chain(strings: "list[str]") -> "list[str]":
         print(f"{key:<10} {val}")
 
 
-longest_string_chain(["abcde", "abde", "ae", "abcdef", "1abde", "abd", "abc", "ade"])
+longest_string_chain(
+    ["abcde", "abde", "ae", "abcdef", "1abde", "abd", "abc", "ade"])

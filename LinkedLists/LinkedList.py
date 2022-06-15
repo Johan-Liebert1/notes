@@ -2,12 +2,14 @@ from typing import Union
 
 
 class Node:
+
     def __init__(self, value: int) -> None:
         self.next: Union[None, Node] = None
         self.value: int = value
 
 
 class LinkedList:
+
     def __init__(self) -> None:
         self.start = None
 

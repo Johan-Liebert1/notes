@@ -1,4 +1,5 @@
 class Direction:
+
     def __init__(self) -> None:
         self.__dict = {}
 
@@ -26,7 +27,6 @@ class Direction:
     def left(self, value):
         self.__dict['left'] = value
 
-    
     @property
     def right(self):
         return self.__dict.get('right')
@@ -34,5 +34,3 @@ class Direction:
     @right.setter
     def right(self, value):
         self.__dict['right'] = value
-
-

@@ -1,24 +1,23 @@
-from typing import List
+from typing import List, Union
 import sys
 
+
 # O(n! * n^2) time | O(n! * n) space
-def permutations(array: "list") -> "list[list]":
-    permutations = []
-    perm_helper(array, [], permutations)
+def permutations(array: List) -> List[List]:
+    permutations_array = []
+    perm_helper(array, [], permutations_array)
+    return permutations_array
 
-    return permutations
 
-
-def perm_helper(
-    array: "list", current_permutation: "list", all_permutations: "list[list]"
-):
+def perm_helper(array: List, current_permutation: List,
+                all_permutations: List[List]):
     if len(array) == 0 and len(current_permutation) > 0:
         all_permutations.append(current_permutation)
     else:
         for i in range(len(array)):
             # remove the current number from the array
             # as that number will be shuffled around in the array to create permuataions
-            new_array = array[:i] + array[i + 1 :]
+            new_array = array[:i] + array[i + 1:]
 
             new_permuataion = current_permutation + [array[i]]
 
@@ -26,7 +25,7 @@ def perm_helper(
 
 
 # O(n! * n) time | O(n! * n) space
-def permuatations_better(s: str):
+def permuatations_better(s: Union[str, List]):
     permutations_array = []
 
     def helper(s: list[str], index: int):
@@ -44,9 +43,10 @@ def permuatations_better(s: str):
 
             s[i], s[index] = s[index], s[i]
 
-    helper([c for c in s], 0)
+    helper(list(s), 0)
 
     return permutations_array
 
 
-print(permuatations_better([i for i in range(int(sys.argv[1]))]))
+# fmt:off
+print(permuatations_better(list(range(int(sys.argv[1])))))
