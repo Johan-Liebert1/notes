@@ -4,6 +4,7 @@
 #         self.val = x
 #         self.next = None
 
+
 # there may or may not be a loop
 def detectCycle(head):
     first = head
@@ -24,7 +25,6 @@ def detectCycle(head):
 
     if not second.next:  # we reached the end and there was no loop
         return None
-
     """  
     dist travelled by first = d + p (d = unlooped part, p = looped part)
     dist travelled by second = 2 * first = 2d + 2p (as second is skipping a node)

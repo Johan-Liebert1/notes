@@ -23,14 +23,13 @@ Input: h = 5, w = 4, horizontalCuts = [3], verticalCuts = [3]
 Output: 9
 """
 
-
 from typing import List
 
 
 class Solution:
-    def maxArea(
-        self, h: int, w: int, horizontalCuts: List[int], verticalCuts: List[int]
-    ) -> int:
+
+    def maxArea(self, h: int, w: int, horizontalCuts: List[int],
+                verticalCuts: List[int]) -> int:
         horizontalCuts.sort()
         verticalCuts.sort()
 
