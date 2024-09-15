@@ -72,7 +72,7 @@ def longest_increasing_subsequence_clever(array: list[int]) -> list[int]:
 
 
 def build_sequence(
-    array: list[int], sequences: list[None | int], max_len_idx: int
+    array: list[int], sequences: list[None | int], max_len_idx: int | None
 ) -> list[int]:
     sequence = []
 

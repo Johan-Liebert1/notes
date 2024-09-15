@@ -66,15 +66,13 @@ def coinChange(coins: list[int], amount: int) -> int:
     while True:
         prev = cur
         for coin in coins:
-            # s = cur
             cur = cur | (prev >> coin)
-            # print(s, "(", bin(s), ")\t", cur, "(", bin(cur), ")")
 
         if cur == prev:  # If, after a round we have no deductions
             return -1
         if cur & 1:
             return step
-        # print("End Of Step: ", step)
+
         step += 1
 
 

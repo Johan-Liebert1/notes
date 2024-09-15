@@ -21,4 +21,4 @@ def gcd_iterative(a, b):
     return b
 
 
-print(gcd_iterative(1, 2))
+print(gcd_iterative(15, 15))

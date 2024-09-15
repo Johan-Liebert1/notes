@@ -64,7 +64,7 @@ def create_job_graph(jobs, deps):
     return graph
 
 
-def remove_deps(node: JobNode, nodes_with_no_prereqs: "list[JobNode]"):
+def remove_deps(node: JobNode, nodes_with_no_prereqs: list[JobNode]):
     while len(node.deps):
         dep = node.deps.pop()
         dep.num_prereqs -= 1
