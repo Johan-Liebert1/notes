@@ -22,11 +22,30 @@ def longest_increasing_subsequence_dp(array: list[int]) -> list[int]:
                 lengths[i] = lengths[j] + 1
                 sequences[i] = j
 
+        # as we need to know which index to start building our sequence from
         if lengths[i] >= lengths[max_len_idx]:
             max_len_idx = i
 
     return build_sequence(array, sequences, max_len_idx)
 
+def lis(array: list[int]) -> list[int]:
+    # lis_cache[i] = length of longest increasing subsequence that starts with lis_cache[i]   
+    lis_cache = [1] * len(array)
+
+    max_len_idx = 0
+
+    sequences: list[None | int] = [None] * len(array)
+
+    for i in range(len(array) - 1, -1, -1):
+        for j in range(i + 1, len(array)):
+            if array[i] < array[j] and 1 + lis_cache[j] > lis_cache[i]:
+                lis_cache[i] = 1 + lis_cache[j]
+                sequences[i] = j
+
+        if lis_cache[i] > lis_cache[max_len_idx]:
+            max_len_idx = i
+
+    return build_sequence(array, sequences, max_len_idx)
 
 def binary_search(
     indicies: list[None | int],
@@ -85,4 +104,4 @@ def build_sequence(
     return sequence[::-1]
 
 
-print(longest_increasing_subsequence_clever([10, 9, 2, 5, 3, 7, 101, 18]))
+print(lis([10, 9, 2, 5, 3, 7, 101, 18]))

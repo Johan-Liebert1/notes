@@ -115,4 +115,34 @@ func lis(nums []int, prevIndex int, currIndex int) int {
 }
 ```
 
+This is what the decision tree looks like
 
+![LIS Decision tree](./LIS.png) 
+
+So, our cache can look like 
+
+`array[n]` where `array[i]` = the length of the Longest Increasing Subsequence starting at index `i`
+
+```python
+def lis(array: list[int]) -> list[int]:
+    # lis_cache[i] = length of longest increasing subsequence that starts with lis_cache[i]   
+    lis_cache = [1] * len(array)
+
+    max_len_idx = 0
+
+    # sequences = to build the LIS
+    # sequences[i] the next index of array where the next element of LIS is
+    sequences: list[None | int] = [None] * len(array)
+
+    for i in range(len(array) - 1, -1, -1):
+        for j in range(i + 1, len(array)):
+            if array[i] < array[j] and 1 + lis_cache[j] > lis_cache[i]:
+                lis_cache[i] = 1 + lis_cache[j]
+                sequences[i] = j
+
+        if lis_cache[i] > lis_cache[max_len_idx]:
+            # to keep track of which number to start when building LIS sequence
+            max_len_idx = i
+
+    return build_sequence(array, sequences, max_len_idx)
+```
