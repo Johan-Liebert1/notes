@@ -7,10 +7,8 @@ class Node:
         self.children: list[Node] = []
 """
 
-
 class TreeNode:
     pass
-
 
 class Node:
     def __init__(self, lowest_common_ancestor, num_children) -> None:
