@@ -1,4 +1,4 @@
-package main
+package arrays
 
 func pivotIndexMine(nums []int) int {
 	if len(nums) == 1 {

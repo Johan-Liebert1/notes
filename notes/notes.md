@@ -1,60 +1,3 @@
-## Binary Search
-
-```go
-// range 1 to n
-left, right := 1, n
-
-for left <= right {
-    // we could've gotten the midpoint by doing (left + right) / 2
-    // But that could cause integer overflow
-
-    mid := left + (right - left) / 2
-
-    result := guess(mid)
-    
-    // our guess is correct
-    if result == 0 {
-        return mid
-    } else if result == 1 {
-        // our guess is lower so we disregard the left side
-        left = mid + 1
-    } else {
-         // our guess is higher so we disregard the right side
-        right = mid - 1
-    }
-}
-```
-
-## Binary Search to find element greater than or equal to
-
-```go
-// returns the index of where it found the element greater than or eq to toFind 
-// if it doesn't find the element, returns -1
-func search(toFind int) int {
-    left, right := 0, len(potions) - 1
-    
-    result := -1 
-
-    for right >= left {
-        mid := left + (right - left) / 2
-
-        if potions[mid] >= toFind {
-            result = mid
-
-            // continue searching in the left half
-            // as the array could be [0, 5, 6, 6, 6, 6, 7]
-            // and we are searching for 6
-            right = mid - 1
-        } else {
-            // search in the right half
-            left = mid + 1
-        }
-    }
-
-    return result
-}
-```
-
 ## Greatest Common Divisor
 
 ```py
@@ -81,37 +24,39 @@ def gcd_iterative(a, b):
 
 ```
 
-## Pivot Index
+## Single number in an array 
 
-Whenever working with prefix sum and suffix sum both, we can simply sum the entire array and then 
-while calculating the prefix/suffix sum, keep subtracting the current number to get the suffix/prefix 
-sum respectively.
+#### Given an array, every number appears atlest twice except one. Find that one
+
+Trivial with a hash map, but we can use `XOR` operator for this.
+
+If the array is [2, 2, 4, 1, 1]
+
+then, the following solution works
 
 ```go
-func pivotIndex(nums []int) int {
-	sum := 0
+func singleNumber(nums []int) int {
+    thingy := 0
 
-    // Sum up the array
-	for _, v := range nums {
-		sum += v
-	}
+    for _, n := range nums {
+        thingy = thingy ^ n
+    }
 
-	left := 0
-
-	right := sum
-
-	for i, v := range nums {
-        // subtract the current number to get suffix sum
-		right -= v
-
-		if left == right {
-			return i
-		}
-
-		left += v
-
-	}
-
-	return -1
+    return thingy
 }
 ```
+
+Here's how
+
+```
+thingy = 000
+
+1. thingy = thingy ^ 2 = 000 ^ 010 = 010
+2. thingy = 010 ^ 010 = 000
+3. thingy = 000 ^ 100 = 100
+4. thingy = 100 ^ 001 = 101
+5. thingy = 101 ^ 001 = 100
+```
+
+
+
