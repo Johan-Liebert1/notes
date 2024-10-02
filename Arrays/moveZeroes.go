@@ -1,10 +1,11 @@
-package main
+package arrays
 
-func moveZeroes2(nums []int) {
+func MoveZeroes2(nums []int) {
 	lastFoundNonZeroAt := 0
 
 	for i := 0; i < len(nums); i++ {
 		if nums[i] != 0 {
+            // we replace any zero with the first non-zero element we get
 			nums[lastFoundNonZeroAt] = nums[i]
 			lastFoundNonZeroAt++
 		}
@@ -15,7 +16,7 @@ func moveZeroes2(nums []int) {
 	}
 }
 
-func moveZeroes(nums []int) {
+func MoveZeroes(nums []int) {
 	if len(nums) < 2 {
 		return
 	}
@@ -35,8 +36,4 @@ func moveZeroes(nums []int) {
 
 		right++
 	}
-}
-
-func main3() {
-	moveZeroes([]int{0, 1, 0, 3, 12})
 }

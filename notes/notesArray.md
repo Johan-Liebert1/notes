@@ -55,7 +55,7 @@ func search(toFind int) int {
 }
 ```
 
-## Pivot Index
+## Prefix and Suffix Sums
 
 Whenever working with prefix sum and suffix sum both, we can simply sum the entire array and then 
 while calculating the prefix/suffix sum, keep subtracting the current number to get the suffix/prefix 
@@ -89,3 +89,26 @@ func pivotIndex(nums []int) int {
 	return -1
 }
 ```
+
+## k-th Largest element in an array
+
+To find the k-th largest element in an array we have 3 options
+
+#### Sort the array O(n * log n)
+Sort the array, then get array[len - k]
+
+#### Max Heap O(n + log n)
+Put all elements in a max heap, then take out k elements
+
+#### Quick Select. Worst case O(n^2). Avg Case O(n)
+
+Similar to quicksort
+
+1. Select a pivot
+2. Partition the array, all elements lower than pivot to the left, and all greater to the right
+3. Now whereever our pivot is, is out p-th largest element. 
+We can check if the k-th largest will be to the left or right, and then run 1 and 2 on that partition of the array
+
+
+In the worst case we might always choose the largest element as the pivot and k could be 1
+Then we'll only reduce the array len by `len - 1`

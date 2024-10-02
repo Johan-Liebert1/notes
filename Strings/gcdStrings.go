@@ -18,7 +18,7 @@ Input: str1 = "LEET", str2 = "CODE"
 Output: ""
 */
 
-package main
+package strings
 
 func doesDivide(str string, subStr string) bool {
 	for i := 0; i < len(str); i += len(subStr) {
