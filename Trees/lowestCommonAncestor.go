@@ -1,4 +1,4 @@
-package main
+package trees
 
 func findNode(root, p *TreeNode) bool {
 	if root == nil {
