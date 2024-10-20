@@ -1,9 +1,7 @@
 package main
 
-import (
-	trees "coding-questions/Trees"
-)
+import "fmt"
 
 func main()  {
-    trees.CallPathSum3()
+    fmt.Println(minEatingSpeed([]int{312884470}, 312884469))
 }
