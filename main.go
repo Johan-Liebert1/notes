@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	sorting "coding-questions/Sorting"
+)
 
 func main()  {
-    fmt.Println(minEatingSpeed([]int{312884470}, 312884469))
+    sorting.HeapTest()
 }
