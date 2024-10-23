@@ -1,9 +1,11 @@
 package main
 
 import (
-	sorting "coding-questions/Sorting"
+	"coding-questions/miscellaneous"
+	"fmt"
 )
 
 func main()  {
-    sorting.HeapTest()
+    sums := miscellaneous.CombinationSum3(3, 9)
+    fmt.Printf("%+v\n", sums)
 }
