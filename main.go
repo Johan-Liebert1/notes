@@ -6,6 +6,6 @@ import (
 )
 
 func main()  {
-    sums := miscellaneous.CombinationSum3(3, 9)
-    fmt.Printf("%+v\n", sums)
+    allPerms := miscellaneous.Permutations([]int{1, 2, 3})
+    fmt.Printf("%+v", allPerms)
 }
