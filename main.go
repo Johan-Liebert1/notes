@@ -6,6 +6,9 @@ import (
 )
 
 func main()  {
-    allPerms := miscellaneous.Permutations([]int{1, 2, 3})
-    fmt.Printf("%+v", allPerms)
+    allPerms := miscellaneous.PermutationsBySwapping([]int{1, 2, 3})
+    allPerms2 := miscellaneous.Permutations([]int{1, 2, 3})
+
+    fmt.Printf("%+v\n", allPerms)
+    fmt.Printf("%+v", allPerms2)
 }
