@@ -1,9 +1,7 @@
 package main
 
-import (
-	sorting "coding-questions/Sorting"
-)
+import graphs "coding-questions/Graphs"
 
 func main()  {
-    sorting.HeapTest()
+    graphs.EvaluateDivision()
 }

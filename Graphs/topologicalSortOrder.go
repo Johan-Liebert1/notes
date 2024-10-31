@@ -68,9 +68,6 @@ func findOrder(numCourses int, prerequisites [][]int) []int {
 
 	array := []int{}
 
-    for _, prereq := range prerequisites {
-    }
-
 	for course := range numCourses {
 		// find if the course has some prerequisite
 		if !canFinishParticularCourse2(course, &visiting, &visited, prerequisites, &array) {
