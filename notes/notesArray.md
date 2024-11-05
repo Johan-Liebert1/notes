@@ -112,3 +112,97 @@ We can check if the k-th largest will be to the left or right, and then run 1 an
 
 In the worst case we might always choose the largest element as the pivot and k could be 1
 Then we'll only reduce the array len by `len - 1`
+
+## Majority element in an array
+
+#### Majority element = element that occurs more than floor( len(array) / 2 ) times
+
+1. We can use a hash map
+2. or we can sort the array OR
+
+#### Moore's voting algo
+We will have a variable called count, and a var called element. `element, count := -1, 0` initially
+
+We will just assume that the first element is our Majority element. 
+
+We will have these cases
+
+```go
+func majorityElement(nums []int) int {
+    element := -1
+    count := 0
+
+    for _, n := range nums {
+        if count == 0 {
+            count++
+            element = n
+        } else {
+            if n == element {
+                count++
+            } else {
+                count--
+            }
+        }
+    }
+
+    return element
+}
+```
+
+
+the intuition is that, any number that appears more than n/2 times, will have a count of > 1 at the end
+
+in the array `[ 7, 7, 5, 7, 5, 1, 5, 7, 5, 5, 7, 7, 5, 5, 5, 5 ]`
+
+we will start by assuming `7` is the majority element, and `count++` if the next element is 7, else `count--`
+
+What happens is, for a particular subarray, if the count of `7` is equal to the count of `rest of the numbers`, count will be 0, else count will be > 0
+So Whenever `count == 0` we reset the subarray kinda
+
+## Every Subarray
+
+
+```go
+// we'll start from 0, 1, 2, 3, ...
+for i := 0; i < len(array); i++ {
+    // we want to end at 0, 1, 2, 3, ...
+    for j := i; j < len(array); j++ {
+
+        subarray := []int{}
+
+        // this is where we get the actual subarray
+        for k := i; k <= j; k++ {
+            subarray = append(subarray, array[k])
+        }
+    }
+}
+```
+
+## Maximum sum subarray
+
+### Kadane's Algorithm
+
+Example `[-2, -3, 4, -1, -2, 1, 5, -3]`
+
+1. Initialize a varaible `sum := 0` and `maxSum := 0`. Sum will be our current sum
+2. Loop through the array and add the element to `sum` then update `maxSum` accordingly
+If `sum` ever goes below `0`, we simply reset it to `0` because there is no point in actually continuing with our current sum if it is negative
+It's only going to lower our current sum, so we will reset it to `0` whenever it dips below `0`
+
+```go
+func maxSubArray(nums []int) int {
+    sum := 0
+    maxSum := -((1<<31) - 1)
+
+    for _, n := range nums {
+        sum += n
+
+        maxSum = max(maxSum, sum)
+
+        // Reset sum to 0, if it ever dips below zero
+        sum = max(sum, 0)
+    }
+
+    return maxSum
+}
+```

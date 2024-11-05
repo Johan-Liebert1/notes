@@ -1,6 +1,7 @@
 package miscellaneous
 
 import (
+	"fmt"
 	"slices"
 )
 
@@ -10,7 +11,6 @@ import (
 // Each number is used at most once.
 // Return a list of all possible valid combinations. The list must not contain the same combination twice,
 // and the combinations may be returned in any order.
-
 // Input: k = 3, n = 9
 // Output: [[1,2,6],[1,3,5],[2,3,4]]
 // Explanation:
@@ -18,8 +18,6 @@ import (
 // 1 + 3 + 5 = 9
 // 2 + 3 + 4 = 9
 // There are no other valid combinations.
-
-import "fmt"
 
 func getKey(currentNums []int) string {
 	s := ""
@@ -31,19 +29,39 @@ func getKey(currentNums []int) string {
 	return s
 }
 
-func addComboToMap(currentNums []int, set map[string]bool) {
-	newNums := make([]int, len(currentNums))
-	copy(newNums, currentNums)
+func getAllPermutations(array []int) [][]int {
+	allPerms := [][]int{}
 
-	for range len(currentNums) {
-		key := getKey(currentNums)
+	var findAllPerms func(currentPerm []int, index int)
 
-		set[key] = true
+	findAllPerms = func(currentPerm []int, index int) {
+        if index >= len(array) {
+            copyArray := make([]int, len(array))
+            copy(copyArray, currentPerm)
 
-		// now we rotate the array
-		currentNums = append([]int{currentNums[len(currentNums)-1]}, currentNums...)
-		currentNums = currentNums[:len(currentNums)-1]
+            allPerms = append(allPerms, copyArray)
+
+            return;
+        }
+
+        for i := index; i < len(array); i++ {
+            currentPerm[i], currentPerm[index] = currentPerm[index], currentPerm[i]
+
+            findAllPerms(currentPerm, index + 1)
+
+            currentPerm[i], currentPerm[index] = currentPerm[index], currentPerm[i]
+        }
 	}
+
+    findAllPerms(array, 0)
+
+	return allPerms
+}
+
+func addComboToMap(currentNums []int, set map[string]bool) {
+    for _, perm := range getAllPermutations(currentNums) {
+        set[getKey(perm)] = true
+    }
 }
 
 func combinationExists(currentNums []int, set map[string]bool) bool {
