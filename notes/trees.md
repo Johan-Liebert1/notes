@@ -1,36 +1,3 @@
-## Delete from middle of linked list
-
-### Easy way
-Traverse linked list twice, once to find the length and once to delete the middle
-
-### Have a slow pointer and a fast pointer. The fast pointer moves twice as fast as the slow one
-
-So, when the fast ptr is at the end, the slow pointer will be directly in the middle
-
-
-Example
-
-
-```
-LL -> 1, 2, 3, 4, 5
-
-Iter 1
-slow = 1, fast = 1
-
-Iter 2
-slow = 2, fast = 3
-
-Iter 3
-slow = 3, fast = 5
-```
-
-## Copying an array in go
-
-```go
-newArray := make([]Type, len(arrayToCopy))
-copy(newArray, arrayToCopy)
-```
-
 ## Lowest common binary tree ancestor
 
 root, node1, node2
@@ -152,5 +119,38 @@ func pathSum3(root *TreeNode, targetSum int) int {
 	lookup := map[int]int{}
 
 	return pathSumFast(root, 0, targetSum, lookup)
+}
+```
+
+## Max Path sum
+
+Find the maximum path sum in a binary tree. A path can be `root.Left + root + root.Right`
+
+```go
+func maxPathSum(root *TreeNode) int {
+    maxSum := -(1 << 31)
+
+    var dfs func(node *TreeNode) int
+
+    dfs = func(node *TreeNode) int {
+        if node == nil {
+            return 0
+        }
+
+        // Recursively get the max sum on the left and right subtrees, discarding negative sums
+        leftMax := max(0, dfs(node.Left))
+        rightMax := max(0, dfs(node.Right))
+
+        // Calculate the maximum path sum with the current node as the highest point
+        maxSum = max(maxSum, node.Val + leftMax + rightMax)
+
+        // Return the max path sum including the current node and either one of its children
+        // becuase this function is supposed to get the right/left subtree max sums
+        // we've already included the root, left and right in the maxSum equation above
+        return node.Val + max(leftMax, rightMax)
+    }
+
+    dfs(root)
+    return maxSum
 }
 ```

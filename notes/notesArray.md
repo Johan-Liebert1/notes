@@ -55,41 +55,6 @@ func search(toFind int) int {
 }
 ```
 
-## Prefix and Suffix Sums
-
-Whenever working with prefix sum and suffix sum both, we can simply sum the entire array and then 
-while calculating the prefix/suffix sum, keep subtracting the current number to get the suffix/prefix 
-sum respectively.
-
-```go
-func pivotIndex(nums []int) int {
-	sum := 0
-
-    // Sum up the array
-	for _, v := range nums {
-		sum += v
-	}
-
-	left := 0
-
-	right := sum
-
-	for i, v := range nums {
-        // subtract the current number to get suffix sum
-		right -= v
-
-		if left == right {
-			return i
-		}
-
-		left += v
-
-	}
-
-	return -1
-}
-```
-
 ## k-th Largest element in an array
 
 To find the k-th largest element in an array we have 3 options
@@ -206,3 +171,27 @@ func maxSubArray(nums []int) int {
     return maxSum
 }
 ```
+
+## Max Sum subarray circular
+
+1. Same as max sum subarray, find the maximum subarray sum for the array
+2. But, also, we find the MINIMUM sum subarray, as for say `[5, -3, 5]` the max sum is `10` and the minimum is `-3`.
+3. We also calculate the total sum of the array, `totalSum`
+
+Now the circular max sum will be: 
+
+4. `globalMaxSum` if the array is filled with all negative numbers, else `max(totalSum, totalSum - globalMinSum)`
+
+The reasoning is for the array `[-3, -6, -8, -3]` 
+```go
+totalSum := -20
+globalMaxSum := -3
+globalMinSum := -8
+```
+
+if we do `total - globalMinSum` then we will have `-20 - (-8) = -12` but there's no way to get `-12` from any subarray
+
+That's why here the answer is `globalMinSum`
+
+
+NOTE: We can easily figure out if all of number in array are negative if `globalMinSum < 0`.
