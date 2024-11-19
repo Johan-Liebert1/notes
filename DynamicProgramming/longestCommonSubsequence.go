@@ -1,4 +1,4 @@
-package main
+package dynamicprogramming
 
 func lcs(text1 *string, text2 *string, i int, j int, table *[][]int) int {
 	if i == len(*text1) || j == len(*text2) {

@@ -1,4 +1,4 @@
-package main
+package dynamicprogramming
 
 func lis(nums []int, prevIndex int, currIndex int) int {
 	n := len(nums)

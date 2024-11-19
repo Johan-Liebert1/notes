@@ -28,7 +28,7 @@
 // Output: 3
 // Explanation: We can take clips [0,4], [4,7], and [6,9].
 
-package main
+package dynamicprogramming
 
 import (
 	"fmt"
