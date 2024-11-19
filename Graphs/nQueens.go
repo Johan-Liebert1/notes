@@ -10,7 +10,6 @@ func printBoard[T int | string](board [][]T) {
 	fmt.Println("------------------------------------------")
 }
 
-
 func printAnswerBoard(board []string) {
 	for _, row := range board {
 		fmt.Printf("%+v\n", row)
@@ -18,7 +17,6 @@ func printAnswerBoard(board []string) {
 
 	fmt.Println("------------------------------------------")
 }
-
 
 var rowAddersChess = []int{
 	-1, // top
@@ -89,11 +87,11 @@ func solveIterativeDoesNotGiveAllSolutions(board Board) []string {
 		// we went through the entire row but couldn't place a single queen
 		// time to backtrack
 		if col == len(board) {
-            if len(stack) == 0 {
-                // we cannot place a queen without it attacking another
-                // break the loop
-                break
-            }
+			if len(stack) == 0 {
+				// we cannot place a queen without it attacking another
+				// break the loop
+				break
+			}
 
 			lastQueen := stack[len(stack)-1]
 			lastRow, lastCol := lastQueen[0], lastQueen[1]
@@ -103,7 +101,7 @@ func solveIterativeDoesNotGiveAllSolutions(board Board) []string {
 
 			board[lastRow][lastCol] = EmptyCell
 
-            stack = stack[:len(stack) - 1]
+			stack = stack[:len(stack)-1]
 
 			continue
 		}
@@ -112,26 +110,26 @@ func solveIterativeDoesNotGiveAllSolutions(board Board) []string {
 		col = 0
 	}
 
-    var boardCopy []string
+	var boardCopy []string
 
-    if row == len(board) {
-        // make a copy of the board
-        boardCopy = make([]string, 0, len(board))
+	if row == len(board) {
+		// make a copy of the board
+		boardCopy = make([]string, 0, len(board))
 
-        for _, row := range board {
-            s := ""
+		for _, row := range board {
+			s := ""
 
-            for _, c := range row {
-                if c == QueenCell {
-                    s += "Q"
-                } else {
-                    s += "."
-                }
-            }
+			for _, c := range row {
+				if c == QueenCell {
+					s += "Q"
+				} else {
+					s += "."
+				}
+			}
 
-            boardCopy = append(boardCopy, s)
-        }
-    }
+			boardCopy = append(boardCopy, s)
+		}
+	}
 
 	// reset the board for next queens
 	for i := len(stack) - 1; i >= 0; i-- {
@@ -140,52 +138,52 @@ func solveIterativeDoesNotGiveAllSolutions(board Board) []string {
 		board[lastRow][lastCol] = EmptyCell
 	}
 
-    return boardCopy
+	return boardCopy
 }
 
 func solveRecursive(board Board, row int) [][]string {
-    answerBoard := [][]string{}
+	answerBoard := [][]string{}
 
-    if row >= len(board) {
-        // make a copy of the board
-        boardCopy := make([]string, 0, len(board))
+	if row >= len(board) {
+		// make a copy of the board
+		boardCopy := make([]string, 0, len(board))
 
-        for _, row := range board {
-            s := ""
+		for _, row := range board {
+			s := ""
 
-            for _, c := range row {
-                if c == QueenCell {
-                    s += "Q"
-                } else {
-                    s += "."
-                }
-            }
+			for _, c := range row {
+				if c == QueenCell {
+					s += "Q"
+				} else {
+					s += "."
+				}
+			}
 
-            boardCopy = append(boardCopy, s)
-        }
+			boardCopy = append(boardCopy, s)
+		}
 
-        answerBoard = append(answerBoard, boardCopy)
+		answerBoard = append(answerBoard, boardCopy)
 
-        return answerBoard
-    }
+		return answerBoard
+	}
 
-    for col := 0; col < len(board); col++ {
-        if !IsSquareUnderAttack(row, col, board) {
-            board[row][col] = QueenCell
+	for col := 0; col < len(board); col++ {
+		if !IsSquareUnderAttack(row, col, board) {
+			board[row][col] = QueenCell
 
-            retBoard := solveRecursive(board, row + 1)
+			retBoard := solveRecursive(board, row+1)
 
-            answerBoard = append(answerBoard, retBoard...)
+			answerBoard = append(answerBoard, retBoard...)
 
-            board[row][col] = EmptyCell
-        }
-    }
+			board[row][col] = EmptyCell
+		}
+	}
 
-    return answerBoard
+	return answerBoard
 }
 
 func SolveNQueensRecursive(n int) [][]string {
-    answer := [][]string{}
+	answer := [][]string{}
 
 	board := Board{}
 
@@ -204,18 +202,18 @@ func SolveNQueensRecursive(n int) [][]string {
 		// row is 0 here
 		board[0][col] = QueenCell
 
-        retBoard := solveRecursive(board, 1)
+		retBoard := solveRecursive(board, 1)
 
-        if len(retBoard) > 0 {
-            answer = append(answer, retBoard...)
-        }
+		if len(retBoard) > 0 {
+			answer = append(answer, retBoard...)
+		}
 
 		board[0][col] = EmptyCell
 	}
 
-    for _, board := range answer {
-        printAnswerBoard(board)
-    }
+	for _, board := range answer {
+		printAnswerBoard(board)
+	}
 
-    return answer
+	return answer
 }
