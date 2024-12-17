@@ -74,8 +74,7 @@ func minDistance(word1 string, word2 string) int {
 	return getMinDist(word1, word2, 0, 0, cache)
 }
 
-func main() {
+func EditDistance() {
 	minDist := minDistance("horse", "ros")
-
 	fmt.Println("minDist: ", minDist)
 }

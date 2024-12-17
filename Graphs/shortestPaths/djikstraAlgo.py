@@ -31,7 +31,7 @@ def create_graph(input_: List[List[int]]) -> Dict[int, List[Tuple[int, int]]]:
     return graph
 
 
-def get_min(array: List[int], visited: List[bool]) -> Tuple[int, int]:
+def get_min(array: List[float], visited: List[bool]) -> Tuple[int, int | float]:
     m = float("inf")
     idx = -1
 

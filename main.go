@@ -1,11 +1,15 @@
 package main
 
 import (
-	"coding-questions/greedy"
+	dynamicprogramming "coding-questions/DynamicProgramming"
 	"fmt"
 )
 
 func main() {
-    ans := greedy.LeastInterval([]byte{'A','C','A','B','D','B'}, 1)
-    fmt.Printf("ans: %d\n", ans)
+    i := []int{1, 3, 4, 5}
+    minn := dynamicprogramming.MinCostToCutStick(7, i)
+
+    fmt.Println(minn)
+
+    fmt.Printf("'%s'\n", fmt.Sprint(i))
 }
