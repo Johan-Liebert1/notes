@@ -9,6 +9,8 @@ frontend -> service -> backend 1 (IP which is ephemeral)
 .
 .
 
+A services' selector will only work on the pods that are in the same namespace as the service.
+
 Endpoints are created by Services which links a service to a particular Pod's IP
 
 ```sh
