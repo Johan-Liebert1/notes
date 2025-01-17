@@ -117,5 +117,26 @@ $ cat /proc/24706/cpuset
 /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod2143011f_695c_49ef_a0ec_1ed4a02bec7a.slice/cri-containerd-2407514d0db7fafa2cda0bb5e2a428917acab96b66f64b5ce30c397ba956ac53.scope
 ```
 
+## ========================================================= Namespace Switching ====================================
+
+1. Get contanier id and pod id, then get the cgroup dir
+
+```bash
+    USER_APP_CONTAINER_ID=$(get_container_id) 
+    USER_APP_CONTAINER_CPU_CGROUP=$(printf "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod%s.slice/cri-containerd-%s.scope" "$POD_UID" "$USER_APP_CONTAINER_ID") 
+```
+
+2. Inside the cgoup dir there is a file `cgroup.procs` which has all the process ids (in the HOST PID namespace) to which this cgroup should be applied to.
+3. If we view the `cgroup.procs` file from within a PID namespace, then processes are running inside a container or a PID namespace, 
+the PIDs in cgroup.procs may appear relative to that namespace.
+
+4. So now we have the app-container's parent process PID in the PID namespace. Let's say this value is 7.
+
+5. Now we find, in the /proc directory, the string "NSPid.*[[space]]". NSPid line is of the form "NSPid <PID in host PID ns> <PID in another PID ns>"
+
+6. We find the actual process id in the host namespace. We could get multiple results as muliple namespaces can have the same PID `7` associated. 
+
+7. Now we do `cat /proc/<pid in host ns>/cpuset` and we compare this with our original cpu cgroup value. If they match, this is our process.
+
 
 
