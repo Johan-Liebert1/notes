@@ -51,3 +51,21 @@ UUID=50e8f28a-3a5c-4922-88ab-11e31f993299 /              ext4    defaults,noatim
 UUID=f8260a25-008b-4f19-b968-2003e56c8a0c /home          ext4    defaults,noatime           0       2
 tmpfs                                     /tmp           tmpfs   defaults,noatime,mode=1777 0       0
 ```
+
+
+# ===================================== /etc/subuid | /etc/subgid ==================================
+
+These contain information about subordinate UIDs and subordinate GIDs that a user is permitted to use in a user namespace.
+
+```bash
+# username:Subuid start:Subuid range
+pragyan:1000:99
+```
+
+In the above example, the user `pragyan` is allowed to use UIDs 1000, 1001, 1002 ... 1098 in user namespaces.
+
+If you run out of these UIDs, then creating users in user namespaces is not possible.
+
+`/etc/subgid` serves a similar purpose but for GIDs
+
+
