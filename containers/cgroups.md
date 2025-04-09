@@ -3,7 +3,8 @@ Used to limit process resources
 
 ## How to limit a processes memory (cgroupv2)
 
-1. Create a cgroup
+
+1. Create a c group
 
 ```sh
 sudo touch /sys/fs/cgroup/oomdemo
