@@ -190,3 +190,91 @@ grub_class     fedora
 ```
 
 
+# ============================================ setup root ===========================================
+
+Q. Who's mounting /sysroot?
+
+This all happens inside the `initramfs`
+
+We get the image name from `/proc/cmdline`
+
+```bash
+initrd=\1a9a88b3266f4ba5a5fd65dbdd525d06\6.14.4-200.fc41.x86_64\initrd systemd.machine_id=1a9a88b3266f4ba5a5fd65dbdd525d06 \
+console=ttyS0,115200 composefs=6c315f5307f9d66fc98bf7d6e474b460cb8ea8b457f7667c38a066afeb91422d rw
+```
+
+This is the image name `composefs=6c315f5307f9d66fc98bf7d6e474b460cb8ea8b457f7667c38a066afeb91422d rw` (6c315f5307f9d66fc98bf7d6e474b460cb8ea8b457f7667c38a066afeb91422d)
+
+#### fsopen
+The `fsopen` syscall is used to initiate the creation of a new superblock for a filesystem in the Linux kernel.
+It's primarily used with the mount API introduced in Linux 5.2+.
+
+```c
+int fsopen(const char *fs_name, unsigned int flags);
+
+// fs_name: Filesystem type (e.g., "ext4", "xfs").
+// flags: Reserved (must be 0 for now).
+// Returns: A file descriptor (fs context) used with other syscalls like fsconfig, fsmount, etc.
+
+// Example Workflow:
+
+fsopen("ext4", 0) // get fs context.
+
+fsconfig() // configure mount options.
+
+fsmount() // create a mount.
+
+move_mount() // attach it to the filesystem hierarchy (optional)
+```
+
+### == Mounting composefs ==
+
+01. Mount the `erofs` image using `fsmount`, i.e. created a detached mount (not appearing on the filesystem)
+
+    On pre `6.15` kernel, we mount it to a `tmpfs` using `move_mount` 
+
+    Required before Linux 6.15: it's not possible to use detached mounts with `OPEN_TREE_CLONE` or
+    `overlayfs`.  
+
+    Convert them into a non-floating form by mounting them on a temporary directory and
+    reopening them as an O_PATH fd.
+
+
+02. Mount `composefs` as an `overlayfs` mount type.
+
+```rust
+// Open a filesystem context for the overlay mount type — so we're creating an overlayfs mount.
+let overlayfs = FsHandle::open("overlay")?;
+
+// This sets the source of the lowerdir to composefs:{name} — a special syntax telling overlayfs to use a composefs filesystem object as its lower layer.
+fsconfig_set_string(overlayfs.as_fd(), "source", format!("composefs:{name}"))?;
+
+// Some standard overlayfs mount options
+fsconfig_set_string(overlayfs.as_fd(), "metacopy", "on")?;
+fsconfig_set_string(overlayfs.as_fd(), "redirect_dir", "on")?;
+fsconfig_set_string(overlayfs.as_fd(), "verity", "require")?;
+
+overlayfs_set_fd(overlayfs.as_fd(), "lowerdir+", erofs_mnt)?;
+
+// data dir here is the repo's objects directory
+overlayfs_set_fd(overlayfs.as_fd(), "datadir+", data.as_fd())?;
+
+
+// Finalize and create the overlay mount
+fsconfig_create(overlayfs.as_fd())?;
+```
+
+After creating our mount, we will detach the old sysroot mount, if it exists
+
+```rust
+// empty path '""' = detatch the mount
+let sysroot_clone = bind_mount(&sysroot, "")?;
+
+// Then we mount our sysroot
+mount_at(&composefs_image, CWD, &args.sysroot)?;
+```
+
+
+
+
+
