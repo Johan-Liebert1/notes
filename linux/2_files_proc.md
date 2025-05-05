@@ -117,7 +117,7 @@ $ cat /proc/24706/cpuset
 /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod2143011f_695c_49ef_a0ec_1ed4a02bec7a.slice/cri-containerd-2407514d0db7fafa2cda0bb5e2a428917acab96b66f64b5ce30c397ba956ac53.scope
 ```
 
-## ========================================================= Namespace Switching ====================================
+# ========================================================= Namespace Switching ====================================
 
 1. Get contanier id and pod id, then get the cgroup dir
 

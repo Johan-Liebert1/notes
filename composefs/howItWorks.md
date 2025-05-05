@@ -142,6 +142,8 @@ drwxr-xr-x  18 root root  332 Apr 30 11:18 var/
 The files are stored sparsely. What does that mean? This means that the file metadata, size, creation time etc, is all 
 correct in the EROFS image, but the data is all NULL, i.e. all `\0` bytes.
 
+NOTE: We mask out `/boot` while creating the erofs image
+
 ```bash
 ls -lah ./composefs-meta/boot/loader/entries/d594b915350142a5ab0f5a80a9c6316c-6.14.4-200.fc41.x86_64.conf
 

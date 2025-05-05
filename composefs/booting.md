@@ -262,19 +262,59 @@ overlayfs_set_fd(overlayfs.as_fd(), "datadir+", data.as_fd())?;
 
 // Finalize and create the overlay mount
 fsconfig_create(overlayfs.as_fd())?;
+
+// this returns an OwnedFd
+let composefs_image = fsmount(
+    overlayfs.as_fd(),
+    FsMountFlags::FSMOUNT_CLOEXEC,
+    MountAttrFlags::empty(),
+);
 ```
 
 After creating our mount, we will detach the old sysroot mount, if it exists
 
 ```rust
-// empty path '""' = detatch the mount
+// empty path "" = detatch the mount
 let sysroot_clone = bind_mount(&sysroot, "")?;
 
-// Then we mount our sysroot
+// Then we mount our composefs_image at /sysroot
 mount_at(&composefs_image, CWD, &args.sysroot)?;
+
+// mount_at body vv
+move_mount(
+    sysroot_clone.as_fd(),
+    "", // see below. This is empty as we only have transient mounts
+    CWD.as_fd(),
+    args.sysroot, // /sysroot
+    MoveMountFlags::MOVE_MOUNT_F_EMPTY_PATH,
+)
+```
+
+```c
+int move_mount(
+    int from_dfd, 
+    const char *from_pathname,
+
+    // This is the directory that the to_pathname will be relative to.
+    // If this is a dirfd to "/sysroot/rootfs", and to_pathname = "thingy", then the mount will be at /sysroot/rootfs/thingy
+    int to_dfd,
+
+    // If to_pathname starts with "/" (i.e. it is absolute), then `to_dfd` is ignored
+    const char *to_pathname,
+
+    unsigned int flags
+);
+```
+
+
+If there was an old sysroot, we move it to /sysroot/sysroot
+
+```rust
+mount_at(&sysroot_clone, &composefs_image, "sysroot");
 ```
 
 
 
-
-
+add root=UUID=rootpartuuid
+add rw to options
+move composefs repo to root partition
