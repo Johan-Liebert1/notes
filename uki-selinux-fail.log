@@ -1,0 +1,24 @@
+         Starting initrd-switch-root.service - Switch Root...
+[    3.087505] systemd-journald[337]: Received SIGTERM from PID 1 (systemd).
+[    3.161202] audit: type=1404 audit(1747377930.636:2): enforcing=1 old_enforcing=0 auid=4294967295 ses=4294967295 enabled=1 old-enabled=1 lsm=selinux res=1
+[    3.198809] SELinux:  Permission nlmsg in class netlink_route_socket not defined in policy.
+[    3.199456] SELinux:  Permission nlmsg in class netlink_tcpdiag_socket not defined in policy.
+[    3.200090] SELinux:  Permission nlmsg in class netlink_xfrm_socket not defined in policy.
+[    3.200697] SELinux:  Permission nlmsg in class netlink_audit_socket not defined in policy.
+[    3.201340] SELinux: the above unknown classes and permissions will be allowed
+[    3.205174] SELinux:  policy capability network_peer_controls=1
+[    3.205622] SELinux:  policy capability open_perms=1
+[    3.206002] SELinux:  policy capability extended_socket_class=1
+[    3.206436] SELinux:  policy capability always_check_network=0
+[    3.206876] SELinux:  policy capability cgroup_seclabel=1
+[    3.207271] SELinux:  policy capability nnp_nosuid_transition=1
+[    3.207710] SELinux:  policy capability genfs_seclabel_symlinks=1
+[    3.208161] SELinux:  policy capability ioctl_skip_cloexec=0
+[    3.208577] SELinux:  policy capability userspace_initial_context=0
+[    3.209046] SELinux:  policy capability netlink_xperm=0
+[    3.254746] audit: type=1403 audit(1747377930.729:3): auid=4294967295 ses=4294967295 lsm=selinux res=1
+[    3.255868] systemd[1]: Successfully loaded SELinux policy in 95.276ms.
+[    3.257693] systemd[1]: Failed to initialize SELinux labeling handle: Permission denied
+[    3.257699] audit: type=1400 audit(1747377930.732:4): avc:  denied  { read } for  pid=1 comm="systemd" name="file_contexts.subs_dist" dev="overlay" ino=15709 scontext=system_u:system_r:init_t:s0 tcontext=system_u:object_r:default_t:s0 tclass=file permissive=0
+[!!!!!!] Failed to initialize MAC support.
+[    3.261189] systemd[1]: Freezing execution.

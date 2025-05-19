@@ -1,0 +1,46 @@
++ diff -u /tmp/tmp.k7aqPUdogP /tmp/tmp.mMyMCfMvET
+--- /tmp/tmp.k7aqPUdogP 2025-05-19 06:17:38.674804930 +0000
++++ /tmp/tmp.mMyMCfMvET 2025-05-19 06:19:44.601113495 +0000
+@@ -1,6 +1,5 @@
+ ./bin|7|lrwxrwxrwx|root|root|0|1747211369|0
+-./boot/6.14.5-300.fc42.x86_64.efi|105975808|-rw-r--r--|root|root|1747631156|1747631164|1747631193
+-./boot|4096|drwxr-xr-x|root|root|1747631156|1747631164|1747631164
++./boot|4096|drwxr-xr-x|root|root|0|1747211310|1747211310
+ ./dev|4096|drwxr-xr-x|root|root|0|1747211310|1747211310
+ ./etc/.pwd.lock|0|-rw-------|root|root|1747387669|1747387682|1747387669
+ ./etc/DIR_COLORS.lightbgcolor|6037|-rw-r--r--|root|root|0|1747211422|1747630772
+@@ -3492,7 +3491,7 @@
+ ./run/systemd/resolve/stub-resolv.conf|0|-rwx------|root|root|1747387669|1747387682|1747387669
+ ./run/systemd/resolve|4096|drwxr-xr-x|root|root|1747387669|1747387682|1747387682
+ ./run/systemd|4096|drwxr-xr-x|root|root|1747387669|1747387682|1747387682
+-./run|4096|drwxr-xr-x|root|root|1747631157|1747631164|1747631164
++./run|4096|drwxr-xr-x|root|root|1747388555|1747388568|1747388568
+ ./sbin|8|lrwxrwxrwx|root|root|0|1747211369|0
+ ./srv|7|lrwxrwxrwx|root|root|0|1747211369|0
+ ./sysroot/ostree/repo/config|45|-rw-r--r--|root|root|0|1747211423|1747630818
+@@ -117071,8 +117070,7 @@
+ ./usr|4096|drwxr-xr-x|root|root|1747211234|1747388568|1747388568
+ ./var/lib/rpm-state|4096|drwxrwxr-x|root|root|0|1747211310|1747211310
+ ./var/lib|4096|drwxrwxr-x|root|root|0|1747211310|1747211310
+-./var/mnt|4096|drwxr-xr-t|root|root|1747631157|1747631164|1747631164
+ ./var/run|6|lrwxrwxrwx|root|root|0|1747211369|0
+ ./var/tmp|4096|drwxrwxrwt|root|root|1747388555|1747388568|1747388568
+-./var|4096|drwxr-xr-x|root|root|1747631156|1747631164|1747631164
++./var|4096|drwxr-xr-x|root|root|1747211369|1747388568|1747388568
+ .|4096|dr-xr-xr-x|root|root|1747635332|1747635332|1747635332
++ true
++ rm /tmp/tmp.k7aqPUdogP /tmp/tmp.mMyMCfMvET
+
+
+
+
+
+File: /run 
+Size: 4096 
+Blocks: 16 
+IO Block: 4096 directory 
+Device: 0,114 Inode: 646485 Links: 1 Access: (0755/drwxr-xr-x) Uid: ( 0/ root) Gid: ( 0/ root) Access: 2025-05-16 09:42:48.
+186178897 +0000 Modify: 2025-05-19 07:04:04.674500436 +0000 Change: 2025-05-19 07:04:04.674500436 +0000 Birth: 2025-05-19 07:04:04.674500436 +0000
+
+File: /run Size: 4096 Blocks: 16 IO Block: 4096 directory Device: 0,114 Inode: 646485 Links: 1 Access: (0755/drwxr-xr-x) Uid: ( 0/ root) Gid: ( 0/ root) Access: 2025-05-16 09:42:48.1
+86178897 +0000 Modify: 2025-05-19 07:04:04.674500436 +0000 Change: 2025-05-19 07:04:04.674500436 +0000 Birth: 2025-05-19 07:04:04.674500436 +0000

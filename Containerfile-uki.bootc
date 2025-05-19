@@ -1,0 +1,16 @@
+FROM quay.io/fedora/fedora-bootc:42
+COPY extra /
+COPY cfsctl /usr/bin
+
+RUN dnf install -y systemd-ukify
+
+RUN set -x; \ 
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN kver=$(cd /usr/lib/modules && echo *); \
+         ukify build \
+        --linux /usr/lib/modules/$kver/vmlinuz \
+        --initrd /usr/lib/modules/$kver/initramfs.img \
+        --cmdline "console=ttyS0,115200" \
+        --output /usr/lib/modules/$kver/uki.efi

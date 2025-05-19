@@ -1,0 +1,28 @@
+FROM quay.io/fedora/fedora-bootc:42 AS base
+COPY extra /
+COPY cfsctl /usr/bin
+
+FROM base AS kernel
+
+RUN --mount=type=bind,from=base,target=/var/mnt/base <<EOF
+    set -eux
+
+    mkdir -p /tmp/sysroot/composefs
+    COMPOSEFS_FSVERITY="$(cfsctl --repo /tmp/sysroot compute-id --bootable /var/mnt/base)"
+
+    mkdir -p /etc/kernel /etc/dracut.conf.d
+    echo "console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} rw" > /etc/kernel/cmdline
+EOF
+
+RUN set -x; \ 
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN dnf install -y systemd-ukify
+
+RUN kver=$(cd /usr/lib/modules && echo *); \
+         ukify build \
+        --linux /usr/lib/modules/$kver/vmlinuz \
+        --initrd /usr/lib/modules/$kver/initramfs.img \
+        --cmdline "console=ttyS0,115200" \
+        --output /usr/lib/modules/$kver/uki.efi

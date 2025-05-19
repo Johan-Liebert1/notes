@@ -1,0 +1,5 @@
+FROM quay.io/fedora/fedora-bootc:42
+COPY extra /
+COPY cfsctl /usr/bin
+RUN set -x; kver=$(cd /usr/lib/modules && echo *); dracut -vf /usr/lib/modules/$kver/initramfs.img $kver
+RUN true
