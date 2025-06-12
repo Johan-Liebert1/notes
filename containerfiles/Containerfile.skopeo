@@ -1,0 +1,6 @@
+FROM registry.fedoraproject.org/fedora
+COPY ./target/release/cfsctl /usr/bin
+ENV PS1="\w\$ "
+RUN mkdir /var/repo
+RUN dnf install -y skopeo podman
+CMD ["/bin/bash"]
