@@ -4,3 +4,5 @@ __pycache__/
 *.dot
 *.tar
 *.ign
+secureboot
+*.efi
