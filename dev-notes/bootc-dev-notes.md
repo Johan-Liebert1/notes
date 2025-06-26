@@ -23,3 +23,7 @@ Jun 11 05:58:26 fedora systemd[1]: initrd-parse-etc.service: Failed with result 
 Jun 11 05:58:26 fedora systemd[1]: Failed to start initrd-parse-etc.service - Mountpoints Configured in the Real Root.
 Jun 11 05:58:26 fedora systemd[1]: initrd-parse-etc.service: Triggering OnFailure= dependencies.
 ```
+
+```bash
+192.168.122.137 - non-uki
+```

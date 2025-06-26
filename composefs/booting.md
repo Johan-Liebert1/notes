@@ -210,11 +210,13 @@ The `fsopen` syscall is used to initiate the creation of a new superblock for a 
 It's primarily used with the mount API introduced in Linux 5.2+.
 
 ```c
-int fsopen(const char *fs_name, unsigned int flags);
+/**
+    * fs_name: Filesystem type (e.g., "ext4", "xfs", "overlay").
+    * flags: Reserved (must be 0 for now).
 
-// fs_name: Filesystem type (e.g., "ext4", "xfs").
-// flags: Reserved (must be 0 for now).
-// Returns: A file descriptor (fs context) used with other syscalls like fsconfig, fsmount, etc.
+    * Returns: A file descriptor (fs context) used with other syscalls like fsconfig, fsmount, etc.
+*/
+int fsopen(const char *fs_name, unsigned int flags);
 
 // Example Workflow:
 
