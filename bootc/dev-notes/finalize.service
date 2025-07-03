@@ -1,0 +1,13 @@
+# /etc/systemd/system/composefs-finalize.service
+[Unit]
+Description=Composefs finalize
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/composefs-finalize.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=shutdown.target

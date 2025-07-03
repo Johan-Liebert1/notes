@@ -15,7 +15,7 @@ virsh edit <vm-name>
 # 2. Edit hostname in the VM
 
 ```bash
-# In the VM
+# In the VM (this whole thing is optional)
 
 hostnamectl set-hostname desired-hostname
 

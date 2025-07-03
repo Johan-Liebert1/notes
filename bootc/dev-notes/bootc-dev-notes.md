@@ -27,3 +27,33 @@ Jun 11 05:58:26 fedora systemd[1]: initrd-parse-etc.service: Triggering OnFailur
 ```bash
 192.168.122.137 - non-uki
 ```
+
+```bash
+# image
+podman pull quay.io/pragyanpoudyal/bootc-composefs-uki:latest
+```
+
+
+Errors to fix
+
+```log
+while doing bootc upgrade 
+origin file
+
+[origin]
+container-image-reference = ostree-unverified-image:docker://quay.io/pragyanpoudyal/bootc-composefs-bls
+
+DEBUG new_with_config: Spawned skopeo pid=5055 config=ImageProxyConfig { authfile: None, auth_data: None, auth_anonymous: false, certificate_directory: None, decryption_keys: None, insecure_s
+kip_tls_verification: None, debug: false, skopeo_cmd: None }
+DEBUG new_with_config: Remote protocol version: 0.2.6 config=ImageProxyConfig { authfile: None, auth_data: None, auth_anonymous: false, certificate_directory: None, decryption_keys: None, ins
+ecure_skip_tls_verification: None, debug: false, skopeo_cmd: None }
+DEBUG open_image: opening image self=ImageProxy imgref="registry:quay.io/pragyanpoudyal/bootc-composefs-bls"
+ERROR Upgrading composefs: Pulling composefs repo: Opening image: failed to invoke method OpenImage: Invalid image name "registry:quay.io/pragyanpoudyal/bootc-composefs-bls", unknown transpor
+t "registry"
+```
+
+
+TODO:
+
+1. update stage
+2. write grub user.cfg as staged while updating
