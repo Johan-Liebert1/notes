@@ -12,6 +12,10 @@ RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf --install "/etc/passwd /etc/group" /usr/lib/modules/$kver/initramfs.img $kver;
 
+COPY composefs-finalize.sh /usr/bin
+COPY finalize.service /etc/systemd/system
+RUN systemctl enable finalize.service
+
 RUN mkdir /var/thing
 
 FROM STEP1 as kernel

@@ -2,12 +2,12 @@
 [Unit]
 Description=Composefs finalize
 DefaultDependencies=no
-Before=shutdown.target
+Before=final.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/composefs-finalize.sh
+ExecStart=/usr/bin/composefs-finalize.sh
 RemainAfterExit=yes
 
 [Install]
-WantedBy=shutdown.target
+WantedBy=final.target
