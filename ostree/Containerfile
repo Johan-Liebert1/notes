@@ -1,0 +1,4 @@
+FROM registry.fedoraproject.org/fedora
+RUN dnf update -y && \
+    dnf -y install @buildsys-build dnf-plugins-core python3-yaml && \
+    dnf -y builddep ostree
