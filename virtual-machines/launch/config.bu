@@ -1,0 +1,10 @@
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBSQw9oA6pn957HLN9RBCzP2urogXRMXMrnyM8m+zoD6 pragyan@pragyan
+      password_hash: "$6$rounds=4096$zF0C3BgYbZ8$uVu9KhW5.ZZK9AnkSfvzZ5zLKH1Zs5PvpxW69pHzBLmct6FbD06tk3ZDx45n2mFLu3sWwMfX2FhXnhNjglfQW/"  # password: "foobar"
+
+

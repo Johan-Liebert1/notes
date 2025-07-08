@@ -8,3 +8,4 @@ secureboot
 *.efi
 *.img
 questions
+overlay/
