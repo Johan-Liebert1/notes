@@ -2,12 +2,11 @@
 
 ```rust
 /// Implementation of the `bootc switch` CLI command.
-#[context("Switching")]
-async fn switch(opts: SwitchOpts) -> Result<()> {
-    let target = imgref_for_switch(&opts)?;
-    let sysroot = &get_storage().await?;
+#[context("Loading deployments")]
+let sysroot = &get_storage().await?;
+let repo = &sysroot.repo(); // Simply returns the `struct OstreeRepo` in sysroot
+let (booted_deployment, _deployments, host) = crate::status::get_status_require_booted(sysroot)?;
 
-}
 
 async fn get_storage() -> Result<Storage> {
     let global_run = Dir::open_ambient_dir("/run", cap_std::ambient_authority())?;
@@ -16,11 +15,11 @@ async fn get_storage() -> Result<Storage> {
 }
 
 async fn get_locked_sysroot() -> Result<SysrootLock> {
-    // See: ./ostree-load.md:29:0
+    // See: ./ostree-load.md:42:0
     prepare_for_write()?;
 
     // Returns a default Sysroot structure
-    // See: ./ostree-load.md:69:0
+    // See: ./ostree-load.md:235:0
     let sysroot = ostree::Sysroot::new_default();
 
     // calls ostree_sysroot_set_mount_namespace_in_use
@@ -33,7 +32,7 @@ async fn get_locked_sysroot() -> Result<SysrootLock> {
     let sysroot = ostree_ext::sysroot::SysrootLock::new_from_sysroot(&sysroot).await?;
 
     /// Calls `ostree_sysroot_load` which calls `ostree_sysroot_load_if_changed`
-    /// See: 
+    /// See: ./ostree-load.md:78:0
     sysroot.load(gio::Cancellable::NONE)?;
 
     Ok(sysroot)
