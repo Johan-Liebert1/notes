@@ -1,4 +1,6 @@
-+ COMPOSEFS_FSVERITY=f2b8b798d07dfa5a5931a94e1516b028b10f040464e3f339459b03f2ec8f3ed9
+```bash
+curl http://192.168.122.1:8080/bootc -o /var/bootc && chmod +x /var/bootc && alias bootc=/var/bootc
+```
 
 
 ```toml
@@ -57,3 +59,16 @@ TODO:
 
 1. update stage
 2. write grub user.cfg as staged while updating
+
+## The WHY of integrating composefs into bootc
+
+ostree sotres things in an object store with the file hash being the file data + file metadata 
+
+so let's say depl1 has bash, and depl2 has bash, both have the same content but have different metdata, then we can't hardlink one file as the metdata are different.
+We'll need double the space just because the metdata is different
+
+
+If say depl-old has a vulnerable sudo and depl-new has a non vuln sudo, we can still access the setuid 0 sudo from depl-old even if depl-new is mounted, as they're hard links.
+
+But with composfs we only store a single file and all the metadata is in Erofs file, you need to be root to mount and use the vuln sudo
+

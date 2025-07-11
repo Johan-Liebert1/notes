@@ -10,8 +10,8 @@ STREAM="stable"
 
 
 IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
-IMAGE="${HOME}/.local/share/libvirt/images/fedora-coreos-42.qcow2"
-VM_NAME="fedora-coreos"
+IMAGE="${HOME}/.local/share/libvirt/images/bootc-only.qcow2"
+VM_NAME="fcos-bootc-bls"
 VCPUS="2"
 RAM_MB="2048"
 STREAM="stable"

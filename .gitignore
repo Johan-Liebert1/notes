@@ -9,3 +9,4 @@ secureboot
 *.img
 questions
 overlay/
+ostree-booted
