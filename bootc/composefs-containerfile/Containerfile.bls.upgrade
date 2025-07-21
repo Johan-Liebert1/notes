@@ -1,0 +1,3 @@
+FROM quay.io/fedora/fedora-coreos:stable
+RUN dnf install -y setroubleshoot setroubleshoot-server
+RUN passwd -d root

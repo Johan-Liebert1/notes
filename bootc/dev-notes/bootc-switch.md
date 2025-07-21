@@ -75,9 +75,63 @@ grub_users ""
 
 
 
+the case
+
+```bash
+# Switch to any image
+$ bootc switch 192.168.122.1:5000/bootc-43-upgrade
+layers already present: 0; layers needed: 52 (817.9 MB)
+Fetched layers: 780.03 MiB in 12 seconds (67.21 MiB/s)                                                                                                                                              
+  Deploying: done (3 seconds)                                                                                                                                                                       
+Queued for next boot: 192.168.122.1:5000/bootc-43-upgrade
+  Version: 42.20250623.3.1
+  Digest: sha256:b3b0d49d8a6b084aba298c172c7f4c94458ab167c73f0f874dbf47e54002674b
 
 
+# Switched image staged for deployment
+$ bootc status
+  Staged image: 192.168.122.1:5000/bootc-43-upgrade
+        Digest: sha256:b3b0d49d8a6b084aba298c172c7f4c94458ab167c73f0f874dbf47e54002674b (amd64)
+       Version: 42.20250623.3.1 (2025-07-16T11:24:47Z)
 
+● Booted image: quay.io/fedora/fedora-coreos:stable
+        Digest: sha256:da8486bd1571a7e101dd178eb7826e174de6810389d1f6eb3204278f1942ed53 (amd64)
+       Version: 42.20250623.3.1 (2025-07-10T18:50:20Z)
+
+  Rollback image: quay.io/fedora/fedora-coreos:stable
+          Digest: sha256:906ee44ef3c21ee25c856d7c6964cba89595ff03d6454eb89b83bc7c36c2aa2b (amd64)
+         Version: 42.20250609.3.0 (2025-06-23T19:16:31Z)
+
+
+# Rollback
+$ bootc rollback
+Next boot: rollback deployment
+
+
+$ bootc status
+
+# Staged image removed. File `/run/ostree/staged-deployment` is deleted
+
+● Booted image: quay.io/fedora/fedora-coreos:stable
+        Digest: sha256:da8486bd1571a7e101dd178eb7826e174de6810389d1f6eb3204278f1942ed53 (amd64)
+       Version: 42.20250623.3.1 (2025-07-10T18:50:20Z)
+
+  Rollback image: quay.io/fedora/fedora-coreos:stable
+          Digest: sha256:906ee44ef3c21ee25c856d7c6964cba89595ff03d6454eb89b83bc7c36c2aa2b (amd64)
+         Version: 42.20250609.3.0 (2025-06-23T19:16:31Z)
+
+
+# After reboot
+
+$ bootc status
+● Booted image: quay.io/fedora/fedora-coreos:stable
+        Digest: sha256:906ee44ef3c21ee25c856d7c6964cba89595ff03d6454eb89b83bc7c36c2aa2b (amd64)
+       Version: 42.20250609.3.0 (2025-06-23T19:16:31Z)
+
+  Rollback image: quay.io/fedora/fedora-coreos:stable
+          Digest: sha256:da8486bd1571a7e101dd178eb7826e174de6810389d1f6eb3204278f1942ed53 (amd64)
+         Version: 42.20250623.3.1 (2025-07-10T18:50:20Z)
+```
 
 
 

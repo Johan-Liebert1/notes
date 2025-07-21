@@ -1,0 +1,2 @@
+FROM quay.io/fedora/fedora-coreos:stable
+RUN dnf install -y libsoup3 libsoup3-devel strace vim

@@ -7,6 +7,8 @@ __pycache__/
 secureboot
 *.efi
 *.img
+*.rpm
+*.fd
 questions
 overlay/
 ostree-booted

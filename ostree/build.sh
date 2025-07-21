@@ -1,3 +1,16 @@
+if [[ "$1" == "make" ]]; then
+    podman run --rm \
+        -v /home/pragyan/RedHat/ostree:/ostree:rw,Z \
+        -w /ostree \
+        localhost/ostree-builder \
+        bash -c 'cd /ostree && \
+                make && \
+                make install DESTDIR=/ostree/usr'
+
+    exit $?
+fi
+
+
 podman run --rm \
     -v /home/pragyan/RedHat/ostree:/ostree:rw,Z \
     -w /ostree \
