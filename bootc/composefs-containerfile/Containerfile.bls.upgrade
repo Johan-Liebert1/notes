@@ -1,3 +1,4 @@
-FROM quay.io/fedora/fedora-coreos:stable
-RUN dnf install -y setroubleshoot setroubleshoot-server
+FROM quay.io/pragyanpoudyal/bootc-composefs-bls
+RUN dnf install -y tree
+COPY bootc /usr/bin/bootc
 RUN passwd -d root

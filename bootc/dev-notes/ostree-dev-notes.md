@@ -37,3 +37,15 @@ static gboolean
 read_current_bootversion (OstreeSysroot *self, int *out_bootversion, GCancellable *cancellable,
                           GError **error)
 ```
+
+
+## parses booted deployment
+
+```c
+/* From a BLS config, use its ostree= karg to find the deployment it points to and add it to
+ * the inout_deployments array. */
+static gboolean
+list_deployments_process_one_boot_entry (OstreeSysroot *self, OstreeBootconfigParser *config,
+                                         GPtrArray *inout_deployments, GCancellable *cancellable,
+                                         GError **error)
+```

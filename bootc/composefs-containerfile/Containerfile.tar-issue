@@ -1,0 +1,2 @@
+FROM quay.io/fedora/fedora-coreos:stable
+RUN passwd -d root
