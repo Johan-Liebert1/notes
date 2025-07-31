@@ -1,0 +1,3 @@
+FROM registry.fedoraproject.org/fedora
+RUN dnf update -y && dnf install -y tmt
+RUN dnf install -y tmt+provision-virtual
