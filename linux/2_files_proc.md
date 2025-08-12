@@ -97,6 +97,10 @@ lr-x------  9 -> /usr/lib/brave-browser/locales/en-GB.pak
 - Contains a directory for each thread of the process identified by <pid>. 
 - Each thread's directory is named with its thread ID (tid), which is unique within the process.
 
+## ====================================== /proc/<pid>/tasks/<pid>/children ======================================
+
+- Contains all the child processes
+
 ## ===================================== /proc/<pid>/cpuset ======================================
 
 - The file typically contains a relative path (e.g., / or /my_cgroup) indicating the cpuset cgroup assigned to the process.

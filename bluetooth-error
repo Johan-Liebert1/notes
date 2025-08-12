@@ -1,0 +1,48 @@
+Aug 06 10:23:12 pragyan bluetoothd[824]: src/profile.c:ext_io_disconnected() Unable to get io data for Hands-Free Voice gateway: getpeername: Transport endpoint is not connected (107)
+Aug 06 10:23:12 pragyan bluetoothd[824]: profiles/audio/avdtp.c:handle_unanswered_req() No reply to Suspend request
+Aug 06 10:23:12 pragyan wireplumber[1596]: spa.bluez5: Failed to release transport /org/bluez/hci0/dev_80_C3_BA_6A_25_D1/fd1: Input/output error
+Aug 06 10:23:12 pragyan gsd-media-keys[1830]: Unable to get default sink
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): device removed
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (II) config/udev: removing device MOMENTUM 4 (AVRCP)
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (**) Option "fd" "76"
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (II) UnloadModule: "libinput"
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (II) systemd-logind: releasing fd for 13:84
+Aug 06 10:23:12 pragyan /usr/lib/gdm-x-session[1641]: (EE) event7  - Logitech G304: client bug: event processing lagging behind by 22ms, your system is too slow
+Aug 06 10:23:13 pragyan wireplumber[1596]: spa.bluez5.native: RFCOMM receive command but modem not available: AT+BTRH?
+Aug 06 10:23:13 pragyan kernel: input: MOMENTUM 4 (AVRCP) as /devices/virtual/input/input36
+Aug 06 10:23:13 pragyan systemd-logind[829]: Watching system buttons on /dev/input/event20 (MOMENTUM 4 (AVRCP))
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) config/udev: Adding input device MOMENTUM 4 (AVRCP) (/dev/input/event20)
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) MOMENTUM 4 (AVRCP): Applying InputClass "evdev keyboard catchall"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) MOMENTUM 4 (AVRCP): Applying InputClass "libinput keyboard catchall"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) MOMENTUM 4 (AVRCP): Applying InputClass "system-keyboard"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) MOMENTUM 4 (AVRCP): Applying InputClass "Keyboard Defaults"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) Using input driver 'libinput' for 'MOMENTUM 4 (AVRCP)'
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) systemd-logind: got fd for /dev/input/event20 13:84 fd 77 paused 0
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) MOMENTUM 4 (AVRCP): always reports core events
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) Option "Device" "/dev/input/event20"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): is tagged by udev as: Keyboard
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): device is a keyboard
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): device removed
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) Option "config_info" "udev:/sys/devices/virtual/input/input36/event20"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) XINPUT: Adding extended input device "MOMENTUM 4 (AVRCP)" (type: KEYBOARD, id 20)
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) Option "xkb_layout" "us"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (**) Option "xkb_options" "terminate:ctrl_alt_bksp"
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): is tagged by udev as: Keyboard
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[1641]: (II) event20 - MOMENTUM 4 (AVRCP): device is a keyboard
+Aug 06 10:23:13 pragyan bluetoothd[824]: src/service.c:btd_service_connect() a2dp-sink profile connect failed for 80:C3:BA:6A:25:D1: Device or resource busy
+Aug 06 10:23:13 pragyan bluetoothd[824]: plugins/policy.c:reconnect_timeout() Reconnecting services failed: Device or resource busy (16)
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[5402]: The XKEYBOARD keymap compiler (xkbcomp) reports:
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[5402]: > Warning:          Could not resolve keysym XF86RefreshRateToggle
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[5402]: > Warning:          Could not resolve keysym XF86Accessibility
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[5402]: > Warning:          Could not resolve keysym XF86DoNotDisturb
+Aug 06 10:23:13 pragyan /usr/lib/gdm-x-session[5402]: Errors from xkbcomp are not fatal to the X server
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + true
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[5418]: ++ cat /sys/class/power_supply/BAT0/status
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + charging_or_discharging='Not charging'
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[5419]: ++ cat /sys/class/power_supply/BAT0/capacity
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + current_charge=85
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + [[ Not charging == Charging ]]
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + [[ Not charging == Not charging ]]
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + [[ 85 -lt 85 ]]
+Aug 06 10:23:18 pragyan batteryChargeCheck.sh[823]: + sleep 30
+Aug 06 10:23:20 pragyan bluetoothd[824]: /org/bluez/hci0/dev_80_C3_BA_6A_25_D1/fd2: fd(32) ready
