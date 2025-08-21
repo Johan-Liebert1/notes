@@ -26,4 +26,7 @@ growpart /dev/vda 4
 # Running growpart /dev/vda 4 only resizes the partition table, not the filesystem itself.
 # To finish expanding the space, we now need to resize the filesystem inside the partition.
 resize2fs /dev/vda4
+
+# NOTE: the above works for etx4, btrfs etc, if xfs do this
+
 ```

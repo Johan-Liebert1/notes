@@ -1,0 +1,12 @@
+FROM quay.io/fedora/fedora-bootc:42
+
+COPY bootc /usr/bin
+COPY cfsctl /usr/bin
+COPY extra /
+
+RUN set -x; \
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN passwd -d root
+# RUN sed -i 's;^root.*;root:$y$j9T$RuocDnAhu9id3hX3JOpL5/$ac7M8OzIJPyz59a2ToqJHwxLooSxKpeYmJEDo9EPf/A:20320::::::;' /etc/shadow

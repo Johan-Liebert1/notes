@@ -235,14 +235,138 @@ move_mount() // attach it to the filesystem hierarchy (optional)
 
     On pre `6.15` kernel, we mount it to a `tmpfs` using `move_mount` 
 
-    Required before Linux 6.15: it's not possible to use detached mounts with `OPEN_TREE_CLONE` or
+```rust
+// See: https://github.com/sunfishcode/linux-mount-api-documentation
+pub fn erofs_mount(image: OwnedFd) -> Result<OwnedFd> {
+    // Prepares an open erofs image file for mounting.  On kernels versions after 6.12 this is a
+    // simple passthrough.  On older kernels (like on RHEL 9) we need to create a loopback device.
+    let image = make_erofs_mountable(image)?;
+
+    // Creates a blank filesystem configuration context within the kernel for the filesystem named in the fsname parameter,
+    // puts it into creation mode and attaches it to a file descriptor, which it then returns. 
+    // The file descriptor can be marked close-on-exec by setting FSOPEN_CLOEXEC in flags.
+    // 
+    // After calling fsopen(), the file descriptor should be passed to the fsconfig(2)
+    // system call, using that to specify the desired filesystem and security parameters. When the parameters are all set, the fsconfig()
+    // system call should then be called again with FSCONFIG_CMD_CREATE (fsconfig_create) as the command argument to effect the creation.
+    // 
+    // 
+    // NOTE:
+    // Depending on the filesystem type and parameters, this may rather share an existing in-kernel filesystem representation instead of creating a new one.
+    // In such a case, the parameters specified may be discarded or may overwrite the parameters set by a previous mount - at the filesystem's discretion.
+    // The file descriptor also serves as a channel by which more comprehensive error, warning and information messages may be retrieved from the kernel using read(2).
+    // 
+    // Once the creation command has been successfully run on a context, the context will not accept further configuration. At this point, fsmount()
+    // should be called to create a mount object.
+    //
+    let erofs = FsHandle::open("erofs")?; // equivalent to fsopen("erofs")
+
+    // v all these call fsconfig() with various options
+    // configure mount options.
+    fsconfig_set_flag(erofs.as_fd(), "ro")?;
+    fsconfig_set_string(erofs.as_fd(), "source", proc_self_fd(&image))?;
+    fsconfig_create(erofs.as_fd())?;
+
+
+    // Takes the file descriptor returned by fsopen() and creates a mount object for the filesystem root specified there.
+    // The attributes of the mount object are set from the mount_attrs parameter. 
+    // The attributes specify the propagation and mount restrictions to be applied to accesses through this mount.
+    // 
+    // The mount object is then attached to a new file descriptor that looks like one created by open(2) with O_PATH or open_tree(2).
+    // This can be passed to move_mount(2) to attach the mount object to a mountpoint, thereby completing the process.
+    // 
+    // The file descriptor returned by fsmount() is marked close-on-exec if FSMOUNT_CLOEXEC is specified in flags.
+    // 
+    // After fsmount() has completed, the context created by fsopen() is reset and moved to reconfiguration state, allowing the new superblock to be reconfigured. 
+    // See fspick(2) for details.
+    // 
+    // To use either of these calls, the caller requires the appropriate privilege (Linux: the CAP_SYS_ADMIN capability).
+    Ok(fsmount(
+        erofs.as_fd(),
+        FsMountFlags::FSMOUNT_CLOEXEC,
+        MountAttrFlags::empty(),
+    )?)
+}
+
+pub fn composefs_fsmount(image: OwnedFd, name: &str, basedir: impl AsFd, enable_verity: bool) -> Result<OwnedFd> {
+    // Prepares a mounted filesystem for further use.  On 6.15 kernels this is a no-op, due to the
+    // expanded number of operations which can be performed on "detached" mounts.  On earlier kernels
+    // we need to create a temporary directory and mount the filesystem there to avoid failures,
+    // making sure to detach the mount and remove the directory later.  This function returns an `impl
+    // AsFd` which also implements the `Drop` trait in order to facilitate this cleanup.
+    let erofs_mnt = prepare_mount(erofs_mount(image)?)?;
+
+    let overlayfs = FsHandle::open("overlay")?;
+    fsconfig_set_string(overlayfs.as_fd(), "source", format!("composefs:{name}"))?;
+    fsconfig_set_string(overlayfs.as_fd(), "metacopy", "on")?;
+    fsconfig_set_string(overlayfs.as_fd(), "redirect_dir", "on")?;
+    if enable_verity {
+        fsconfig_set_string(overlayfs.as_fd(), "verity", "require")?;
+    }
+
+    /// Sets the "lowerdir+" and "datadir+" mount options of an overlayfs mount to the provided file
+    /// descriptors.  On 6.15 kernels this can be done by directly calling `fsconfig_set_fd()`.  On
+    /// pre-6.15 kernels, it needs to be done by reopening the file descriptor `O_RDONLY` and calling
+    /// `fsconfig_set_fd()` because `O_PATH` fds are rejected.  On very old kernels this needs to be
+    /// done by calculating a `"lowerdir=lower::data"` string using `/proc/self/fd/` filenames and
+    /// setting it via `fsconfig_set_string()`.
+    overlayfs_set_lower_and_data_fds(&overlayfs, &erofs_mnt, Some(&basedir))?;
+
+    let lower_fd = lower.as_fd().as_raw_fd().to_string();
+    let arg = if let Some(data) = data {
+        let data_fd = data.as_fd().as_raw_fd().to_string();
+        format!("/proc/self/fd/{lower_fd}::/proc/self/fd/{data_fd}")
+    } else {
+        format!("/proc/self/fd/{lower_fd}")
+    };
+    rustix::mount::fsconfig_set_string(fs_fd.as_fd(), "lowerdir", arg)
+
+    fsconfig_create(overlayfs.as_fd())?;
+
+    Ok(fsmount(
+        overlayfs.as_fd(),
+        FsMountFlags::FSMOUNT_CLOEXEC,
+        MountAttrFlags::empty(),
+    )?)
+}
+
+// Picks the mount object specified by the pathname and attaches it to a new file descriptor or clones it and attaches the clone to the file descriptor.
+// The resultant file descriptor is indistinguishable from one produced by open(2) with O_PATH.
+// 
+// In the case that the mount object is cloned, the clone will be "unmounted" and destroyed when the file descriptor is closed if it is not 
+// otherwise mounted somewhere by calling move_mount(2).
+// 
+// To select a mount object, no permissions are required on the object referred to by the path, but execute (search)
+// permission is required on all of the directories in pathname that lead to the object.
+
+// OpenTreeFlags::AT_EMPTY_PATH
+// 
+// If pathname is an empty string, operate on the file referred to by dirfd (which may have been obtained from open(2) with
+// O_PATH, from fsmount(2) or from another open_tree()).
+// 
+// If dirfd is AT_FDCWD, the call operates on the current working directory. In this case, dirfd
+// can refer to any type of file, not just a directory. This flag is Linux-specific; define _GNU_SOURCE to obtain its definition.
+
+fn bind_mount(fd: impl AsFd, path: &str) -> rustix::io::Result<OwnedFd> {
+    open_tree(
+        fd.as_fd(),
+        path,
+        OpenTreeFlags::OPEN_TREE_CLONE
+            | OpenTreeFlags::OPEN_TREE_CLOEXEC
+            | OpenTreeFlags::AT_EMPTY_PATH,
+    )
+}
+```
+
+
+02.  Required before Linux 6.15: it's not possible to use detached mounts with `OPEN_TREE_CLONE` or
     `overlayfs`.  
 
     Convert them into a non-floating form by mounting them on a temporary directory and
     reopening them as an O_PATH fd.
 
 
-02. Mount `composefs` as an `overlayfs` mount type.
+03. Mount `composefs` as an `overlayfs` mount type.
 
 ```rust
 // Open a filesystem context for the overlay mount type — so we're creating an overlayfs mount.
@@ -287,7 +411,7 @@ move_mount(
     sysroot_clone.as_fd(),
     "", // see below. This is empty as we only have transient mounts
     CWD.as_fd(),
-    args.sysroot, // /sysroot
+    args.sysroot,
     MoveMountFlags::MOVE_MOUNT_F_EMPTY_PATH,
 )
 ```

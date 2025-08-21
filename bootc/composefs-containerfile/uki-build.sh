@@ -12,6 +12,7 @@ mkdir -p tmp/sysroot/composefs
 
 ${PODMAN_BUILD} \
     --iidfile=tmp/STEP1.iid \
+    --pull=newer \
     --target=STEP1 \
     -f "$CONTAINERFILE" \
     .
