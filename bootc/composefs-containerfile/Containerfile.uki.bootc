@@ -4,19 +4,17 @@ COPY cfsctl /usr/bin
 
 RUN passwd -d root
 
-RUN dnf install -y zsh vim chsh
-RUN chsh -s /bin/zsh root
+# RUN dnf install -y zsh vim chsh
+# RUN chsh -s /bin/zsh root
 
 # need to have composefs setup root in the initramfs so we need this
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf --install "/etc/passwd /etc/group" /usr/lib/modules/$kver/initramfs.img $kver;
 
-COPY composefs-finalize.sh /usr/bin
-COPY finalize.service /etc/systemd/system
-RUN systemctl enable finalize.service
-
-RUN mkdir /var/thing
+# COPY composefs-finalize.sh /usr/bin
+# COPY finalize.service /etc/systemd/system
+# RUN systemctl enable finalize.service
 
 FROM STEP1 as kernel
 
@@ -26,13 +24,14 @@ ARG COMPOSEFS_FSVERITY
 # RUN --mount=type=secret,id=key \
 #     --mount=type=secret,id=cert <<EOF
 
+RUN dnf install -y systemd-ukify sbsigntools systemd-boot-unsigned
+
 RUN <<EOF
     set -eux
 
     mkdir -p /etc/kernel /etc/dracut.conf.d
     echo "console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} selinux=1 enforcing=0 systemd.debug_shell=1 root=UUID=6523f8ae-3eb1-4e2a-a05a-18b695ae656f rw" > /etc/kernel/cmdline
 
-    dnf install -y systemd-ukify sbsigntools systemd-boot-unsigned
     kver=$(cd /usr/lib/modules && echo *)
 
     # --signtool sbsign \
@@ -49,6 +48,12 @@ RUN <<EOF
         --json pretty \
         --output "/boot/$kver.efi"
 
+    mkdir -p "/boot/$kver.efi.extra.d"
+
+    ukify build \
+        --cmdline "extended-cmdline" \
+        --output "/boot/$kver.efi.extra.d/cmdline-extend.efi"
+
     # sbsign \
     #     --key "/run/secrets/key" \
     #     --cert "/run/secrets/cert" \
@@ -61,7 +66,14 @@ FROM STEP1 as final
 RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
     kver=$(cd /usr/lib/modules && echo *)
     mkdir -p /boot/EFI/Linux
-    cp /_mount/kernel/boot/$kver.efi /boot/EFI/Linux/$kver.efi
+    cp -r "/_mount/kernel/boot/." "/boot/EFI/Linux/."
+
+    mkdir -p /boot/EFI/Linux/more-addons-here.efi.extra.d
+    touch /boot/EFI/Linux/more-addons-here.efi.extra.d/addon1.addon.efi
+    touch /boot/EFI/Linux/more-addons-here.efi.extra.d/addon2.addon.efi
+
+    mkdir -p /boot/EFI/Linux/loader/addons
+    touch /boot/EFI/Linux/loader/addons/global-addon.addon.efi
 EOF
 
 FROM STEP1 as final-final
