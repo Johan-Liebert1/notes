@@ -92,6 +92,16 @@ lr-x------  8 -> /usr/lib/brave-browser/chrome_200_percent.pak
 lr-x------  9 -> /usr/lib/brave-browser/locales/en-GB.pak
 ```
 
+## ====================================== /proc/net/* ======================================
+
+In the above example, we see
+
+```bash
+lrwx------  19 -> 'socket:[28968]'
+```
+
+we can check `/proc/net/tcp`, `/proc/net/tcp6`, `/proc/net/udp`, `/proc/net/udp6`, `/proc/net/unix` to figure out what type of socket this is
+
 ## ====================================== /proc/<pid>/tasks ======================================
 
 - Contains a directory for each thread of the process identified by <pid>. 
