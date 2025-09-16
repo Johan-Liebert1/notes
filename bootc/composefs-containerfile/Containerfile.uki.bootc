@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-bootc:42 AS STEP1
+FROM quay.io/fedora/fedora-coreos:stable AS STEP1
 COPY extra /
 COPY cfsctl /usr/bin
 
@@ -7,7 +7,6 @@ RUN passwd -d root
 # RUN dnf install -y zsh vim chsh
 # RUN chsh -s /bin/zsh root
 
-# need to have composefs setup root in the initramfs so we need this
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf --install "/etc/passwd /etc/group" /usr/lib/modules/$kver/initramfs.img $kver;
@@ -30,7 +29,12 @@ RUN <<EOF
     set -eux
 
     mkdir -p /etc/kernel /etc/dracut.conf.d
-    echo "console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} selinux=1 enforcing=0 systemd.debug_shell=1 root=UUID=6523f8ae-3eb1-4e2a-a05a-18b695ae656f rw" > /etc/kernel/cmdline
+
+    # Passing rootfstype=ext4 here due to e2fsprogs shenanigans
+    ROOT_RW="root=UUID=6523f8ae-3eb1-4e2a-a05a-18b695ae656f rootfstype=ext4 rw"
+    CMDLINE="console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} enforcing=0 systemd.debug_shell=1 ${ROOT_RW}" 
+
+    echo $CMDLINE > /etc/kernel/cmdline
 
     kver=$(cd /usr/lib/modules && echo *)
 
@@ -38,21 +42,25 @@ RUN <<EOF
     # --secureboot-private-key "/run/secrets/key" \
     # --secureboot-certificate "/run/secrets/cert" \
 
+    # Removing this as we want to only handle things with loader/conf files
+    # --os-release "@/etc/os-release" \
+
     ukify build \
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
         --uname="${kver}" \
         --cmdline "@/etc/kernel/cmdline" \
-        --os-release "@/etc/os-release" \
         --measure \
         --json pretty \
         --output "/boot/$kver.efi"
 
     mkdir -p "/boot/$kver.efi.extra.d"
 
+    # UKI addon for ignition
     ukify build \
-        --cmdline "extended-cmdline" \
-        --output "/boot/$kver.efi.extra.d/cmdline-extend.efi"
+        --cmdline "ignition.firstboot ignition.platform.id=qemu" \
+        --sbat="sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md uki-addon.author,1,UKI Addon for System,uki-addon.author,1,https://www.freedesktop.org/software/systemd/man/systemd-stub.html" \
+        --output "/boot/$kver.efi.extra.d/cmdline-extend.addon.efi"
 
     # sbsign \
     #     --key "/run/secrets/key" \
@@ -67,13 +75,6 @@ RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
     kver=$(cd /usr/lib/modules && echo *)
     mkdir -p /boot/EFI/Linux
     cp -r "/_mount/kernel/boot/." "/boot/EFI/Linux/."
-
-    mkdir -p /boot/EFI/Linux/more-addons-here.efi.extra.d
-    touch /boot/EFI/Linux/more-addons-here.efi.extra.d/addon1.addon.efi
-    touch /boot/EFI/Linux/more-addons-here.efi.extra.d/addon2.addon.efi
-
-    mkdir -p /boot/EFI/Linux/loader/addons
-    touch /boot/EFI/Linux/loader/addons/global-addon.addon.efi
 EOF
 
 FROM STEP1 as final-final

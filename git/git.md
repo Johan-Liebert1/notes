@@ -92,5 +92,14 @@ git diff --word-diff
 
 ```
 
+## Submodules
 
+```bash
+# shows the contents of the tree object that represents the root of repository at HEAD
+# Will show the actual submodule commit
+git ls-tree HEAD 
+
+# If repo was not recursively cloned, do the following to fetch submodules
+git submodule update --init --recursive
+```
 

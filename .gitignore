@@ -9,6 +9,8 @@ secureboot
 *.img
 *.rpm
 *.fd
+*.qcow2
 questions
 overlay/
 ostree-booted
+dracut/

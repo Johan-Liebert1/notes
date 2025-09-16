@@ -5,10 +5,10 @@ mkdir -p /run/composefs && echo "906b41c625f700095717c8d9b89232f98ac6a40bf2d2e71
 ```
 
 ```rust
-Some(ostree_container::store::ImageProxyConfig {
+ostree_ext::containers_image_proxy::ImageProxyConfig {
     insecure_skip_tls_verification: Some(true),
     ..Default::default()
-}),
+}
 ```
 
 

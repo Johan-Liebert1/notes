@@ -1,14 +1,18 @@
 #!/bin/bash
 
-sudo podman run --rm --privileged --pid=host \
+set -x
+
+IMAGE="localhost:5000/bootc-finalize"
+
+sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
-    --env RUST_LOG=debug \
-    --env SLEEP_YO=sleep \
+    --env RUST_LOG=trace \
     -v /dev:/dev \
     -v /var/lib/containers:/var/lib/containers \
     -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
-    -v .:/output quay.io/fedora/fedora-bootc:42 \
-    bootc install to-disk --composefs-native --generic-image --karg mykarg --via-loopback --filesystem=ext4 --wipe /output/test.img
+    -v .:/output \
+    "$IMAGE" \
+        bootc install to-disk --source-imgref "docker://$IMAGE" --generic-image --via-loopback --filesystem=ext4 --wipe /output/test.img
 
 
 # podman run \
