@@ -6,7 +6,7 @@ STREAM="stable"
 
 IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
 IMAGE="/home/pragyan/notes/bootc/composefs-only.qcow2"
-VM_NAME="composefs-only"
+VM_NAME="composefs-only-new"
 VCPUS="2"
 RAM_MB="2048"
 STREAM="stable"

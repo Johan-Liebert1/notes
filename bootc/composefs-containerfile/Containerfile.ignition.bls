@@ -3,6 +3,8 @@ FROM quay.io/fedora/fedora-coreos:stable
 COPY cfsctl /usr/bin
 COPY extra /
 
+RUN rm -f /usr/lib/dracut/modules.d/35coreos-ignition/coreos-boot-edit.service
+
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;

@@ -23,7 +23,7 @@ STEP1_IMAGE_FSVERITY="$(${CFSCTL} oci compute-id --bootable "${STEP1_ID}")"
 
 ${PODMAN_BUILD} \
     --iidfile=tmp/final.iid \
-    -t $FINAL_NAME:latest \
+    -t "$FINAL_NAME:latest" \
     --build-context=STEP1="container-image://${STEP1_ID}" \
     --build-arg=COMPOSEFS_FSVERITY="${STEP1_IMAGE_FSVERITY}" \
     --label=containers.composefs.fsverity="${STEP1_IMAGE_FSVERITY}" \

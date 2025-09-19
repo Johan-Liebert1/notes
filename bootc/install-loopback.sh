@@ -1,29 +1,33 @@
 #!/bin/bash
 
-set -x
+set -ex
 
-IMAGE="localhost:5000/bootc-finalize"
+IMAGE="localhost:5000/bootc-uki"
+
+rm -f test.img composefs-only.qcow2
+truncate test.img -s 15G
 
 sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
-    --env RUST_LOG=trace \
+    --env RUST_LOG=debug \
     -v /dev:/dev \
     -v /var/lib/containers:/var/lib/containers \
-    -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
+    -v /home/pragyan/RedHat/bootc-bak/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v .:/output \
-    "$IMAGE" \
-        bootc install to-disk --source-imgref "docker://$IMAGE" --generic-image --via-loopback --filesystem=ext4 --wipe /output/test.img
+    $IMAGE \
+        bootc install to-disk \
+        --composefs-native \
+        --bootloader=systemd \
+        --source-imgref "docker://$IMAGE" \
+        --generic-image --via-loopback --filesystem=ext4 --wipe \
+        /output/test.img
 
+sudo losetup /dev/loop0 ./test.img
+sudo partprobe /dev/loop0
+sudo mount /dev/loop0p2 /mnt
+sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
 
-# podman run \
-# --rm --privileged \
-# --pid=host \
-# -v /dev:/dev \
-# -v /var/lib/containers:/var/lib/containers \
-# -v /var/srv/bootc:/usr/bin/bootc:ro,Z \
-# -v /var/tmp:/var/tmp \
-# --security-opt label=type:unconfined_t \
-# --env RUST_LOG=debug \
-# --env RUST_BACKTRACE=1 \
-# $IMAGE \
-# bootc install to-disk /dev/vdb --target-imgref=$IMAGE --source-imgref="containers-storage:$IMAGE" --composefs-native --filesystem=ext4 --wipe
+sudo umount /mnt
+sudo losetup -d /dev/loop0
+
+qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2
