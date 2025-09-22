@@ -10,6 +10,9 @@ CFSCTL='./cfsctl --repo tmp/sysroot/composefs'
 
 mkdir -p tmp/sysroot/composefs
 
+cp -f ~/RedHat/bootc/target/release/bootc .
+cp -f ~/RedHat/bootc/systemd/composefs-finalize-staged.service .
+
 ${PODMAN_BUILD} \
     --iidfile=tmp/STEP1.iid \
     --pull=newer \

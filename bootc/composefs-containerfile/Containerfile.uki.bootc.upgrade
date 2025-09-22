@@ -1,17 +1,24 @@
-FROM quay.io/pragyanpoudyal/bootc-composefs-uki as STEP1
-RUN dnf install -y tree strace
+# NOT GOOD as it pulls all UKI addons
+FROM localhost:5000/bootc-uki as STEP1
+RUN dnf install -y tree strace vim
 
 FROM STEP1 as kernel
 
 ARG COMPOSEFS_FSVERITY
 
+RUN dnf install -y systemd-ukify sbsigntools systemd-boot-unsigned
+
 RUN <<EOF
     set -eux
 
     mkdir -p /etc/kernel /etc/dracut.conf.d
-    echo "console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} selinux=0 enforcing=0 audit=0 root=UUID=6523f8ae-3eb1-4e2a-a05a-18b695ae656f rw" > /etc/kernel/cmdline
 
-    dnf install -y systemd-ukify sbsigntools systemd-boot-unsigned
+    ROOT_RW="root=UUID=4f68bce3-e8cd-4db1-96e7-fbcaf984b709 rw"
+    SELINUX="selinux=1 enforcing=0 audit=0"
+    CMDLINE="console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} ${SELINUX} systemd.debug_shell=1 ${ROOT_RW}" 
+
+    echo $CMDLINE > /etc/kernel/cmdline
+
     kver=$(cd /usr/lib/modules && echo *)
 
     ukify build \
@@ -23,6 +30,12 @@ RUN <<EOF
         --measure \
         --json pretty \
         --output "/boot/$kver.efi"
+
+    mkdir -p /boot/$kver.efi.extra.d
+
+    ukify build \
+        --cmdline "updated_uki_cmdline_here" \
+        --output "/boot/$kver.efi.extra.d/updated-uki-cmdline.addon.efi"
 EOF
 
 FROM STEP1 as final
@@ -30,7 +43,7 @@ FROM STEP1 as final
 RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
     kver=$(cd /usr/lib/modules && echo *)
     mkdir -p /boot/EFI/Linux
-    cp /_mount/kernel/boot/$kver.efi /boot/EFI/Linux/$kver.efi
+    cp -r "/_mount/kernel/boot/." "/boot/EFI/Linux/."
 EOF
 
 FROM STEP1 as final-final

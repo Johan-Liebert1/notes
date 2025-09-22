@@ -12,7 +12,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     --env RUST_LOG=debug \
     -v /dev:/dev \
     -v /var/lib/containers:/var/lib/containers \
-    -v /home/pragyan/RedHat/bootc-bak/target/release/bootc:/usr/bin/bootc:ro,Z \
+    -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v .:/output \
     $IMAGE \
         bootc install to-disk \
@@ -20,6 +20,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
         --bootloader=systemd \
         --source-imgref "docker://$IMAGE" \
         --generic-image --via-loopback --filesystem=ext4 --wipe \
+        --uki-addon fav-cmdline \
         /output/test.img
 
 sudo losetup /dev/loop0 ./test.img
