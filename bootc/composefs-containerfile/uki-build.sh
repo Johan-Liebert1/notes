@@ -18,6 +18,7 @@ ${PODMAN_BUILD} \
     --pull=newer \
     --target=STEP1 \
     -f "$CONTAINERFILE" \
+    -t "$FINAL_NAME-stage1" \
     .
 
 STEP1_ID="$(sed s/sha256:// tmp/STEP1.iid)"

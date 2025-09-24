@@ -2,7 +2,7 @@
 
 set -x
 
-IMAGE="localhost:5000/ignition-bls"
+IMAGE="localhost:5000/bootc-bls:latest"
 
 sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
@@ -13,6 +13,5 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /mnt:/var/mnt \
     "$IMAGE" \
         bootc install to-filesystem --composefs-native --bootloader=systemd \
-            --karg ignition.firstboot --karg ignition.platform.id=qemu \
             --karg enforcing=0 --karg console=ttyS0,115000n \
-            /var/mnt --source-imgref "docker://$IMAGE"
+            /var/mnt --source-imgref "containers-storage:$IMAGE"

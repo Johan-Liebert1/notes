@@ -1,5 +1,19 @@
-# NOT GOOD as it pulls all UKI addons
-FROM localhost:5000/bootc-uki as STEP1
+FROM quay.io/fedora/fedora-bootc:42 AS STEP1
+COPY extra /
+
+RUN set -x; \
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+# COPY composefs-finalize.sh /usr/bin
+COPY composefs-finalize-staged.service /etc/systemd/system
+RUN systemctl enable composefs-finalize-staged.service
+
+COPY cfsctl /usr/bin
+COPY bootc /usr/bin
+
+RUN passwd -d root
+
 RUN dnf install -y tree strace vim
 
 FROM STEP1 as kernel
