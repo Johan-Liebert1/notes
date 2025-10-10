@@ -5,7 +5,7 @@ set -ex
 STREAM="stable"
 
 IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
-IMAGE="$HOME/.local/share/libvirt/images/fedora-coreos-42.20250818.3.0-qemu.x86_64.qcow2"
+IMAGE="$HOME/notes/bootc/test.img"
 VM_NAME="salfdjalsjfd"
 VCPUS="2"
 RAM_MB="2048"
@@ -28,6 +28,7 @@ if [[ "${secureboot}" == "true" ]]; then
     loader="loader=${OVMF_CODE},loader.readonly=yes,loader.type=pflash"
     nvram="nvram=${OVMF_VARS},nvram.template=${OVMF_VARS_TEMPLATE},loader_secure=yes"
     features="firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
+
     args+=("--boot")
     args+=("uefi,${loader},${nvram},${features}")
     args+=("--tpm")
@@ -39,7 +40,7 @@ fi
 
 # --boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.secure=no,nvram=/home/pragyan/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd \
 
-if [[ "$IMAGE" == "*.img" ]]; then
+if [[ "$IMAGE" == *.img ]]; then
     disk=(--disk="path=${IMAGE},format=raw")
 else
     disk=(--disk="size=${DISK_GB},backing_store=${IMAGE}")

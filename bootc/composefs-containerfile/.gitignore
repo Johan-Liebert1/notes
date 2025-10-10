@@ -2,3 +2,4 @@ bootc
 cfsctl
 tmp
 extra
+erofs-debug

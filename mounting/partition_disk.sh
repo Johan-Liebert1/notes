@@ -40,11 +40,11 @@ sudo mkdir /mnt/boot
 
 sudo umount -R /mnt
 
-sudo mount /dev/loop0p1 /mnt
-sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
-sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ;" /mnt/loader/entries/bootc-composefs-1.conf
-# sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
-sudo umount -R /mnt
+# sudo mount /dev/loop0p1 /mnt
+# sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
+# sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ;" /mnt/loader/entries/bootc-composefs-1.conf
+# # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
+# sudo umount -R /mnt
 
 sudo losetup -d /dev/loop0
 

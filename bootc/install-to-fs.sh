@@ -12,6 +12,6 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v /mnt:/var/mnt \
     "$IMAGE" \
-        bootc install to-filesystem --composefs-native --bootloader=systemd \
+        bootc install to-filesystem \
             --karg enforcing=0 --karg console=ttyS0,115000n \
             /var/mnt --source-imgref "containers-storage:$IMAGE"
