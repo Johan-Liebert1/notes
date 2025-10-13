@@ -2,7 +2,7 @@
 
 set -ex
 
-IMAGE="localhost:5000/bootc-uki"
+IMAGE="localhost:5000/bootc-bls"
 
 rm -f test.img composefs-only.qcow2
 truncate test.img -s 15G
@@ -16,7 +16,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v .:/output \
     quay.io/fedora/fedora-bootc:42 \
         bootc install to-disk \
-        --composefs-backend \
+        --composefs-native \
         --bootloader=systemd \
         --source-imgref "docker://$IMAGE" \
         --target-imgref "${IMAGE/localhost/192.168.122.1}"  \

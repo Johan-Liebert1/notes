@@ -3,3 +3,5 @@ cfsctl
 tmp
 extra
 erofs-debug
+kernel
+initrd

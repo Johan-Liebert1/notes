@@ -6,7 +6,7 @@ STREAM="stable"
 
 IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
 IMAGE="$HOME/notes/bootc/test.img"
-VM_NAME="salfdjalsjfd"
+VM_NAME="composefs-only"
 VCPUS="2"
 RAM_MB="2048"
 STREAM="stable"
