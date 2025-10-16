@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 STREAM="stable"
 
 IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
@@ -15,11 +13,34 @@ DISK_GB="10"
 # For x86 / aarch64,
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
+while [ ! -z "${1:-}" ]; do
+    case "$1" in
+        "--vm-name" )
+            VM_NAME="$2"
+            shift
+            shift
+        ;;
+
+        "--image" )
+            IMAGE="$2"
+            shift
+            shift
+        ;;
+
+        * )
+            echo "Argument $1 not understood"
+            exit 1
+        ;;
+    esac
+done
+
+set -ex
+
 # Setup the correct SELinux label to allow access to the config
 chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
 
 mkdir -p ~/.local/share/libvirt/nvram
-cp /usr/share/OVMF/OVMF_VARS.fd ~/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd
+cp /usr/share/OVMF/OVMF_VARS.fd ~/.local/share/libvirt/nvram/"${VM_NAME}"_VARS.fd
 
 
 args=()
