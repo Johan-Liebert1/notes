@@ -12,7 +12,7 @@ function image_objects {
 
 function main {
     case "$1" in
-        'image-objects') 
+        'image-objects')
             image_objects "$2"
         ;;
     esac
