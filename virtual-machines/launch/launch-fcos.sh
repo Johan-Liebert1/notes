@@ -27,6 +27,12 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        "--size" )
+            DISK_GB="$2"
+            shift
+            shift
+        ;;
+
         * )
             echo "Argument $1 not understood"
             exit 1
@@ -55,8 +61,9 @@ if [[ "${secureboot}" == "true" ]]; then
     args+=("--tpm")
     args+=("backend.type=emulator,backend.version=2.0,model=tpm-tis")
 else
-    args+=("--boot")
-    args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
+    echo "hi"
+    # args+=("--boot")
+    # args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
 fi
 
 # --boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.secure=no,nvram=/home/pragyan/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd \
@@ -73,7 +80,7 @@ virt-install \
     --vcpus="${VCPUS}" \
     --memory="${RAM_MB}" \
     --os-variant="fedora-coreos-$STREAM" \
-    --import --graphics=none \
+    --import --nographics \
     --network bridge=virbr0 \
     "${disk[@]}" \
     "${args[@]}" \

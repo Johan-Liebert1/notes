@@ -1,11 +1,17 @@
 FROM quay.io/fedora/fedora-bootc:42
 
-COPY bootc /usr/bin
-COPY cfsctl /usr/bin
 COPY extra /
 
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+COPY bootc /usr/bin
+COPY cfsctl /usr/bin
+
+COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
+
+RUN mkdir -p /usr/lib/systemd/boot/efi
+COPY systemd-bootx64.efi /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 
 RUN passwd -d root

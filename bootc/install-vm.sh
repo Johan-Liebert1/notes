@@ -1,5 +1,4 @@
-curl http://192.168.122.1:8080/bootc -o bootc
-chmod +x bootc
+curl http://192.168.122.1:8080/bootc -o bootc && chmod +x bootc
 
 IMAGE=192.168.122.1/fedora-bootc-uki
 

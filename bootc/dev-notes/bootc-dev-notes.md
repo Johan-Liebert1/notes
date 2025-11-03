@@ -1,6 +1,8 @@
 ```bash
 curl http://192.168.122.1:8080/bootc -o /var/bootc && chmod +x /var/bootc && alias bootc=/var/bootc
 
+curl http://192.168.122.1:8080/system-reinstall-bootc -o system-reinstall-bootc && chmod +x system-reinstall-bootc
+
 mkdir -p /run/composefs && echo "906b41c625f700095717c8d9b89232f98ac6a40bf2d2e71e1b5434adfbcebf9a" > /run/composefs/staged-deployment
 ```
 

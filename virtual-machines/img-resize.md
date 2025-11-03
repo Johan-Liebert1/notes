@@ -27,6 +27,10 @@ growpart /dev/vda 4
 # To finish expanding the space, we now need to resize the filesystem inside the partition.
 resize2fs /dev/vda4
 
-# NOTE: the above works for etx4, btrfs etc, if xfs do this
+# NOTE: the above works for etx4/3, etc, if xfs do this
+xfs_growfs /
+
+# NOTE: For btrfs
+btrfs filesystem resize max /
 
 ```
