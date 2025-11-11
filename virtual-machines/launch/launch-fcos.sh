@@ -2,7 +2,7 @@
 
 STREAM="stable"
 
-IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
+IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition-luks.ign"
 IMAGE="$HOME/notes/bootc/test.img"
 VM_NAME="composefs-only"
 VCPUS="2"
@@ -29,6 +29,12 @@ while [ ! -z "${1:-}" ]; do
 
         "--size" )
             DISK_GB="$2"
+            shift
+            shift
+        ;;
+
+        "--memory" )
+            RAM_MB="$2"
             shift
             shift
         ;;
@@ -61,9 +67,8 @@ if [[ "${secureboot}" == "true" ]]; then
     args+=("--tpm")
     args+=("backend.type=emulator,backend.version=2.0,model=tpm-tis")
 else
-    echo "hi"
-    # args+=("--boot")
-    # args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
+    args+=("--boot")
+    args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
 fi
 
 # --boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.secure=no,nvram=/home/pragyan/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd \

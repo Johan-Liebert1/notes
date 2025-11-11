@@ -12,6 +12,8 @@ set -ex
 rm -f test.img composefs-only.qcow2
 truncate -s 10G test.img
 
+BOOTLOADER=grub
+
 BOOTFS_UUID="96d15588-3596-4b3c-adca-a2ff7279ea63"
 ROOTFS_UUID="4f68bce3-e8cd-4db1-96e7-fbcaf984b709"
 
@@ -34,18 +36,34 @@ sudo mkfs.ext4 /dev/loop0p2           -L boot -U $BOOTFS_UUID
 sudo mkfs.ext4 /dev/loop0p3 -O verity -L root -U $ROOTFS_UUID
 
 sudo mount /dev/loop0p3 /mnt
-sudo mkdir /mnt/boot
+sudo mkdir -p /mnt/boot
+sudo mount /dev/loop0p2 /mnt/boot
+sudo mkdir -p /mnt/boot/efi
 
 ./install-to-fs.sh
 
 sudo umount -R /mnt
 
-# sudo mount /dev/loop0p1 /mnt
-# sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
-# sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ;" /mnt/loader/entries/bootc-composefs-1.conf
-# # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
-# sudo umount -R /mnt
+if [[ $BOOTLOADER == "systemd-boot" ]]; then
+    sudo mount /dev/loop0p1 /mnt
+    # sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
+    sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/bootc-composefs-1.conf
+    # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
+    sudo umount -R /mnt
+elif [[ $BOOTLOADER == "grub" ]]; then
+    sudo mount /dev/loop0p3 /mnt
+    sudo mount /dev/loop0p2 /mnt/boot
+
+    sudo touch /mnt/boot/ignition.firstboot
+
+    sudo sed -i 's;options ;options console=ttyS0,115000n enforcing=0 audit=0 $ignition_firstboot ignition.platform.id=qemu ;' /mnt/boot/loader/entries/bootc-composefs-1.conf
+    sudo sed -i "s;root=UUID=.* ;root=UUID=910678ff-f77e-4a7d-8d53-86f2ac47a823 ;" /mnt/boot/loader/entries/bootc-composefs-1.conf
+
+    sudo umount -R /mnt
+else
+    echo "BOOTLOADER $BOOTLOADER not known"
+fi
 
 sudo losetup -d /dev/loop0
 
-qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2
+# qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2

@@ -10,8 +10,8 @@ EOF
 
 bootc install to-disk \
     --composefs-backend \
-    --bootloader=systemd \
-    --source-imgref "docker://$IMAGE" \
+    --bootloader=grub \
+    --source-imgref "containers-storage:$IMAGE" \
     --target-imgref "${IMAGE/localhost/192.168.122.1}"  \
     --generic-image --via-loopback --filesystem=ext4 --wipe \
     --karg console=ttyS0,115000n \

@@ -1,0 +1,24 @@
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBSQw9oA6pn957HLN9RBCzP2urogXRMXMrnyM8m+zoD6 pragyan@pragyan
+      password_hash: "$6$rounds=4096$zF0C3BgYbZ8$uVu9KhW5.ZZK9AnkSfvzZ5zLKH1Zs5PvpxW69pHzBLmct6FbD06tk3ZDx45n2mFLu3sWwMfX2FhXnhNjglfQW/"  # password: "foobar"
+storage:
+  luks:
+    - name: root
+      label: luks-root
+      device: /dev/disk/by-partlabel/root
+      uuid: "8ec9cda3-6b77-45d7-bb56-a95cd9e83234"
+      clevis:
+        tpm2: true
+      wipe_volume: true
+  filesystems:
+    - device: /dev/mapper/root
+      format: ext4
+      wipe_filesystem: true
+      label: root
+      uuid: "910678ff-f77e-4a7d-8d53-86f2ac47a823"
+      options: [ "-O", "verity"]

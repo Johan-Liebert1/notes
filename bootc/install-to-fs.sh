@@ -2,7 +2,7 @@
 
 set -x
 
-IMAGE="localhost:5000/bootc-bls:latest"
+IMAGE="localhost/bootc-coreos:latest"
 
 sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
@@ -13,5 +13,6 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /mnt:/var/mnt \
     "$IMAGE" \
         bootc install to-filesystem \
-            --karg enforcing=0 --karg console=ttyS0,115000n \
+            --composefs-backend \
+            --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \
             /var/mnt --source-imgref "containers-storage:$IMAGE"
