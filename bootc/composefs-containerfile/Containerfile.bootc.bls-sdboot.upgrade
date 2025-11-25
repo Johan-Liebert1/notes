@@ -1,0 +1,7 @@
+FROM localhost:5000/bootc-bls
+RUN rm -f "/etc/yum.repos.d/fedora-cisco-openh264.repo"
+RUN dnf install -y tree vim
+RUN passwd -d root
+
+RUN mkdir -p /usr/lib/bootc/kargs.d
+RUN echo 'kargs = ["some-arg-yo=hi"]' >   /usr/lib/bootc/kargs.d/some-arg-yo.toml

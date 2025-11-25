@@ -1,0 +1,62 @@
+#!/bin/bash
+set -euox pipefail
+
+mount -o remount,rw /boot
+
+# We're done provisioning. Remove the whole /boot/ignition directory if present,
+# which may include a baked Ignition config. See
+# https://github.com/coreos/fedora-coreos-tracker/issues/889.
+rm -rf /boot/ignition
+
+# Regarding the lack of `-f` for rm ; we should have only run if GRUB detected
+# this file. Fail if we are unable to remove it, rather than risking rerunning
+# Ignition at next boot.
+if [[ -f "/boot/ignition.firstboot" ]]; then
+    # Added the if check as 40bootc-coreos/coreos-ignition-firstboot-complete removes the 
+    # check existence of this file
+    rm /boot/ignition.firstboot
+fi
+
+# rdcore zipl checks for /boot/ignition.firstboot
+if [[ $(uname -m) = s390x ]]; then
+    /usr/lib/dracut/modules.d/50rdcore/rdcore zipl --boot-mount=/boot
+fi
+
+# Check if we booted via UKI, if yes, remove the ignition addon
+esp=$(
+    lsblk -o name,parttype,uuid,mountpoint --json | jq -r '
+        .blockdevices[]
+        | (.children // [])
+        | map(select(.parttype == "c12a7328-f81f-11d2-ba4b-00a0c93ec93b"))[]
+    '
+)
+
+esp_dev="$(echo "$esp" | jq -r '.name')"
+
+if [[ "$esp_dev" == "null" ]]; then
+    exit 0
+fi
+
+esp_dev="/dev/$esp_dev"
+
+esp_dev_mntpoint="$(echo "$esp" | jq -r '.mountpoint')"
+
+if [[ "$esp_dev_mntpoint" == "null" ]]; then
+    esp_dev_mntpoint="/tmp/efi"
+
+    mkdir $esp_dev_mntpoint
+    mount "$esp_dev" $esp_dev_mntpoint
+fi
+
+# TODO: Pretty crude, but okay for now
+ignition_path=$(find "$esp_dev_mntpoint" -name "ignition.addon.efi")
+
+if [[ "$ignition_path" == "" ]]; then
+    echo "Ignition addon not found in ESP"
+    echo "Ignition addon needs to have the name 'ignition.addon.efi'"
+    exit 1
+fi
+
+rm "$ignition_path"
+
+umount "$esp_dev_mntpoint"

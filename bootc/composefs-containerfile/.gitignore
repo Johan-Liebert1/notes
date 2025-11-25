@@ -5,3 +5,5 @@ extra
 erofs-debug
 kernel
 initrd
+*.so
+systemd-gpt-auto-generator

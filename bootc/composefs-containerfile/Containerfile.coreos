@@ -1,0 +1,21 @@
+FROM quay.io/fedora/fedora-coreos:stable
+
+RUN dnf install -y fsverity
+
+COPY extra-coreos /
+
+COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+COPY ./libsystemd-shared-257.9-2.fc42.so /usr/lib64/systemd/libsystemd-shared-257.9-2.fc42.so
+
+RUN set -x; \
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN passwd -d root
+
+# RUN <<EOF
+#     mkdir -p /usr/lib/bootc/kargs.d
+#     cd /usr/lib/bootc/kargs.d
+# 
+#     echo 'kargs = ["console=ttyS0,115200n", "enforcing=0", "audit=0", "$ignition_firstboot", "ignition.platform.id=qemu"]' > 01-bootc.toml
+# EOF

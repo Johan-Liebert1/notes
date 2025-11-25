@@ -1,8 +1,9 @@
 #!/bin/bash
 
-set -x
+set -xu
 
-IMAGE="localhost/bootc-coreos:latest"
+IMAGE=$1
+BOOTLOADER=$2
 
 sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
@@ -13,6 +14,8 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /mnt:/var/mnt \
     "$IMAGE" \
         bootc install to-filesystem \
+            --bootloader "$BOOTLOADER" \
             --composefs-backend \
-            --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \
+            --uki-addon ignition \
             /var/mnt --source-imgref "containers-storage:$IMAGE"
+            # --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \

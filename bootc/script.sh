@@ -10,7 +10,7 @@ EOF
 
 bootc install to-disk \
     --composefs-backend \
-    --bootloader=grub \
+    --bootloader=systemd \
     --source-imgref "containers-storage:$IMAGE" \
     --target-imgref "${IMAGE/localhost/192.168.122.1}"  \
     --generic-image --via-loopback --filesystem=ext4 --wipe \

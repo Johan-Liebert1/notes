@@ -2,7 +2,7 @@
 
 set -ex
 
-IMAGE="localhost/bootc-coreos"
+IMAGE="localhost:5000/bootc-bls"
 
 rm -f test.img composefs-only.qcow2
 truncate test.img -s 15G
