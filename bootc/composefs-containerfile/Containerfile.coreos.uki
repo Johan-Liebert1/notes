@@ -3,6 +3,10 @@ FROM quay.io/fedora/fedora-coreos:stable as STEP1
 RUN rm -f "/etc/yum.repos.d/fedora-cisco-openh264.repo"
 RUN dnf install -y fsverity systemd-boot-unsigned tree strace
 
+COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+COPY ./libsystemd-shared-257.9-2.fc42.so /usr/lib64/systemd/libsystemd-shared-257.9-2.fc42.so
+
+COPY bootc /usr/bin/
 COPY extra-coreos /
 
 RUN set -x; \
@@ -23,7 +27,7 @@ RUN <<EOF
 
     mkdir -p /etc/kernel /etc/dracut.conf.d
 
-    ROOT_RW="root=UUID=910678ff-f77e-4a7d-8d53-86f2ac47a823 rw"
+    ROOT_RW="rw"
     SELINUX="selinux=1 enforcing=0 audit=0"
     CMDLINE="console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} ${SELINUX} systemd.debug_shell=1 ${ROOT_RW}" 
 
@@ -48,10 +52,10 @@ RUN <<EOF
         --output "/boot/$kver.efi.extra.d/ignition.addon.efi"
 
     # UKI addon for Luks
-    ukify build \
-        --cmdline "rd.luks.name=910678ff-f77e-4a7d-8d53-86f2ac47a823=root" \
-        --signtool sbsign \
-        --output "/boot/$kver.efi.extra.d/luks.addon.efi"
+    # ukify build \
+    #     --cmdline "rd.luks.name=910678ff-f77e-4a7d-8d53-86f2ac47a823=root" \
+    #     --signtool sbsign \
+    #     --output "/boot/$kver.efi.extra.d/luks.addon.efi"
 EOF
 
 FROM STEP1 as final

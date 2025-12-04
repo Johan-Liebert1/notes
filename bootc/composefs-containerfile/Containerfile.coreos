@@ -2,6 +2,7 @@ FROM quay.io/fedora/fedora-coreos:stable
 
 RUN dnf install -y fsverity
 
+COPY bootc /usr/bin
 COPY extra-coreos /
 
 COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator

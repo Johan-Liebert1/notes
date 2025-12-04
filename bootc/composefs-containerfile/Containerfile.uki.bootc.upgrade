@@ -9,7 +9,6 @@ RUN set -x; \
 COPY composefs-finalize-staged.service /etc/systemd/system
 RUN systemctl enable composefs-finalize-staged.service
 
-COPY cfsctl /usr/bin
 COPY bootc /usr/bin
 
 RUN passwd -d root

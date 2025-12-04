@@ -9,7 +9,6 @@ RUN set -x; \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
 
 COPY bootc /usr/bin
-COPY cfsctl /usr/bin
 
 COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
 

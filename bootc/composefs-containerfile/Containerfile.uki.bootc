@@ -14,7 +14,6 @@ RUN dnf install -y systemd-boot-unsigned
 COPY bootc-finalize-staged.service /etc/systemd/system
 RUN systemctl enable bootc-finalize-staged.service
 
-COPY cfsctl /usr/bin
 COPY bootc /usr/bin
 
 RUN passwd -d root
@@ -35,7 +34,7 @@ RUN <<EOF
     mkdir -p /etc/kernel /etc/dracut.conf.d
 
     # Passing rootfstype=ext4 here due to e2fsprogs shenanigans
-    ROOT_RW="root=UUID=4f68bce3-e8cd-4db1-96e7-fbcaf984b709 rw"
+    ROOT_RW="rw"
     SELINUX="selinux=1 enforcing=0 audit=0"
     CMDLINE="console=ttyS0,115200 composefs=${COMPOSEFS_FSVERITY} ${SELINUX} systemd.debug_shell=1 ${ROOT_RW}" 
 

@@ -11,6 +11,3 @@ RemainAfterExit=yes
 
 [Install]
 WantedBy=final.target
-
-
-before booting, there should be no default_t label

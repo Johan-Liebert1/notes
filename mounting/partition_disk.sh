@@ -15,7 +15,7 @@ truncate -s 10G test.img
 BOOTFS_UUID="96d15588-3596-4b3c-adca-a2ff7279ea63"
 ROOTFS_UUID="4f68bce3-e8cd-4db1-96e7-fbcaf984b709"
 
-cat > buf <<EOF
+cat > sfdisk-buf <<EOF
     label: gpt
     label-id: $(uuidgen)
     size=512MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name="EFI-SYSTEM"
@@ -24,12 +24,12 @@ cat > buf <<EOF
 EOF
 
 sudo losetup /dev/loop0 test.img
-sudo sfdisk --wipe=always /dev/loop0 < buf
+cat sfdisk-buf | sudo sfdisk --wipe=always /dev/loop0
 
 # To make sure kernel updates
 sudo partprobe /dev/loop0
 
-sudo mkfs.fat /dev/loop0p1
+sudo mkfs.fat  /dev/loop0p1
 sudo mkfs.ext4 /dev/loop0p2           -L boot -U $BOOTFS_UUID
 sudo mkfs.ext4 /dev/loop0p3 -O verity -L root -U $ROOTFS_UUID
 
@@ -38,8 +38,8 @@ sudo mkdir -p /mnt/boot
 sudo mount /dev/loop0p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
-IMAGE="localhost/bootc-coreos:latest"
-BOOTLOADER=grub
+IMAGE="localhost/bootc-coreos-uki:latest"
+BOOTLOADER=systemd
 
 ./install-to-fs.sh $IMAGE $BOOTLOADER
 
