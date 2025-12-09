@@ -15,7 +15,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /var/lib/containers:/var/lib/containers \
     -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v .:/output \
-    "$IMAGE" \
+    $IMAGE \
     /output/script.sh
 
 # sudo losetup /dev/loop0 ./test.img

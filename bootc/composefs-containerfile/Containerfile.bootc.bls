@@ -13,4 +13,16 @@ COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
 RUN mkdir -p /usr/lib/systemd/boot/efi
 COPY systemd-bootx64.efi /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 
+RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+
+RUN cat >> /etc/containers/registries.conf <<EOF
+[[registry]]
+location = "192.168.122.1:5000"
+insecure = true
+EOF
+
+RUN echo "File changed lmao" > /usr/new-file-after-upgrade
+
 RUN passwd -d root

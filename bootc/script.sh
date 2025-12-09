@@ -24,8 +24,8 @@ fi
 bootc install to-disk \
     --composefs-backend \
     --bootloader=systemd \
-    --source-imgref "docker://$IMAGE" \
-    --target-imgref "${IMAGE/localhost/192.168.122.1}"  \
+    --source-imgref "containers-storage:$IMAGE" \
+    --target-imgref "${IMAGE/localhost/localhost}"  \
     --generic-image --via-loopback --filesystem=ext4 --wipe \
     "${kargs[@]}" \
     /output/test.img
