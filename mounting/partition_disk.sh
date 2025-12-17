@@ -38,7 +38,7 @@ sudo mkdir -p /mnt/boot
 sudo mount /dev/loop0p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
-IMAGE="localhost/bootc-coreos-uki:latest"
+IMAGE="localhost:5000/bootc-uki:latest"
 BOOTLOADER=systemd
 
 ./install-to-fs.sh $IMAGE $BOOTLOADER

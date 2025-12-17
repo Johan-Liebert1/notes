@@ -16,6 +16,5 @@ sudo podman run --rm --net=host --privileged --pid=host \
         bootc install to-filesystem \
             --bootloader "$BOOTLOADER" \
             --composefs-backend \
-            --uki-addon ignition \
             /var/mnt --source-imgref "containers-storage:$IMAGE"
             # --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \

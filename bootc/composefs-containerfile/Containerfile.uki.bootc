@@ -4,15 +4,27 @@ COPY extra /
 # RUN dnf install -y zsh vim chsh
 # RUN chsh -s /bin/zsh root
 
+RUN dnf install -y systemd-boot-unsigned
+COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+COPY ./libsystemd-shared-257.9-2.fc42.so /usr/lib64/systemd/libsystemd-shared-257.9-2.fc42.so
+
+RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+
+RUN cat >> /etc/containers/registries.conf <<EOF
+[[registry]]
+location = "192.168.122.1:5000"
+insecure = true
+EOF
+
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
 
-RUN dnf install -y systemd-boot-unsigned
-
 # COPY composefs-finalize.sh /usr/bin
 COPY bootc-finalize-staged.service /etc/systemd/system
-RUN systemctl enable bootc-finalize-staged.service
+# RUN systemctl enable bootc-finalize-staged.service
 
 COPY bootc /usr/bin
 
@@ -26,7 +38,7 @@ ARG COMPOSEFS_FSVERITY
 # RUN --mount=type=secret,id=key \
 #     --mount=type=secret,id=cert <<EOF
 
-RUN dnf install -y systemd-ukify sbsigntools systemd-boot-unsigned
+RUN dnf install -y systemd-ukify systemd-boot-unsigned
 
 RUN <<EOF
     set -eux
