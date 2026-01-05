@@ -39,6 +39,11 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        "--no-ign" )
+            IGNITION_DEVICE_ARG=()
+            shift
+        ;;
+
         * )
             echo "Argument $1 not understood"
             exit 1

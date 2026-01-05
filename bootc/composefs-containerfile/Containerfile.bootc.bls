@@ -23,6 +23,6 @@ location = "192.168.122.1:5000"
 insecure = true
 EOF
 
-RUN echo "File changed lmao" > /usr/new-file-after-upgrade
+RUN echo "File changed lmao lol" > /usr/new-file-after-upgrade
 
 RUN passwd -d root
