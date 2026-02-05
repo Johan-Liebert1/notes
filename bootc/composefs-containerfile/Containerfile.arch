@@ -1,0 +1,2 @@
+FROM ghcr.io/bootcrew/arch-bootc:20260102
+RUN passwd -d root

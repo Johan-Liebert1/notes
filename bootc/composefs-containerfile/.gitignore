@@ -6,4 +6,5 @@ erofs-debug
 kernel
 initrd
 *.so
+strace
 systemd-gpt-auto-generator

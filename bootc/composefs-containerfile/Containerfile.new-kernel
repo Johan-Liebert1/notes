@@ -1,0 +1,6 @@
+FROM localhost/bootc
+RUN cp /usr/lib/modules/*/initramfs.img /boot/initramfs.img
+RUN rm -rf /usr/lib/modules/*
+RUN dnf install -y kernel-6.17.10-200.fc42.x86_64
+RUN cp /boot/initramfs.img /usr/lib/modules/6.17.10-200.fc42.x86_64
+RUN rm -rf /boot/*
