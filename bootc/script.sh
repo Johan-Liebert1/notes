@@ -2,6 +2,7 @@
 
 set -eu
 
+echo "" > /etc/containers/registries.conf
 cat >> /etc/containers/registries.conf <<-EOF
         [[registry]]
         location = "localhost:5000"
@@ -23,7 +24,7 @@ fi
 
 bootc install to-disk \
     --composefs-backend \
-    --bootloader=systemd \
+    --bootloader=grub \
     --source-imgref "docker://$IMAGE" \
     --target-imgref "${IMAGE/localhost/localhost}"  \
     --generic-image --via-loopback --filesystem=ext4 --wipe \
