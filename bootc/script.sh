@@ -22,11 +22,20 @@ if [[ $IMAGE != *uki* ]]; then
     kargs+=("audit=0")
 fi
 
+COMPOSEFS=false
+
+options=("--filesystem=ext4")
+
+if [[ $COMPOSEFS == "true" ]]; then
+    options+=("--composefs-backend")
+    options+=("--bootloader=grub")
+    options+=("--insecure")
+fi
+
 bootc install to-disk \
-    --composefs-backend \
-    --bootloader=grub \
     --source-imgref "docker://$IMAGE" \
     --target-imgref "${IMAGE/localhost/localhost}"  \
-    --generic-image --via-loopback --filesystem=ext4 --wipe \
+    "${options[@]}" \
+    --generic-image --via-loopback --wipe \
     "${kargs[@]}" \
     /output/test.img
