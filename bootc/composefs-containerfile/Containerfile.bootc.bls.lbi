@@ -1,7 +1,10 @@
-FROM quay.io/centos-bootc/centos-bootc:stream10
+FROM quay.io/fedora/fedora-bootc:42
 
 COPY extra /
 COPY ./strace /strace
+
+# RUN rm -rf /usr/lib/modules/*
+# RUN dnf install -y kernel-6.18.7-100.fc42.x86_64
 
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
@@ -26,4 +29,19 @@ EOF
 
 RUN passwd -d root
 
-# RUN dnf update && dnf install -y nu vim xxd strace strings
+# ==== FOR LBI ====
+RUN cat <<-EOF > /usr/share/containers/systemd/my-app.image
+    [Image]
+    Image=quay.io/curl/curl-base:latest
+EOF
+
+RUN cat <<-EOF > /usr/share/containers/systemd/another-app.container
+    [Container]
+    Image=quay.io/curl/curl:latest
+    GlobalArgs=--storage-opt=additionalimagestore=/usr/lib/bootc/storage
+EOF
+
+RUN ln -s /usr/share/containers/systemd/my-app.image /usr/lib/bootc/bound-images.d/my-app.image && \
+    ln -s /usr/share/containers/systemd/another-app.container /usr/lib/bootc/bound-images.d/another-app.container
+
+# ==== FOR LBI ====

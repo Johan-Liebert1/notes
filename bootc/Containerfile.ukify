@@ -1,0 +1,10 @@
+FROM quay.io/fedora/fedora-bootc:43 as base
+COPY bootc /usr/bin/bootc
+
+FROM base as compute
+
+RUN dnf install -y sbsign systemd-ukify
+
+RUN --mount=type=bind,from=base,src=/,target=/run/base-mount <<EORUN
+    /run/base-mount/usr/bin/bootc container ukify
+EORUN

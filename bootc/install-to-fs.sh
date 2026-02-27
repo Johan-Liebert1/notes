@@ -12,9 +12,10 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /var/lib/containers:/var/lib/containers \
     -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v /mnt:/var/mnt \
+    -v .:/output \
     "$IMAGE" \
         bootc install to-filesystem \
             --bootloader "$BOOTLOADER" \
             --composefs-backend \
-            /var/mnt --source-imgref "containers-storage:$IMAGE"
+            /var/mnt --source-imgref "oci-archive:/output/bootc-bls-gc.tar"
             # --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \

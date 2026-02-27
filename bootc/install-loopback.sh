@@ -1,6 +1,11 @@
 #!/bin/bash
 
-set -ex
+set -eux
+
+COMPOSEFS=$1
+shift
+INSECURE=$1
+shift
 
 IMAGE="localhost:5000/bootc-bls"
 
@@ -16,14 +21,4 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
     -v .:/output \
     $IMAGE \
-    /output/script.sh
-
-# sudo losetup /dev/loop0 ./test.img
-# sudo partprobe /dev/loop0
-# sudo mount /dev/loop0p2 /mnt
-# sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
-#
-# sudo umount /mnt
-# sudo losetup -d /dev/loop0
-
-# qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2
+    /output/script.sh  "$COMPOSEFS" "$INSECURE"

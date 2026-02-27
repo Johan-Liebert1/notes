@@ -15,7 +15,7 @@ Some(ostree_ext::containers_image_proxy::ImageProxyConfig {
 
 
 ```toml
-[patch."https://github.com/containers/composefs-rs"]
+[patch."https://github.com/composefs/composefs-rs"]
 composefs = { path = "../composefs-rs/crates/composefs" }
 composefs-boot = {  path = "../composefs-rs/crates/composefs-boot"  }
 composefs-oci = {  path = "../composefs-rs/crates/composefs-oci"  }
@@ -83,3 +83,9 @@ If say depl-old has a vulnerable sudo and depl-new has a non vuln sudo, we can s
 
 But with composfs we only store a single file and all the metadata is in Erofs file, you need to be root to mount and use the vuln sudo
 
+
+
+GC Thingy
+
+e874166c93bcdc670028d94378
+|__ /usr/new-file-after-upgrade = File changed lmao again
