@@ -1,10 +1,13 @@
-FROM quay.io/fedora/fedora-coreos:stable as STEP1
+FROM quay.io/fedora/fedora-coreos:stable AS step1
 
 RUN rm -f "/etc/yum.repos.d/fedora-cisco-openh264.repo"
 RUN dnf install -y fsverity systemd-boot-unsigned tree strace
 
-COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
-COPY ./libsystemd-shared-257.9-2.fc42.so /usr/lib64/systemd/libsystemd-shared-257.9-2.fc42.so
+# COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+# COPY libsystemd-shared-257.10-1.fc42.so /usr/lib64/systemd/libsystemd-shared-257.10-1.fc42.so
+
+# reinstall systemd-gpt-auto-generator
+RUN dnf reinstall -y systemd
 
 COPY bootc /usr/bin/
 COPY extra-coreos /
@@ -15,7 +18,7 @@ RUN set -x; \
 
 RUN passwd -d root
 
-FROM STEP1 AS kernel
+FROM step1 AS kernel
 
 ARG COMPOSEFS_FSVERITY
 
@@ -58,7 +61,7 @@ RUN <<EOF
     #     --output "/boot/$kver.efi.extra.d/luks.addon.efi"
 EOF
 
-FROM STEP1 as final
+FROM step1 AS final
 
 RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
     kver=$(cd /usr/lib/modules && echo *)
@@ -66,5 +69,5 @@ RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
     cp -r "/_mount/kernel/boot/." "/boot/EFI/Linux/."
 EOF
 
-FROM STEP1 as final-final
+FROM step1 AS final-final
 COPY --from=final /boot /boot

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -xeu
 
 echo "" > /etc/containers/registries.conf
 cat >> /etc/containers/registries.conf <<-EOF
@@ -24,18 +24,18 @@ fi
 
 COMPOSEFS=$1
 INSECURE=$2
-
+FILESYSTEM=$3
 
 if [[ $COMPOSEFS == "true" ]]; then
     options+=("--composefs-backend")
-    options+=("--bootloader=grub")
-    options=("--filesystem=ext4")
+    options+=("--bootloader=systemd")
+    options+=("--filesystem=$FILESYSTEM")
 else
-    options=("--filesystem=xfs")
+    options=("--filesystem=$FILESYSTEM")
 fi
 
 if [[ $INSECURE == "true" ]]; then
-    options+=("--insecure")
+    options+=("--allow-missing-verity")
 fi
 
 bootc install to-disk \

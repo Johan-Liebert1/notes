@@ -31,14 +31,14 @@ sudo partprobe /dev/loop0
 
 sudo mkfs.fat  /dev/loop0p1
 sudo mkfs.ext4 /dev/loop0p2           -L boot -U $BOOTFS_UUID
-sudo mkfs.ext4 /dev/loop0p3 -O verity -L root -U $ROOTFS_UUID
+sudo mkfs.xfs /dev/loop0p3  -L root
 
 sudo mount /dev/loop0p3 /mnt
 sudo mkdir -p /mnt/boot
 sudo mount /dev/loop0p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
-IMAGE="localhost:5000/bootc-uki:latest"
+IMAGE="localhost:5000/bootc-bls"
 BOOTLOADER=systemd
 
 ./install-to-fs.sh $IMAGE $BOOTLOADER
@@ -49,7 +49,7 @@ if [[ $IMAGE != *uki* ]]; then
     if [[ $BOOTLOADER == "systemd" ]]; then
         sudo mount /dev/loop0p1 /mnt
         # sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
-        sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/bootc-composefs-1.conf
+        sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/*.conf
         # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
         sudo umount -R /mnt
     elif [[ $BOOTLOADER == "grub" ]]; then
@@ -58,8 +58,8 @@ if [[ $IMAGE != *uki* ]]; then
 
         sudo touch /mnt/boot/ignition.firstboot
 
-        sudo sed -i 's;options ;options console=ttyS0,115000n enforcing=0 audit=0 $ignition_firstboot ignition.platform.id=qemu ;' /mnt/boot/loader/entries/bootc-composefs-1.conf
-        sudo sed -i "s;root=UUID=.* ;root=UUID=910678ff-f77e-4a7d-8d53-86f2ac47a823 ;" /mnt/boot/loader/entries/bootc-composefs-1.conf
+        sudo sed -i 's;options ;options console=ttyS0,115000n enforcing=0 audit=0 $ignition_firstboot ignition.platform.id=qemu ;' /mnt/boot/loader/entries/*.conf
+        sudo sed -i "s;root=UUID=.* ;root=UUID=910678ff-f77e-4a7d-8d53-86f2ac47a823 ;" /mnt/boot/loader/entries/*.conf
 
         sudo umount -R /mnt
     else

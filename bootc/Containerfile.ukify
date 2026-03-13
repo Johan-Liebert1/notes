@@ -6,5 +6,5 @@ FROM base as compute
 RUN dnf install -y sbsign systemd-ukify
 
 RUN --mount=type=bind,from=base,src=/,target=/run/base-mount <<EORUN
-    /run/base-mount/usr/bin/bootc container ukify
+    /run/base-mount/usr/bin/bootc container ukify --rootfs /run/base-mount
 EORUN

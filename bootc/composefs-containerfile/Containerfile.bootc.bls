@@ -1,4 +1,4 @@
-FROM quay.io/centos-bootc/centos-bootc:stream10
+FROM quay.io/fedora/fedora-bootc:43
 
 COPY extra /
 COPY ./strace /strace
@@ -26,4 +26,4 @@ EOF
 
 RUN passwd -d root
 
-# RUN dnf update && dnf install -y nu vim xxd strace strings
+RUN dnf -y update && dnf install -y nu vim xxd strace strings
