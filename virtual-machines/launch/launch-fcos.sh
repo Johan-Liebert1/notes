@@ -4,7 +4,7 @@ set -eu
 
 STREAM="stable"
 
-IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
+IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/luks.ign"
 IMAGE="$HOME/notes/bootc/test.img"
 VM_NAME="composefs-only"
 VCPUS="2"

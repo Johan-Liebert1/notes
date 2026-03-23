@@ -2,6 +2,7 @@ bootc
 cfsctl
 tmp
 extra
+extra-coreos
 erofs-debug
 kernel
 initrd

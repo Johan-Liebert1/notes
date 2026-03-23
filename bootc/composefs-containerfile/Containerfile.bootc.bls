@@ -26,4 +26,6 @@ EOF
 
 RUN passwd -d root
 
-RUN dnf -y update && dnf install -y nu vim xxd strace strings
+# RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
+
+# RUN dnf -y update && dnf install -y nu vim xxd strace strings

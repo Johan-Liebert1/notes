@@ -6,7 +6,7 @@ COPY bootc /usr/bin
 COPY extra-coreos /
 
 COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
-COPY ./libsystemd-shared-257.9-2.fc42.so /usr/lib64/systemd/libsystemd-shared-257.9-2.fc42.so
+COPY ./libsystemd-shared-257.10-1.fc42.so /usr/lib64/systemd/libsystemd-shared-257.10-1.fc42.so
 
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
