@@ -20,16 +20,25 @@ if [[ $IMAGE != *uki* ]]; then
 
     kargs+=(--karg)
     kargs+=("audit=0")
+
+    kargs+=(--karg)
+    kargs+=("ignition.platform.id=qemu")
+
+    kargs+=(--karg)
+    kargs+=("ignition.firstboot")
 fi
 
 COMPOSEFS=$1
 INSECURE=$2
-FILESYSTEM=$3
+BOOTLOADER=$3
+FILESYSTEM=$4
 
 if [[ $COMPOSEFS == "true" ]]; then
     options+=("--composefs-backend")
-    options+=("--bootloader=systemd")
+    options+=("--bootloader=$BOOTLOADER")
     options+=("--filesystem=$FILESYSTEM")
+
+    options+=("--uki-addon=ignition")
 else
     options=("--filesystem=$FILESYSTEM")
 fi

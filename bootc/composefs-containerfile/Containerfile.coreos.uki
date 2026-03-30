@@ -1,7 +1,7 @@
 FROM quay.io/fedora/fedora-coreos:stable AS step1
 
-RUN rm -f "/etc/yum.repos.d/fedora-cisco-openh264.repo"
-RUN dnf install -y fsverity systemd-boot-unsigned tree strace
+RUN rm -rf '/etc/yum.repos.d/fedora-cisco-openh264.repo'
+RUN dnf install -y fsverity systemd-boot-unsigned
 
 # TODO: This is very bad
 COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator

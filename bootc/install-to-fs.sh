@@ -17,5 +17,5 @@ sudo podman run --rm --net=host --privileged --pid=host \
         bootc install to-filesystem \
             --bootloader "$BOOTLOADER" \
             --composefs-backend \
+            --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \
             /var/mnt --source-imgref "oci-archive:/output/bootc-bls-gc.tar"
-            # --karg enforcing=0 --karg console=ttyS0,115000n --karg audit=0 \

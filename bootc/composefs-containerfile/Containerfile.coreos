@@ -1,6 +1,7 @@
 FROM quay.io/fedora/fedora-coreos:stable
 
-RUN dnf install -y fsverity
+RUN rm -rf '/etc/yum.repos.d/fedora-cisco-openh264.repo'
+RUN dnf install -y fsverity systemd-boot-unsigned
 
 COPY bootc /usr/bin
 COPY extra-coreos /
@@ -14,9 +15,9 @@ RUN set -x; \
 
 RUN passwd -d root
 
-# RUN <<EOF
-#     mkdir -p /usr/lib/bootc/kargs.d
-#     cd /usr/lib/bootc/kargs.d
-# 
-#     echo 'kargs = ["console=ttyS0,115200n", "enforcing=0", "audit=0", "$ignition_firstboot", "ignition.platform.id=qemu"]' > 01-bootc.toml
-# EOF
+RUN <<EOF
+    mkdir -p /usr/lib/bootc/kargs.d
+    cd /usr/lib/bootc/kargs.d
+
+    echo 'kargs = ["console=ttyS0,115200n", "ignition_firstboot", "ignition.platform.id=qemu"]' > 01-bootc.toml
+EOF

@@ -8,4 +8,5 @@ kernel
 initrd
 *.so
 strace
+*.rpm
 systemd-gpt-auto-generator

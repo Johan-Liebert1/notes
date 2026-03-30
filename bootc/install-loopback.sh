@@ -28,6 +28,12 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        '--bootloader')
+            shift
+            BOOTLOADER=$1
+            shift
+        ;;
+
         '--image')
             shift
             IMAGE=$1
@@ -50,4 +56,4 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /var/lib/containers:/var/lib/containers \
     -v .:/output \
     "$IMAGE" \
-    /output/script.sh  "$COMPOSEFS" "$INSECURE" "$FILESYSTEM"
+    /output/script.sh  "$COMPOSEFS" "$INSECURE" "$BOOTLOADER" "$FILESYSTEM"
