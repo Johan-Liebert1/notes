@@ -35,3 +35,9 @@ else
         rc=$?; return $rc
     }
 fi
+
+# Building
+build() {
+    cosa build
+    cosa osbuild qemu
+}

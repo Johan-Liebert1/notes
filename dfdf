@@ -1,0 +1,23 @@
+
+{
+  "id": 8,
+  "value": "67f122af114426f8812f838be0b9046cd94e430e84b53b695da1c9b8af5ae044",
+  "events": [
+    {
+      "name": "grub_cmd: set timeout=5",
+      "pcr": 8,
+      "hash": "8703a28959810b7fcd514e425c75e28bb7b2cc2e4a3126a585532fca9ce9112a",
+      "id": "GrubLine1"
+    },
+    {
+      "name": "grub_cmd: blscfg",
+      "pcr": 8,
+      "hash": "71319c7c2e15e766e336ba69914c4e517651f7fe7dc6b71acc8642aafee382f8",
+      "id": "GrubLine2"
+    }
+  ]
+}
+
+
+part1: 8703A28959810B7FCD514E425C75E28BB7B2CC2E4A3126A585532FCA9CE9112A
+part2: 71319C7C2E15E766E336BA69914C4E517651F7FE7DC6B71ACC8642AAFEE382F8
