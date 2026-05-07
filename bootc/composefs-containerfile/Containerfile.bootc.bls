@@ -3,6 +3,10 @@ FROM quay.io/fedora/fedora-bootc:43
 COPY extra /
 COPY ./strace /strace
 
+COPY ./kernel-7.0.1-200.fc43.x86_64.rpm /var/kernel7.rpm
+RUN rpm -Uvh /var/kernel7.rpm
+RUN rm -rf "/var/kernel7.rpm"
+
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;

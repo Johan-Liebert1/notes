@@ -6,3 +6,13 @@ sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
 
 systemctl restart sshd
 ```
+
+
+
+cp -r /usr/lib/bootupd/updates/EFI /usr/lib/ostree-boot/efi/
+
+cp -r /usr/efi/EFI /usr/lib/ostree-boot/efi/
+
+rm -rf /usr/lib/bootupd/updates/EFI
+
+/var/bootupd generate-update-metadata -vvv

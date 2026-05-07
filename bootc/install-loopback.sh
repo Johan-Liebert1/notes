@@ -5,6 +5,7 @@ set -eux
 INSECURE=false
 FILESYSTEM="ext4"
 IMAGE=""
+BOOTC_VOL_MNT=("-v" "/home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z")
 
 while [ ! -z "${1:-}" ]; do
     case "$1" in
@@ -40,6 +41,11 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        '--no-bootc-vol-mnt')
+            BOOTC_VOL_MNT=()
+            shift
+        ;;
+
         *) echo "Unknown option $1"; exit 1;
     esac
 done
@@ -52,7 +58,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     --env RUST_LOG=debug \
     --env IMAGE="$IMAGE" \
     -v /dev:/dev \
-    -v /home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z \
+    "${BOOTC_VOL_MNT[@]}" \
     -v /var/lib/containers:/var/lib/containers \
     -v .:/output \
     "$IMAGE" \

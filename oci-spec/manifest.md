@@ -45,15 +45,16 @@ Contents of `index.json`
 This tells us that the `manifest` file is in `blobs/06f89e4548f8744f6fc4ec9c9b21b6f86b0745423cd0e17dca0b227fb4683bdf`.
 
 ```json
-# manifest file
+// manifest file
+
 {
     "schemaVersion": 2,
     "mediaType": "application/vnd.oci.image.manifest.v1+json",
 
-    # Also called descriptor
+    // Also called descriptor
     "config": {
         "mediaType": "application/vnd.oci.image.config.v1+json",
-        # Points to another file inside blobs/sha256
+        // Points to another file inside blobs/sha256
         "digest": "sha256:d5fb4ee62789ac7112258a466e1bc76aae44db25d2c62b5bac7ada533b028644",
         "size": 658
     },
@@ -107,11 +108,11 @@ Basically this is the config. The SHA256 hash of this config json is the image i
     "rootfs": {
         "type": "layers",
         "diff_ids": [
-            # This is the SHA sum of the Layer0, but when it's uncompressed
+            // This is the SHA sum of the Layer0, but when it's uncompressed
             "sha256:59654b79daad74c77dc2e28502ca577ba8ce73276720002234a23fc60ee92692",
 
-            # This is the SHA sum of the Layer1, but when it's uncompressed
-            # Layer1, is the diff between Layer0, and Layer1,
+            // This is the SHA sum of the Layer1, but when it's uncompressed
+            // Layer1, is the diff between Layer0, and Layer1,
             "sha256:141c9c2f7ac15d28b51c83177265c84f9771c3ea8159f4e7383735b76110b764"
         ]
     },
