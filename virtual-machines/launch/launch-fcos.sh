@@ -63,7 +63,9 @@ done
 set -ex
 
 # Setup the correct SELinux label to allow access to the config
-chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
+if which chcon; then
+    chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
+fi
 
 # OVMF paths for secure boot
 OVMF_CODE="/usr/share/OVMF/OVMF_CODE.secboot.fd"
