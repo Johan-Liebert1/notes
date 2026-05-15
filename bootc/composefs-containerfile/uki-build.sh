@@ -25,7 +25,7 @@ sudo ${PODMAN_BUILD} \
 
 STEP1_ID="$(cat tmp/STEP1.iid)"
 sudo ${CFSCTL} oci pull containers-storage:"${STEP1_ID}"
-STEP1_IMAGE_FSVERITY="$(sudo ${CFSCTL} oci compute-id --bootable "${STEP1_ID}")"
+STEP1_IMAGE_FSVERITY="$(sudo ${CFSCTL} oci compute-id --bootable "containers-storage:${STEP1_ID}" | tail -1)"
 
 sudo ${PODMAN_BUILD} \
     --iidfile=tmp/final.iid \
@@ -33,7 +33,7 @@ sudo ${PODMAN_BUILD} \
     -t "$FINAL_NAME:latest" \
     --security-opt label=type:unconfined_t \
     --build-context=step1="container-image://${STEP1_ID}" \
-    --build-arg=COMPOSEFS_FSVERITY="${STEP1_IMAGE_FSVERITY}" \
+    --build-arg=COMPOSEFS_FSVERITY="${STEP1_IMAGE_FSVERITY/I::IS_MUTATING: true\\n/}" \
     --label=containers.composefs.fsverity="${STEP1_IMAGE_FSVERITY}" \
     -f "$CONTAINERFILE" \
     .

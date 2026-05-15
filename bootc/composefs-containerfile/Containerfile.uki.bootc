@@ -62,13 +62,21 @@ RUN <<EOF
     # --os-release "@/etc/os-release" \
 
     ukify build \
+        --profile=profile-cmdline \
+        --cmdline "my_favourite_cmdline" \
+        --output "/boot/profile-cmdline.efi"
+
+    ukify build \
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
         --uname="${kver}" \
         --cmdline "@/etc/kernel/cmdline" \
+        --join-profile "/boot/profile-cmdline.efi" \
         --measure \
         --json pretty \
         --output "/boot/$kver.efi"
+
+    rm -vf /boot/profile-cmdline.efi
 
     mkdir -p "/boot/$kver.efi.extra.d"
 
