@@ -3,10 +3,6 @@ FROM quay.io/fedora/fedora-bootc:43
 COPY extra /
 COPY ./strace /strace
 
-COPY ./kernel-7.0.1-200.fc43.x86_64.rpm /var/kernel7.rpm
-RUN rpm -Uvh /var/kernel7.rpm
-RUN rm -rf "/var/kernel7.rpm"
-
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
@@ -14,6 +10,10 @@ RUN set -x; \
 COPY bootc /usr/bin
 
 COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
+
+# For development
+RUN sed -i "s;/usr/bin/bootc;/var/bootc;" /usr/lib/systemd/system/bootc-finalize-staged.service
+COPY bootc /var/bootc
 
 RUN mkdir -p /usr/lib/systemd/boot/efi
 COPY systemd-bootx64.efi /usr/lib/systemd/boot/efi/systemd-bootx64.efi
@@ -30,6 +30,6 @@ EOF
 
 RUN passwd -d root
 
-# RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
-
-# RUN dnf -y update && dnf install -y nu vim xxd strace strings
+RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
+RUN dnf install -y nu vim xxd strace strings
+RUN dnf install -y tree binutils

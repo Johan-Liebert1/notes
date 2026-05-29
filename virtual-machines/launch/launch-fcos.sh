@@ -12,6 +12,7 @@ RAM_MB="2048"
 STREAM="stable"
 DISK_GB="10"
 SECUREBOOT=false
+ARCH="x86_64"
 
 # For x86 / aarch64,
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
@@ -52,6 +53,11 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        "--arch" )
+            ARCH="$2"
+            shift
+            shift
+        ;;
 
         * )
             echo "Argument $1 not understood"
@@ -68,12 +74,22 @@ if which chcon; then
 fi
 
 # OVMF paths for secure boot
-OVMF_CODE="/usr/share/OVMF/OVMF_CODE.secboot.fd"
-OVMF_VARS="$HOME/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd"
-OVMF_VARS_TEMPLATE="/usr/share/OVMF/OVMF_VARS.secboot.fd"
+if [[ "${ARCH}" == "aarch64" ]]; then
+    OVMF_CODE="/usr/share/AAVMF/AAVMF_CODE.fd"
+    OVMF_VARS="$HOME/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd"
+    OVMF_VARS_TEMPLATE="/usr/share/AAVMF/AAVMF_VARS.fd"
+else
+    OVMF_CODE="/usr/share/OVMF/OVMF_CODE.secboot.fd"
+    OVMF_VARS="$HOME/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd"
+    OVMF_VARS_TEMPLATE="/usr/share/OVMF/OVMF_VARS.secboot.fd"
+fi
 
 mkdir -p "$(dirname OVMF_VARS)"
-cp /usr/share/OVMF/OVMF_VARS.fd "$OVMF_VARS"
+if [[ "${ARCH}" == "aarch64" ]]; then
+    cp /usr/share/AAVMF/AAVMF_VARS.fd "$OVMF_VARS"
+else
+    cp /usr/share/OVMF/OVMF_VARS.fd "$OVMF_VARS"
+fi
 
 args=()
 if [[ "${SECUREBOOT}" == "true" ]]; then
@@ -104,16 +120,24 @@ if [[ $(whoami) == "root" ]]; then
     CONNECT="qemu:///system"
 fi
 
+virt_install_args=(
+    --connect="$CONNECT"
+    --name="${VM_NAME}"
+    --vcpus="${VCPUS}"
+    --memory="${RAM_MB}"
+    --os-variant="fedora-coreos-$STREAM"
+    --import --nographics
+    --network bridge=virbr0
+    "--memorybacking=source.type=memfd,access.mode=shared"
+    "--filesystem" "/var/lib/containers,containers,driver.type=virtiofs"
+)
+
+if [[ "${ARCH}" == "aarch64" ]]; then
+    virt_install_args+=(--arch=aarch64)
+fi
+
 virt-install \
-    --connect="$CONNECT" \
-    --name="${VM_NAME}" \
-    --vcpus="${VCPUS}" \
-    --memory="${RAM_MB}" \
-    --os-variant="fedora-coreos-$STREAM" \
-    --import --nographics \
-    --network bridge=virbr0 \
-    --memorybacking=source.type=memfd,access.mode=shared \
-    --filesystem /var/lib/containers,containers,driver.type=virtiofs \
+    "${virt_install_args[@]}" \
     "${disk[@]}" \
     "${args[@]}" \
     "${IGNITION_DEVICE_ARG[@]}"
