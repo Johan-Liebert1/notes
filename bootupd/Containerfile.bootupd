@@ -1,0 +1,36 @@
+FROM quay.io/fedora/fedora-bootc:44
+
+RUN <<EOF
+    set -eux 
+
+    arch=$(uname -m)
+    curl -L -o grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.eln156/x86_64/grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
+    mkdir grub-cc
+    rpm2archive grub-cc.rpm | tar -xvz -C grub-cc
+
+    file=$(find ./grub-cc -name '*.efi')
+    move_to=$(find /usr -name 'grubx64.efi')
+
+    test -f "$file" || exit 1
+    test -f "$move_to" || exit 1
+
+    mv "$file" "$move_to"
+EOF
+
+RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+
+RUN cat >> /etc/containers/registries.conf <<-EOF
+    [[registry]]
+    location = "192.168.122.1:5000"
+    insecure = true
+EOF
+
+RUN passwd -d root
+
+RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
+RUN dnf install -y nu vim xxd strace strings tree binutils
+
+# Copy the bootupd binary
+COPY bootupd /usr/sbin/bootupctl
