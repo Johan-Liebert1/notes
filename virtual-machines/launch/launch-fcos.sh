@@ -15,6 +15,9 @@ SECUREBOOT=false
 ARCH="x86_64"
 
 # For x86 / aarch64,
+# Can be found at
+#
+# sys/firmware/qemu_fw_cfg/by_name/opt/com.coreos/
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
 
 while [ ! -z "${1:-}" ]; do

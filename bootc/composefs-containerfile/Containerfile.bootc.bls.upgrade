@@ -1,4 +1,0 @@
-FROM localhost/bootc-bls
-RUN rm -f "/etc/yum.repos.d/fedora-cisco-openh264.repo"
-RUN dnf install -y tree vim
-RUN passwd -d root
