@@ -9,13 +9,20 @@ import (
 	"sync"
 )
 
-func download(allData [][]byte, index int, url string, sem chan struct{}, wg *sync.WaitGroup) {
+func download(
+	allData [][]byte,
+	index int,
+	total int,
+	url string,
+	sem chan struct{},
+	wg *sync.WaitGroup,
+) {
 	defer func() {
 		wg.Done()
 		<-sem
 	}()
 
-	fmt.Printf("Downloading %s... Index: %d\n", url[:108], index)
+	fmt.Printf("Downloading %s... Index: %d/%d\n", url[:108], index, total)
 
 	client := &http.Client{}
 
@@ -41,7 +48,7 @@ func download(allData [][]byte, index int, url string, sem chan struct{}, wg *sy
 		return
 	}
 
-	fmt.Printf("Index: %d, Read: %d bytes\n", index, resp.ContentLength)
+	fmt.Printf("Index: %d/%d, Read: %d bytes\n", index, total, resp.ContentLength)
 
 	allData[index] = b
 }
@@ -49,7 +56,7 @@ func download(allData [][]byte, index int, url string, sem chan struct{}, wg *sy
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Println(
-			"Usage: ./executable <file with urls> <filename to write the contents to (this will be inside /tmp)>",
+			"Usage: ./executable <file with urls> <filename to write the contents to>",
 		)
 		os.Exit(1)
 	}
@@ -61,7 +68,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	filename := os.Args[2]
+	filePath := os.Args[2]
 
 	fileContents := string(file)
 	lines := strings.Split(fileContents, "\n")
@@ -69,9 +76,9 @@ func main() {
 	sem := make(chan struct{}, 10)
 	wg := sync.WaitGroup{}
 
-	tmpdir := os.TempDir()
+	// tmpdir := os.TempDir()
 
-	filePath := fmt.Sprintf("%s/%s", tmpdir, filename)
+	// filePath := fmt.Sprintf("%s/%s", tmpdir, filename)
 	fileToWrite, err := os.Create(filePath)
 
 	if err != nil {
@@ -99,7 +106,7 @@ func main() {
 		sem <- struct{}{}
 
 		wg.Add(1)
-		go download(allData, i, strings.TrimSpace(line), sem, &wg)
+		go download(allData, i, len(newLines), strings.TrimSpace(line), sem, &wg)
 
 		i++
 	}
