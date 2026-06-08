@@ -1,0 +1,5 @@
+FROM quay.io/centos-bootc/centos-bootc:stream10
+RUN dnf config-manager --set-enabled crb
+RUN dnf install -y rust cargo openssl-devel tree glib2-devel libzstd-devel ostree-devel
+RUN yum install yum-utils dnf-plugins-core && yum-builddep ostree 
+RUN passwd -d root
