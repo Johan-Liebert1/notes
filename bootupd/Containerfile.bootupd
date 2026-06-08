@@ -4,17 +4,9 @@ RUN <<EOF
     set -eux 
 
     arch=$(uname -m)
-    curl -L -o grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.eln156/x86_64/grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
-    mkdir grub-cc
-    rpm2archive grub-cc.rpm | tar -xvz -C grub-cc
-
-    file=$(find ./grub-cc -name '*.efi')
-    move_to=$(find /usr -name 'grubx64.efi')
-
-    test -f "$file" || exit 1
-    test -f "$move_to" || exit 1
-
-    mv "$file" "$move_to"
+    curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.fc45/x86_64//grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
+    mkdir /var/grub-cc
+    rpm2archive /var/grub-cc.rpm | tar -xvz -C /
 EOF
 
 RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config

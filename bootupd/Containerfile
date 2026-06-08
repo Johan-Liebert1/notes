@@ -1,0 +1,17 @@
+FROM quay.io/fedora/fedora-bootc:44
+
+RUN <<EOF
+    # We have this until we get grub-cc support in bootupd
+    arch=$(uname -m)
+    curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.fc45/x86_64/grub2-efi-x64-cc-2.12-59.fc45.${arch}.rpm"
+    mkdir /var/grub-cc
+    rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
+
+    mkdir -p /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora
+
+    the_file=$(find /var/grub-cc -name 'grubx64-cc.efi')
+
+    mv "$the_file" /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora/grubx64-cc.efi
+EOF
+
+COPY ./bootupd /usr/sbin/bootupctl
