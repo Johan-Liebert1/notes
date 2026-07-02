@@ -10,12 +10,9 @@ CFSCTL='./bootc internals cfs --repo tmp/sysroot/composefs'
 
 mkdir -p tmp/sysroot/composefs
 
-cp -f ~/RedHat/bootc/target/release/bootc .
-cp -f ~/RedHat/bootc/systemd/bootc-finalize-staged.service .
-
 sudo ${PODMAN_BUILD} \
     --iidfile=tmp/STEP1.iid \
-    --pull=newer \
+    --pull=never \
     --net=host \
     --security-opt label=type:unconfined_t \
     --target=step1 \
@@ -24,6 +21,7 @@ sudo ${PODMAN_BUILD} \
     .
 
 STEP1_ID="$(cat tmp/STEP1.iid)"
+sudo ${CFSCTL} init
 sudo ${CFSCTL} oci pull containers-storage:"${STEP1_ID}"
 STEP1_IMAGE_FSVERITY="$(sudo ${CFSCTL} oci compute-id --bootable "containers-storage:${STEP1_ID}" | tail -1)"
 

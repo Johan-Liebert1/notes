@@ -10,23 +10,30 @@ RUN set -x; \
 RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
 RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
 
-# Install the new grub-cc binary
-
 RUN <<EOF
-arch=$(uname -m)
-curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.eln156/x86_64/grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
-mkdir /var/grub-cc
-rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
-file=$(find /var/grub-cc -name '*.efi')
-mkdir /usr/lib/grub-cc
-cp $file /usr/lib/grub-cc
-rm -rvf /var/grub-cc
-rm -rvf /var/grub-cc.rpm
+    # We have this until we get grub-cc support in bootupd
+    arch=$(uname -m)
+    curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.fc45/x86_64/grub2-efi-x64-cc-2.12-59.fc45.${arch}.rpm"
+    mkdir /var/grub-cc
+    rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
+
+    mkdir -p /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora
+
+    the_file=$(find /var/grub-cc -name 'grubx64-cc.efi')
+
+    mv "$the_file" /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora/grubx64.efi
 EOF
+
+COPY ./bootupd /usr/sbin/bootupctl
+
+RUN bootupctl backend generate-update-metadata
 
 COPY bootc /usr/bin
 
 COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
+
+# TODO: Probaby
+RUN rm /usr/lib/systemd/system/bootloader-update.service
 
 # For development
 RUN sed -i "s;/usr/bin/bootc;/var/bootc;" /usr/lib/systemd/system/bootc-finalize-staged.service

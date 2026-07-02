@@ -50,6 +50,17 @@ while [ ! -z "${1:-}" ]; do
     esac
 done
 
+# for context in system session; do 
+#     for name in $(virsh -c "qemu:///$context" list --all --name); do 
+#         if virsh -c "qemu:///$context" dumpxml "$name" | grep -q "notes/bootc/uki-cleanup.img"; then
+#             echo "test.img used by $name in context $context"
+#             exit 1
+#         fi
+#     done
+# done
+#
+# exit 0
+
 rm -f test.img composefs-only.qcow2
 truncate test.img -s 15G
 
@@ -59,6 +70,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     --env IMAGE="$IMAGE" \
     -v /dev:/dev \
     "${BOOTC_VOL_MNT[@]}" \
+    -v /home/pragyan/RedHat/bootupd/target/release/bootupd:/usr/sbin/bootupctl \
     -v /var/lib/containers:/var/lib/containers \
     -v .:/output \
     "$IMAGE" \

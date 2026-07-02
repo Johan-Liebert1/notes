@@ -12,15 +12,16 @@ EOF
 kargs=()
 
 if [[ $IMAGE != *uki* ]]; then
+    true
     kargs+=(--karg)
     kargs+=("console=ttyS0,115000n")
 
-    # kargs+=(--karg)
-    # kargs+=("enforcing=0")
-    #
-    # kargs+=(--karg)
-    # kargs+=("audit=0")
-    #
+    kargs+=(--karg)
+    kargs+=("enforcing=0")
+
+    kargs+=(--karg)
+    kargs+=("audit=0")
+    
     # kargs+=(--karg)
     # kargs+=("ignition.platform.id=qemu")
     #

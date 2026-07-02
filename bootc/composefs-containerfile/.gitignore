@@ -10,3 +10,4 @@ initrd
 strace
 *.rpm
 systemd-gpt-auto-generator
+bootupd

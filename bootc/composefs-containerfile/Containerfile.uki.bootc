@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-bootc:43 AS step1
+FROM quay.io/fedora/fedora-bootc:44 AS step1
 COPY extra /
 
 # RUN dnf install -y zsh vim chsh
@@ -21,6 +21,23 @@ EOF
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
+RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
+
+# Install the new grub-cc binary
+#
+RUN <<EOF
+    arch=$(uname -m)
+    curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.eln156/x86_64/grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
+    mkdir /var/grub-cc
+    rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
+    file=$(find /var/grub-cc -name '*.efi')
+    mkdir /usr/lib/grub-cc
+    cp $file /usr/lib/grub-cc/grub-cc.efi
+    rm -rvf /var/grub-cc
+    rm -rvf /var/grub-cc.rpm
+EOF
 
 # COPY composefs-finalize.sh /usr/bin
 COPY bootc-finalize-staged.service /etc/systemd/system
