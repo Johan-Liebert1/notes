@@ -25,19 +25,19 @@ EOF
 
 loopdev=$(losetup -f)
 
-sudo losetup /dev/"${loopdev}" test.img
-cat sfdisk-buf | sudo sfdisk --wipe=always /dev/"${loopdev}"
+sudo losetup "${loopdev}" test.img
+cat sfdisk-buf | sudo sfdisk --wipe=always "${loopdev}"
 
 # To make sure kernel updates
-sudo partprobe /dev/"${loopdev}"
+sudo partprobe "${loopdev}"
 
-sudo mkfs.fat  /dev/"${loopdev}"p1
-sudo mkfs.ext4 /dev/"${loopdev}"p2           -L boot -U $BOOTFS_UUID
-sudo mkfs.xfs /dev/"${loopdev}"p3  -L root
+sudo mkfs.fat  "${loopdev}"p1
+sudo mkfs.ext4 "${loopdev}"p2           -L boot -U $BOOTFS_UUID
+sudo mkfs.xfs "${loopdev}"p3  -L root
 
-sudo mount /dev/"${loopdev}"p3 /mnt
+sudo mount "${loopdev}"p3 /mnt
 sudo mkdir -p /mnt/boot
-sudo mount /dev/"${loopdev}"p2 /mnt/boot
+sudo mount "${loopdev}"p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
 IMAGE="localhost:5000/bootc-bls"
@@ -49,14 +49,14 @@ sudo umount -R /mnt
 
 if [[ $IMAGE != *uki* ]]; then
     if [[ $BOOTLOADER == "systemd" ]]; then
-        sudo mount /dev/"${loopdev}"p1 /mnt
+        sudo mount "${loopdev}"p1 /mnt
         # sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
         sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/*.conf
         # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
         sudo umount -R /mnt
     elif [[ $BOOTLOADER == "grub" ]]; then
-        sudo mount /dev/"${loopdev}"p3 /mnt
-        sudo mount /dev/"${loopdev}"p2 /mnt/boot
+        sudo mount "${loopdev}"p3 /mnt
+        sudo mount "${loopdev}"p2 /mnt/boot
 
         sudo touch /mnt/boot/ignition.firstboot
 
@@ -69,6 +69,6 @@ if [[ $IMAGE != *uki* ]]; then
     fi
 fi
 
-sudo losetup -d /dev/"${loopdev}"
+sudo losetup -d "${loopdev}"
 
 # qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2
