@@ -15,3 +15,5 @@ RUN <<EOF
 EOF
 
 COPY ./bootupd /usr/sbin/bootupctl
+
+RUN bootupctl backend generate-update-metadata

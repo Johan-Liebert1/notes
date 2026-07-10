@@ -1,0 +1,43 @@
+/usr/lib/efi/
+|-- grub-cc
+|   `-- 1:2.12-59.fc45
+|       `-- EFI
+|           `-- fedora
+|               `-- grubx64-cc.efi
+|-- grub2
+|   `-- 1:2.12-58.fc44
+|       `-- EFI
+|           `-- fedora
+|               `-- grubx64.efi
+`-- shim
+    `-- 16.1-5
+        `-- EFI
+            |-- BOOT
+            |   |-- BOOTX64.EFI
+            |   `-- fbx64.efi
+            `-- fedora
+                |-- BOOTX64.CSV
+                |-- mmx64.efi
+                |-- shim.efi
+                `-- shimx64.efi
+
+also the following is the bootupd-state.json, which is bad
+
+  "installed": {
+    "EFI": {
+      "meta": {
+        "timestamp": "2026-06-05T11:04:51.204101639Z",
+        "version": "grub2-1:2.12-58.fc44,shim-16.1-5",
+        "versions": [
+          {
+            "name": "grub2",
+            "rpm_evr": "1:2.12-58.fc44"
+          },
+          {
+            "name": "shim",
+            "rpm_evr": "16.1-5"
+          }
+        ]
+      },
+
+because I installed for grub-cc, but the state has grub2 in it

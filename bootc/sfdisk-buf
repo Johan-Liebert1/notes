@@ -1,4 +1,5 @@
     label: gpt
-    label-id: 76af09bf-e7d6-491a-889a-23b76bc90cbb
+    label-id: 5e0edc9b-7b05-4462-8684-e93bd665cf6a
     size=512MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name="EFI-SYSTEM"
+    size=512MiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name="boot"
                  type=4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709, name="root"

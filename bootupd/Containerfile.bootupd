@@ -1,13 +1,13 @@
 FROM quay.io/fedora/fedora-bootc:44
 
-RUN <<EOF
-    set -eux 
-
-    arch=$(uname -m)
-    curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.fc45/x86_64//grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
-    mkdir /var/grub-cc
-    rpm2archive /var/grub-cc.rpm | tar -xvz -C /
-EOF
+# RUN <<EOF
+#     set -eux 
+#
+#     arch=$(uname -m)
+#     curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.fc45/x86_64//grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
+#     mkdir /var/grub-cc
+#     rpm2archive /var/grub-cc.rpm | tar -xvz -C /
+# EOF
 
 RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config

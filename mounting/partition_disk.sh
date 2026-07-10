@@ -13,7 +13,7 @@ rm -f test.img composefs-only.qcow2
 truncate -s 10G test.img
 
 BOOTFS_UUID="96d15588-3596-4b3c-adca-a2ff7279ea63"
-ROOTFS_UUID="4f68bce3-e8cd-4db1-96e7-fbcaf984b709"
+# ROOTFS_UUID="4f68bce3-e8cd-4db1-96e7-fbcaf984b709"
 
 cat > sfdisk-buf <<EOF
     label: gpt
@@ -23,19 +23,21 @@ cat > sfdisk-buf <<EOF
                  type=4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709, name="root"
 EOF
 
-sudo losetup /dev/loop0 test.img
-cat sfdisk-buf | sudo sfdisk --wipe=always /dev/loop0
+loopdev=$(losetup -f)
+
+sudo losetup /dev/"${loopdev}" test.img
+cat sfdisk-buf | sudo sfdisk --wipe=always /dev/"${loopdev}"
 
 # To make sure kernel updates
-sudo partprobe /dev/loop0
+sudo partprobe /dev/"${loopdev}"
 
-sudo mkfs.fat  /dev/loop0p1
-sudo mkfs.ext4 /dev/loop0p2           -L boot -U $BOOTFS_UUID
-sudo mkfs.xfs /dev/loop0p3  -L root
+sudo mkfs.fat  /dev/"${loopdev}"p1
+sudo mkfs.ext4 /dev/"${loopdev}"p2           -L boot -U $BOOTFS_UUID
+sudo mkfs.xfs /dev/"${loopdev}"p3  -L root
 
-sudo mount /dev/loop0p3 /mnt
+sudo mount /dev/"${loopdev}"p3 /mnt
 sudo mkdir -p /mnt/boot
-sudo mount /dev/loop0p2 /mnt/boot
+sudo mount /dev/"${loopdev}"p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
 IMAGE="localhost:5000/bootc-bls"
@@ -47,14 +49,14 @@ sudo umount -R /mnt
 
 if [[ $IMAGE != *uki* ]]; then
     if [[ $BOOTLOADER == "systemd" ]]; then
-        sudo mount /dev/loop0p1 /mnt
+        sudo mount /dev/"${loopdev}"p1 /mnt
         # sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
         sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/*.conf
         # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
         sudo umount -R /mnt
     elif [[ $BOOTLOADER == "grub" ]]; then
-        sudo mount /dev/loop0p3 /mnt
-        sudo mount /dev/loop0p2 /mnt/boot
+        sudo mount /dev/"${loopdev}"p3 /mnt
+        sudo mount /dev/"${loopdev}"p2 /mnt/boot
 
         sudo touch /mnt/boot/ignition.firstboot
 
@@ -67,6 +69,6 @@ if [[ $IMAGE != *uki* ]]; then
     fi
 fi
 
-sudo losetup -d /dev/loop0
+sudo losetup -d /dev/"${loopdev}"
 
 # qemu-img convert -f raw -O qcow2 test.img composefs-only.qcow2

@@ -1,0 +1,15 @@
+10.2
+9.8
+9.7 -> maybe (likely we can skip this)
+9.6
+
+GC stuff https://www.freedesktop.org/software/systemd/man/latest/bootctl.html
+
+
+Close up systemd-boot stuff
+
+UKI addons support
+
+switch ostree <-> composefs
+
+Test the composefs hackmd
