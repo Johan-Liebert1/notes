@@ -13,3 +13,6 @@ UKI addons support
 switch ostree <-> composefs
 
 Test the composefs hackmd
+
+
+grub cc vs systemd-boot PCRs

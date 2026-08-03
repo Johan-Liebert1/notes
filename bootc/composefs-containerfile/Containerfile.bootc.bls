@@ -46,3 +46,42 @@ RUN cat >> /etc/containers/registries.conf <<-EOF
 EOF
 
 RUN passwd -d root
+
+RUN rm /home && mkdir /home
+
+RUN <<RUNEOF
+
+mkdir /etc/repart.d
+
+cat <<EOF > /etc/repart.d/00-bios.conf
+[Partition]
+Type=21686148-6449-6e6f-744e-656564454649
+Label=BIOS-BOOT
+SizeMinBytes=1M
+SizeMaxBytes=1M
+EOF
+
+cat <<EOF > /etc/repart.d/01-esp.conf
+[Partition]
+Type=esp
+Format=vfat
+SizeMinBytes=2048M
+SizeMaxBytes=2048M
+EOF
+
+cat <<EOF > /etc/repart.d/02-home.conf
+[Partition]
+Type=home
+Format=ext4
+SizeMinBytes=2048M
+SizeMaxBytes=2048M
+EOF
+
+# cat <<EOF > /etc/repart.d/01-sysroot.conf
+# [Partition]
+# Type=root
+# Format=ext4
+# SizeMaxBytes=13G
+# EOF
+
+RUNEOF

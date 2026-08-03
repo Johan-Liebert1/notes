@@ -14,6 +14,31 @@ RUN <<EOF
     mv "$the_file" /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora/grubx64-cc.efi
 EOF
 
+RUN rm -rf /var/lib/cache/dnf5
+RUN dnf install -y systemd-boot-unsigned
+
+# Install systemd-boot
+RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF
+set -eux
+# epoch for systemd-boot-unsigned is "(none)"
+evr=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' systemd-boot-unsigned)
+rpm -ql systemd-boot-unsigned
+
+. /etc/os-release
+
+# Create the expected directory structure at /usr/lib/efi/systemd-boot/<evr>/EFI/fedora/
+mkdir -p "/usr/lib/efi/systemd-boot/${evr}/EFI/$ID"
+
+if [[ $(uname -m) == x86_64 ]]; then
+    grubName="grubx64.efi"
+else
+    grubName="grubaa64.efi"
+fi
+
+cp /usr/lib/systemd/boot/efi/systemd-boot*.efi "/usr/lib/efi/systemd-boot/${evr}/EFI/$ID/$grubName"
+
+EOF
+
 COPY ./bootupd /usr/sbin/bootupctl
 
 RUN bootupctl backend generate-update-metadata

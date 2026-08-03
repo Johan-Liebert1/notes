@@ -24,6 +24,12 @@ RUN <<EOF
     mv "$the_file" /usr/lib/efi/grub-cc/1:2.12-59.fc45/EFI/fedora/grubx64.efi
 EOF
 
+RUN <<EOF 
+    evr=$(rpm -q --qf '%{EPOCH}:%{VERSION}-%{RELEASE}\n' systemd-boot-unsigned)
+    mkdir -p /usr/lib/efi/systemd-boot/${evr}/EFI/fedora
+    cp /usr/lib/systemd/boot/efi/systemd-boot*.efi /usr/lib/efi/systemd-boot/${evr}/EFI/fedora/grubx64.efi
+EOF
+
 COPY ./bootupd /usr/sbin/bootupctl
 
 RUN bootupctl backend generate-update-metadata
@@ -38,9 +44,6 @@ RUN rm /usr/lib/systemd/system/bootloader-update.service
 # For development
 RUN sed -i "s;/usr/bin/bootc;/var/bootc;" /usr/lib/systemd/system/bootc-finalize-staged.service
 COPY bootc /var/bootc
-
-RUN mkdir -p /usr/lib/systemd/boot/efi
-COPY systemd-bootx64.efi /usr/lib/systemd/boot/efi/systemd-bootx64.efi
 
 RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config

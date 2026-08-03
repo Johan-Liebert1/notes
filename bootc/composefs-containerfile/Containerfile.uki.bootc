@@ -25,6 +25,8 @@ RUN set -x; \
 RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
 RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
 
+COPY bootc /usr/bin/bootc
+
 # Install the new grub-cc binary
 #
 RUN <<EOF
@@ -57,8 +59,18 @@ ARG COMPOSEFS_FSVERITY
 
 RUN dnf install -y systemd-ukify systemd-boot-unsigned
 
-RUN <<EOF
+RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     set -eux
+
+    kver=$(ls /usr/lib/modules)
+    mkdir -p /out
+
+    # bootc container ukify \
+    #   --rootfs /run/target \
+    #   --kernel-dir "/usr/lib/modules/${kver}" \
+    #   --write-dumpfile-to "/out/${kver}.dump" \
+    #   -- \
+    #   --output "/out/${kver}.efi"
 
     mkdir -p /etc/kernel /etc/dracut.conf.d
 
@@ -78,24 +90,26 @@ RUN <<EOF
     # Removing this as we want to only handle things with loader/conf files
     # --os-release "@/etc/os-release" \
 
+    mkdir -p /out
+
     ukify build \
         --profile=profile-cmdline \
         --cmdline "my_favourite_cmdline" \
-        --output "/boot/profile-cmdline.efi"
+        --output "/out/profile-cmdline.efi"
 
     ukify build \
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
         --uname="${kver}" \
         --cmdline "@/etc/kernel/cmdline" \
-        --join-profile "/boot/profile-cmdline.efi" \
+        --join-profile "/out/profile-cmdline.efi" \
         --measure \
         --json pretty \
-        --output "/boot/$kver.efi"
+        --output "/out/$kver.efi"
 
-    rm -vf /boot/profile-cmdline.efi
+    # rm -vf /boot/profile-cmdline.efi
 
-    mkdir -p "/boot/$kver.efi.extra.d"
+    # mkdir -p "/boot/$kver.efi.extra.d"
 
     # UKI addon for ignition
     # ukify build \
@@ -115,10 +129,14 @@ EOF
 
 FROM step1 as final
 
-RUN --mount=type=bind,from=kernel,target=/_mount/kernel <<EOF
+RUN --mount=type=bind,from=kernel,src=/out,target=/_mount/kernel <<EOF
+    tree /_mount/kernel
+
     kver=$(cd /usr/lib/modules && echo *)
     mkdir -p /boot/EFI/Linux
-    cp -r "/_mount/kernel/boot/." "/boot/EFI/Linux/."
+
+    cp -r "/_mount/kernel/${kver}.efi" "/boot/EFI/Linux/."
+    # cp "/_mount/kernel/${kver}.dump" "/boot"
 EOF
 
 FROM step1 as final-final

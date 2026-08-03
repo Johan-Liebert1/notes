@@ -32,42 +32,20 @@ cat sfdisk-buf | sudo sfdisk --wipe=always "${loopdev}"
 sudo partprobe "${loopdev}"
 
 sudo mkfs.fat  "${loopdev}"p1
-sudo mkfs.ext4 "${loopdev}"p2           -L boot -U $BOOTFS_UUID
-sudo mkfs.xfs "${loopdev}"p3  -L root
+sudo mkfs.ext4 "${loopdev}"p2  -L boot -U $BOOTFS_UUID
+sudo mkfs.ext4 "${loopdev}"p3  -L root
 
 sudo mount "${loopdev}"p3 /mnt
 sudo mkdir -p /mnt/boot
 sudo mount "${loopdev}"p2 /mnt/boot
 sudo mkdir -p /mnt/boot/efi
 
-IMAGE="localhost:5000/bootc-bls"
+IMAGE="localhost/bootc-bls"
 BOOTLOADER=systemd
 
 ./install-to-fs.sh $IMAGE $BOOTLOADER
 
 sudo umount -R /mnt
-
-if [[ $IMAGE != *uki* ]]; then
-    if [[ $BOOTLOADER == "systemd" ]]; then
-        sudo mount "${loopdev}"p1 /mnt
-        # sudo cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /mnt/EFI/fedora/grubx64.efi
-        sudo sed -i "s;options ;options console=tty0 console=ttyS0,115000n enforcing=0 audit=0 ignition.firstboot ignition.platform.id=qemu ;" /mnt/loader/entries/*.conf
-        # sudo sed -i "s;6523f8ae-3eb1-4e2a-a05a-18b695ae656f ; ;" /mnt/loader/entries/bootc-composefs-1.conf
-        sudo umount -R /mnt
-    elif [[ $BOOTLOADER == "grub" ]]; then
-        sudo mount "${loopdev}"p3 /mnt
-        sudo mount "${loopdev}"p2 /mnt/boot
-
-        sudo touch /mnt/boot/ignition.firstboot
-
-        sudo sed -i 's;options ;options console=ttyS0,115000n enforcing=0 audit=0 $ignition_firstboot ignition.platform.id=qemu ;' /mnt/boot/loader/entries/*.conf
-        sudo sed -i "s;root=UUID=.* ;root=UUID=910678ff-f77e-4a7d-8d53-86f2ac47a823 ;" /mnt/boot/loader/entries/*.conf
-
-        sudo umount -R /mnt
-    else
-        echo "BOOTLOADER $BOOTLOADER not known"
-    fi
-fi
 
 sudo losetup -d "${loopdev}"
 

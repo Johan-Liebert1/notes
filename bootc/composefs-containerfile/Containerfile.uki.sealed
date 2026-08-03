@@ -1,0 +1,71 @@
+FROM quay.io/fedora/fedora-bootc:44 as step1
+
+RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
+RUN sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
+
+RUN cat >> /etc/containers/registries.conf <<EOF
+[[registry]]
+location = "192.168.122.1:5000"
+insecure = true
+EOF
+
+# dracut.conf.d/20-bootc-base.conf:6:add_dracutmodules+=" .. bootc "
+RUN set -x; \
+    kver=$(cd /usr/lib/modules && echo *); \
+    dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
+
+RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
+RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify systemd-boot-unsigned
+RUN dnf install -y sbsigntools
+
+# Sign systemd-boot
+RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp \
+    --mount=type=secret,id=secureboot_key \
+    --mount=type=secret,id=secureboot_cert <<EOF
+
+    set -xeuo pipefail
+
+    sdboot_unsigned=$(ls ./usr/lib/systemd/boot/efi/systemd-boot*.efi)
+    sdboot_bn=$(basename ${sdboot_unsigned})
+
+    # Sign with sbsign using db certificate and key
+    sbsign --key /run/secrets/secureboot_key \
+       --cert /run/secrets/secureboot_cert \
+       --output /out/${sdboot_bn} \
+       ${sdboot_unsigned}
+EOF
+
+COPY bootc /usr/bin/bootc
+
+FROM step1 as uki
+ARG COMPOSEFS_FSVERITY
+
+RUN --mount=type=bind,from=step1,src=/,target=/run/target,ro \
+    --mount=type=secret,id=secureboot_key \
+    --mount=type=secret,id=secureboot_cert <<EOF
+    set -eux
+
+    kver=$(ls /usr/lib/modules)
+    mkdir -p /out
+
+    bootc container ukify \
+        --rootfs=/run/target \
+        --kernel-dir="/usr/lib/modules/$kver" \
+       --write-dumpfile-to /out/uki.dump \
+        -- \
+        --measure \
+       --json pretty \
+       --output "/out/${kver}.efi" \
+       --signtool sbsign \
+       --secureboot-private-key "/run/secrets/secureboot_key" \
+       --secureboot-certificate "/run/secrets/secureboot_cert"
+EOF
+
+FROM step1 as final
+RUN --mount=type=bind,from=uki,src=/,target=/run/uki <<EOF 
+    set -eux
+    mkdir -p /boot/EFI/Linux
+    cp /run/uki/out/*.efi /boot/EFI/Linux
+    cp /run/uki/out/uki.dump /boot
+EOF
