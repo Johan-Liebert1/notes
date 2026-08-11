@@ -39,7 +39,8 @@ if [[ $COMPOSEFS == "true" ]]; then
     options+=("--bootloader=$BOOTLOADER")
     options+=("--filesystem=$FILESYSTEM")
 
-    options+=("--uki-addon=ignition")
+    options+=("--uki-addon=fav-cmdline")
+    options+=("--uki-addon=cmdline-extend")
 else
     options=("--filesystem=$FILESYSTEM")
 fi

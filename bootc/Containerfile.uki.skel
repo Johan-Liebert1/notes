@@ -1,0 +1,35 @@
+FROM localhost/bootc as base
+RUN echo hi > /usr/share/hi
+
+FROM base as kernel
+RUN <<-RUNEOF
+    kver=$(bootc container inspect --rootfs / --json | jq -r '.kernel.version')
+    bootc internals uki extract /boot/EFI/Linux/$kver.efi /boot
+RUNEOF
+
+FROM base as base-final
+RUN rm -rf /boot/EFI/Linux/*.efi
+
+FROM base as sealed-uki
+RUN --network=none --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp \
+    --mount=type=bind,from=kernel,src=/,target=/run/kernel \
+    --mount=type=bind,from=base-final,src=/,target=/run/target <<RUNEOF
+
+    kver=$(bootc container inspect --rootfs /run/kernel --json | jq -r '.kernel.version')
+
+    /usr/bin/seal-uki \
+      --target /run/target \
+      --output /out \
+      --secrets /run/secrets \
+      --kernel-dir /run/kernel/boot/$kver \
+      --seal-state unsealed
+
+    mkdir -p "/out/EFI/Linux/$kver.efi.extra.d"
+RUNEOF
+
+FROM base-final
+
+RUN --network=none --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp \
+    --mount=type=bind,from=sealed-uki,src=/,target=/run/sealed-uki \
+    --mount=type=bind,from=kernel,src=/,target=/run/kernel \
+    /usr/bin/finalize-uki /run/sealed-uki/out "$(bootc container inspect --rootfs /run/kernel --json | jq -r '.kernel.version')"

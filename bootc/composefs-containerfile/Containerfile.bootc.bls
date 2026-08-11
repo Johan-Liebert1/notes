@@ -1,3 +1,25 @@
+# Get the latest GrubCC binary
+FROM quay.io/fedora/eln:latest AS grub-cc-download
+RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF
+set -eux
+
+# There isn't a generic grub2-efi-cc package that DNF can automatically resolve
+case "$(uname -m)" in
+    x86_64)
+        dnf download grub2-efi-x64-cc
+        ;;
+    aarch64)
+        dnf download grub2-efi-aa64-cc
+        ;;
+    *)
+        echo "Unsupported architecture: $(uname -m)" >&2
+        exit 1
+        ;;
+esac
+
+mv ./*.rpm grub-cc.rpm
+EOF
+
 FROM quay.io/fedora/fedora-bootc:44
 
 COPY extra /
@@ -12,16 +34,14 @@ RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
 
 # Install the new grub-cc binary
 
+COPY --from=grub-cc-download /grub-cc.rpm /var/grub-cc.rpm
+
 RUN <<EOF
-arch=$(uname -m)
-curl -L -o /var/grub-cc.rpm "https://kojipkgs.fedoraproject.org/packages/grub2/2.12/59.eln156/x86_64/grub2-efi-x64-cc-2.12-59.eln156.${arch}.rpm"
 mkdir /var/grub-cc
 rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
 file=$(find /var/grub-cc -name '*.efi')
-mkdir /usr/lib/grub-cc
-cp $file /usr/lib/grub-cc
-rm -rvf /var/grub-cc
-rm -rvf /var/grub-cc.rpm
+mkdir -p /usr/lib/grub-cc
+cp "$file" /usr/lib/grub-cc/grub-cc.efi
 EOF
 
 COPY bootc /usr/bin

@@ -49,6 +49,10 @@ COPY bootc /usr/bin
 
 RUN passwd -d root
 
+RUN dnf install -y systemd-ukify systemd-boot-unsigned
+
+RUN echo {{update}} > /usr/share/{{update}}
+
 FROM step1 as kernel
 
 ARG COMPOSEFS_FSVERITY
@@ -56,8 +60,6 @@ ARG COMPOSEFS_FSVERITY
 # Use for signing UKI
 # RUN --mount=type=secret,id=key \
 #     --mount=type=secret,id=cert <<EOF
-
-RUN dnf install -y systemd-ukify systemd-boot-unsigned
 
 RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     set -eux
@@ -90,35 +92,35 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     # Removing this as we want to only handle things with loader/conf files
     # --os-release "@/etc/os-release" \
 
-    mkdir -p /out
+    mkdir -p /out/EFI/Linux
 
-    ukify build \
-        --profile=profile-cmdline \
-        --cmdline "my_favourite_cmdline" \
-        --output "/out/profile-cmdline.efi"
+    # ukify build \
+    #     --profile=profile-cmdline \
+    #     --cmdline "my_favourite_cmdline" \
+    #     --output "/out/profile-cmdline.efi"
 
     ukify build \
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
         --uname="${kver}" \
         --cmdline "@/etc/kernel/cmdline" \
-        --join-profile "/out/profile-cmdline.efi" \
         --measure \
         --json pretty \
-        --output "/out/$kver.efi"
+        --output "/out/EFI/Linux/$kver.efi"
 
     # rm -vf /boot/profile-cmdline.efi
 
-    # mkdir -p "/boot/$kver.efi.extra.d"
+    mkdir -p "/out/EFI/Linux/$kver.efi.extra.d"
 
     # UKI addon for ignition
-    # ukify build \
-    #     --cmdline "ignition.firstboot ignition.platform.id=qemu" \
-    #     --output "/boot/$kver.efi.extra.d/cmdline-extend.addon.efi"
+    ukify build \
+        --cmdline "ignition.firstboot_{{update}} ignition.platform_{{update}}.id=qemu" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/cmdline-extend.addon.efi"
 
-    # ukify build \
-    #     --cmdline "my_favourite_cmdline" \
-    #     --output "/boot/$kver.efi.extra.d/fav-cmdline.addon.efi"
+    mkdir -p "/out/loader/addons"
+    ukify build \
+        --cmdline "my_favourite_cmdline_{{update}}" \
+        --output "/out/loader/addons/fav-cmdline.addon.efi"
 
     # sbsign \
     #     --key "/run/secrets/key" \
@@ -135,8 +137,7 @@ RUN --mount=type=bind,from=kernel,src=/out,target=/_mount/kernel <<EOF
     kver=$(cd /usr/lib/modules && echo *)
     mkdir -p /boot/EFI/Linux
 
-    cp -r "/_mount/kernel/${kver}.efi" "/boot/EFI/Linux/."
-    # cp "/_mount/kernel/${kver}.dump" "/boot"
+    cp -r /_mount/kernel/* /boot
 EOF
 
 FROM step1 as final-final

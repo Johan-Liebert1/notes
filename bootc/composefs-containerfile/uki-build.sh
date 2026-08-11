@@ -4,6 +4,7 @@ set -eux
 
 FINAL_NAME=$1
 CONTAINERFILE=$2
+UPGRADE=$3
 
 if [[ "$CONTAINERFILE" == *sealed* ]]; then
     SEALED=true
@@ -19,6 +20,13 @@ if [[ $SEALED ]]; then
     SECUREBOOT_KEYS=("--secret=id=secureboot_key,src=secureboot/db.key" "--secret=id=secureboot_cert,src=secureboot/db.crt")
 fi
 
+if [[ $CONTAINERFILE == *Containerfile.uki.bootc* ]]; then
+    rm -fv /tmp/Containerfile.uki
+    cp "$CONTAINERFILE" /tmp/Containerfile.uki
+    CONTAINERFILE=/tmp/Containerfile.uki
+
+    sed -i "s;{{update}};$UPGRADE;g" "$CONTAINERFILE"
+fi
 
 # shellcheck disable=SC2086
 sudo podman build \
@@ -33,7 +41,7 @@ sudo podman build \
     .
 
 STEP1_ID="$(cat tmp/STEP1.iid)"
-sudo ./bootc internals cfs --repo tmp/sysroot/composefs init  --erofs-version 2
+sudo ./bootc internals cfs --repo tmp/sysroot/composefs init  --erofs-version 1
 sudo ./bootc internals cfs --repo tmp/sysroot/composefs oci pull containers-storage:"${STEP1_ID}"
 STEP1_IMAGE_FSVERITY="$(sudo ./bootc internals cfs --repo tmp/sysroot/composefs oci compute-id --bootable "containers-storage:${STEP1_ID}" | tail -1)"
 
@@ -48,3 +56,7 @@ sudo podman build \
     --label=containers.composefs.fsverity="${STEP1_IMAGE_FSVERITY}" \
     -f "$CONTAINERFILE" \
     .
+
+FINAL_NAME_WO_LOCALHOST=${FINAL_NAME/localhost/}
+sudo podman tag "$FINAL_NAME:latest" "localhost:5000${FINAL_NAME_WO_LOCALHOST}"
+sudo podman push "localhost:5000${FINAL_NAME_WO_LOCALHOST}"
