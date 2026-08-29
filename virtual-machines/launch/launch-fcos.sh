@@ -13,12 +13,18 @@ STREAM="stable"
 DISK_GB="10"
 SECUREBOOT=false
 ARCH="x86_64"
+BIOS=false
 
 # For x86 / aarch64,
 # Can be found at
 #
 # sys/firmware/qemu_fw_cfg/by_name/opt/com.coreos/
 IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
+
+# <qemu:commandline>
+#   <qemu:arg value='-fw_cfg'/>
+#   <qemu:arg value='name=opt/com.coreos/config,file=/home/pragyan/notes/virtual-machines/launch/ignition.ign'/>
+# </qemu:commandline>
 
 while [ ! -z "${1:-}" ]; do
     case "$1" in
@@ -59,6 +65,11 @@ while [ ! -z "${1:-}" ]; do
         "--arch" )
             ARCH="$2"
             shift
+            shift
+        ;;
+
+        "--bios" )
+            BIOS=true
             shift
         ;;
 
@@ -104,7 +115,7 @@ if [[ "${SECUREBOOT}" == "true" ]]; then
     args+=("uefi,${loader},${nvram},${features}")
     args+=("--tpm")
     args+=("backend.type=emulator,backend.version=2.0,model=tpm-tis")
-else
+elif [[ $BIOS == false ]]; then
     args+=("--boot")
     args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
 fi
