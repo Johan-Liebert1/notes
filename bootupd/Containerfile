@@ -42,3 +42,4 @@ EOF
 COPY ./bootupd /usr/sbin/bootupctl
 
 RUN bootupctl backend generate-update-metadata
+RUN bootupctl backend set-default-bootloader grub

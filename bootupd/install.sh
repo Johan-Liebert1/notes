@@ -22,5 +22,6 @@ sudo podman run --rm --net=host --privileged --pid=host -it \
     -v /var/lib/containers:/var/lib/containers \
     -v /run/udev:/run/udev \
     -v /var/mnt:/var/mnt \
+    -v /usr/share/empty:/sys \
     "localhost/bootupd-bls-test:latest" \
     "${cmd[@]}"
