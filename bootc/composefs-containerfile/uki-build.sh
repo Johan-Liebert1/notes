@@ -21,11 +21,11 @@ if [[ $SEALED ]]; then
 fi
 
 if [[ $CONTAINERFILE == *Containerfile.uki.bootc* ]]; then
-    rm -fv /tmp/Containerfile.uki
-    cp "$CONTAINERFILE" /tmp/Containerfile.uki
+    sudo rm -fv /tmp/Containerfile.uki
+    sudo cp "$CONTAINERFILE" /tmp/Containerfile.uki
     CONTAINERFILE=/tmp/Containerfile.uki
 
-    sed -i "s;{{update}};$UPGRADE;g" "$CONTAINERFILE"
+    sudo sed -i "s;{{update}};$UPGRADE;g" "$CONTAINERFILE"
 fi
 
 # shellcheck disable=SC2086

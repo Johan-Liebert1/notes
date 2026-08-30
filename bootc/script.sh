@@ -22,6 +22,12 @@ if [[ $IMAGE != *uki* ]]; then
     kargs+=(--karg)
     kargs+=("audit=0")
 
+    kargs+=(--karg)
+    kargs+=("stupid=karg")
+
+    kargs+=(--karg-delete)
+    kargs+=("stupid")
+
     # kargs+=(--karg)
     # kargs+=("ignition.platform.id=qemu")
     #

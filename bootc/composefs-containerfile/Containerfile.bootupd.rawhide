@@ -1,0 +1,3 @@
+FROM quay.io/fedora/fedora-coreos:rawhide
+COPY bootupd /usr/sbin/bootupctl
+RUN rm -rf /usr/lib/bootc/install/10-boot.toml

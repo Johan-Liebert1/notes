@@ -68,8 +68,10 @@ sudo podman run --rm --net=host --privileged --pid=host \
     --security-opt label=type:unconfined_t \
     --env RUST_LOG=debug \
     --env IMAGE="$IMAGE" \
+    --env BOOTC_BOOTLOADER_DEBUG=vvvv \
     -v /dev:/dev \
     "${BOOTC_VOL_MNT[@]}" \
+    -v /etc/containers/policy.json:/etc/containers/policy.json \
     -v /home/pragyan/RedHat/bootupd/target/release/bootupd:/usr/sbin/bootupctl \
     -v /var/lib/containers:/var/lib/containers \
     -v .:/output \
