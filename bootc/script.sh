@@ -45,8 +45,10 @@ if [[ $COMPOSEFS == "true" ]]; then
     options+=("--bootloader=$BOOTLOADER")
     options+=("--filesystem=$FILESYSTEM")
 
-    options+=("--uki-addon=fav-cmdline")
-    options+=("--uki-addon=cmdline-extend")
+    # options+=("--global-uki-addon=fav-cmdline")
+    # options+=("--uki-addon=cmdline-extend")
+    options+=("--uki-addon=local-cfs-cmdline")
+    # options+=("--global-uki-addon=global-cfs-cmdline")
 else
     options=("--filesystem=$FILESYSTEM")
 fi
@@ -56,6 +58,8 @@ if [[ $INSECURE == "true" ]]; then
 fi
 
 # --source-imgref "oci-archive:/output/bazzite.tar" \
+    # --source-imgref "docker://quay.io/fedora/fedora-bootc:44" \
+
 
 bootc install to-disk \
     --source-imgref "containers-storage:$IMAGE" \

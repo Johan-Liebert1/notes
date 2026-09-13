@@ -105,3 +105,6 @@ EOF
 # EOF
 
 RUNEOF
+
+RUN mkdir /efi
+RUN touch /usr/share/switch-test

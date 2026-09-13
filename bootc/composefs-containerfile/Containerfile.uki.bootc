@@ -103,7 +103,6 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
         --uname="${kver}" \
-        --cmdline "@/etc/kernel/cmdline" \
         --measure \
         --json pretty \
         --output "/out/EFI/Linux/$kver.efi"
@@ -112,15 +111,23 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
 
     mkdir -p "/out/EFI/Linux/$kver.efi.extra.d"
 
-    # UKI addon for ignition
     ukify build \
-        --cmdline "ignition.firstboot_{{update}} ignition.platform_{{update}}.id=qemu" \
-        --output "/out/EFI/Linux/$kver.efi.extra.d/cmdline-extend.addon.efi"
+        --cmdline "composefs=${COMPOSEFS_FSVERITY}" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/local-cfs-cmdline.addon.efi"
+
+    # UKI addon for ignition
+    # ukify build \
+    #     --cmdline "ignition.firstboot_{{update}} ignition.platform_{{update}}.id=qemu" \
+    #     --output "/out/efi/linux/$kver.efi.extra.d/cmdline-extend.addon.efi"
 
     mkdir -p "/out/loader/addons"
     ukify build \
         --cmdline "my_favourite_cmdline_{{update}}" \
         --output "/out/loader/addons/fav-cmdline.addon.efi"
+
+    ukify build \
+        --cmdline "composefs=${COMPOSEFS_FSVERITY}" \
+        --output "/out/loader/addons/global-cfs-cmdline.addon.efi"
 
     # sbsign \
     #     --key "/run/secrets/key" \
