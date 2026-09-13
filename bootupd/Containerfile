@@ -39,7 +39,39 @@ cp /usr/lib/systemd/boot/efi/systemd-boot*.efi "/usr/lib/efi/systemd-boot/${evr}
 
 EOF
 
+RUN <<EOF
+mkdir -p /usr/lib/bootupd/packagesystem/
+
+cat <<EOFF > /usr/lib/bootupd/packagesystem/query-file-owner
+#!/bin/bash
+set -euo pipefail
+
+# Script to detect package ownership of a file in a Linux system.
+# Required environment setup for consistent output
+export LC_ALL=C
+export LANG=C
+
+# Usage: ./query-file-owner [FILE] [FILE...]
+if [ "\$#" -eq 0 ]; then
+    echo "Usage: \$0 [FILE] [FILE...]"
+    exit 1
+fi
+
+for FILE in "\$@"; do
+    # Use your package manager to find the package that owns the file
+    # Package Manager should return two space-separated values: NAME and VERSION
+    rpm -q --qf '%{NAME} %{EVR}\n' -f "\$FILE"
+done
+EOFF
+
+chmod +x /usr/lib/bootupd/packagesystem/query-file-owner
+
+cat /usr/lib/bootupd/packagesystem/query-file-owner
+EOF
+
 COPY ./bootupd /usr/sbin/bootupctl
 
-RUN bootupctl backend generate-update-metadata
+RUN bootupctl backend generate-update-metadata -vvvv
 RUN bootupctl backend set-default-bootloader grub
+
+RUN passwd -d root
