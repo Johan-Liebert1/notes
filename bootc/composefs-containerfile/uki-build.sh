@@ -15,7 +15,7 @@ fi
 mkdir -p tmp/sysroot/composefs
 SECUREBOOT_KEYS=()
 
-if [[ $SEALED ]]; then
+if [[ $SEALED == "true" ]]; then
     /home/pragyan/notes/virtual-machines/secureboot.sh
     SECUREBOOT_KEYS=("--secret=id=secureboot_key,src=secureboot/db.key" "--secret=id=secureboot_cert,src=secureboot/db.crt")
 fi
@@ -58,5 +58,5 @@ sudo podman build \
     .
 
 FINAL_NAME_WO_LOCALHOST=${FINAL_NAME/localhost/}
-sudo podman tag "$FINAL_NAME:latest" "localhost:5000${FINAL_NAME_WO_LOCALHOST}"
-sudo podman push "localhost:5000${FINAL_NAME_WO_LOCALHOST}"
+sudo podman tag "$FINAL_NAME:latest" "localhost:5000/${FINAL_NAME_WO_LOCALHOST}"
+sudo podman push "localhost:5000/${FINAL_NAME_WO_LOCALHOST}"

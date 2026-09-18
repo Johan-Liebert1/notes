@@ -5,7 +5,12 @@ set -eux
 INSECURE=false
 FILESYSTEM="ext4"
 IMAGE=""
-BOOTC_VOL_MNT=("-v" "/home/pragyan/RedHat/bootc/target/release/bootc:/usr/bin/bootc:ro,Z")
+
+BOOTC_BIN=$(find /home/*/RedHat/bootc/target/release -type f -executable -name bootc)
+BOOTUPD_BIN=$(find /home/*/RedHat/bootupd/target/release -type f -executable -name bootupd)
+
+BOOTC_VOL_MNT=(-v "${BOOTC_BIN}:/usr/bin/bootc:ro,Z")
+BOOTUPD_VOL_MNT=(-v "${BOOTUPD_BIN}:/usr/sbin/bootupctl:ro")
 
 while [ ! -z "${1:-}" ]; do
     case "$1" in
@@ -72,7 +77,7 @@ sudo podman run --rm --net=host --privileged --pid=host \
     -v /dev:/dev \
     "${BOOTC_VOL_MNT[@]}" \
     -v /etc/containers/policy.json:/etc/containers/policy.json \
-    -v /home/pragyan/RedHat/bootupd/target/release/bootupd:/usr/sbin/bootupctl \
+    "${BOOTUPD_VOL_MNT[@]}" \
     -v /var/lib/containers:/var/lib/containers \
     -v .:/output \
     "$IMAGE" \

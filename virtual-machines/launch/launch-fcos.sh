@@ -19,7 +19,12 @@ BIOS=false
 # Can be found at
 #
 # sys/firmware/qemu_fw_cfg/by_name/opt/com.coreos/
-IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
+
+IGNITION_DEVICE_ARG=()
+
+if [[ -f "${IGNITION_CONFIG}" ]]; then
+    IGNITION_DEVICE_ARG=(--qemu-commandline="-fw_cfg name=opt/com.coreos/config,file=${IGNITION_CONFIG}")
+fi
 
 # <qemu:commandline>
 #   <qemu:arg value='-fw_cfg'/>
@@ -84,7 +89,9 @@ set -ex
 
 # Setup the correct SELinux label to allow access to the config
 if which chcon; then
-    chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
+    if [[ -f "$IGNITION_CONFIG" ]]; then
+        chcon --verbose --type svirt_home_t ${IGNITION_CONFIG}
+    fi
 fi
 
 # OVMF paths for secure boot
@@ -98,7 +105,7 @@ else
     OVMF_VARS_TEMPLATE="/usr/share/OVMF/OVMF_VARS.secboot.fd"
 fi
 
-mkdir -p "$(dirname OVMF_VARS)"
+mkdir -p "$(dirname $OVMF_VARS)"
 if [[ "${ARCH}" == "aarch64" ]]; then
     cp /usr/share/AAVMF/AAVMF_VARS.fd "$OVMF_VARS"
 else

@@ -5,8 +5,10 @@ COPY extra /
 # RUN chsh -s /bin/zsh root
 
 RUN dnf install -y systemd-boot-unsigned
-COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
-COPY libsystemd-shared-257.10-1.fc42.so /usr/lib64/systemd/libsystemd-shared-257.10-1.fc42.so
+
+# f44 has this
+# COPY systemd-gpt-auto-generator /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+# COPY libsystemd-shared-257.10-1.fc42.so /usr/lib64/systemd/libsystemd-shared-257.10-1.fc42.so
 
 RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
@@ -102,6 +104,7 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     ukify build \
         --linux "/usr/lib/modules/$kver/vmlinuz" \
         --initrd "/usr/lib/modules/$kver/initramfs.img" \
+        --cmdline "@/etc/kernel/cmdline" \
         --uname="${kver}" \
         --measure \
         --json pretty \
