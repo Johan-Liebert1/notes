@@ -45,9 +45,9 @@ if [[ $COMPOSEFS == "true" ]]; then
     options+=("--bootloader=$BOOTLOADER")
     options+=("--filesystem=$FILESYSTEM")
 
-    # options+=("--global-uki-addon=fav-cmdline")
+    options+=("--global-uki-addon=fav-cmdline")
     # options+=("--uki-addon=cmdline-extend")
-    options+=("--uki-addon=local-cfs-cmdline")
+    # options+=("--uki-addon=local-cfs-cmdline")
     # options+=("--global-uki-addon=global-cfs-cmdline")
 else
     options=("--filesystem=$FILESYSTEM")

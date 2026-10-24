@@ -58,5 +58,5 @@ sudo podman build \
     .
 
 FINAL_NAME_WO_LOCALHOST=${FINAL_NAME/localhost/}
-sudo podman tag "$FINAL_NAME:latest" "localhost:5000/${FINAL_NAME_WO_LOCALHOST}"
-sudo podman push "localhost:5000/${FINAL_NAME_WO_LOCALHOST}"
+sudo podman tag "$FINAL_NAME:latest" "localhost:5000${FINAL_NAME_WO_LOCALHOST}"
+sudo podman push "localhost:5000${FINAL_NAME_WO_LOCALHOST}"

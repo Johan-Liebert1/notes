@@ -1,3 +1,5 @@
+ARG base=quay.io/fedora/fedora-bootc:44
+
 # Get the latest GrubCC binary
 FROM quay.io/fedora/eln:latest AS grub-cc-download
 RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF
@@ -20,17 +22,39 @@ esac
 mv ./*.rpm grub-cc.rpm
 EOF
 
-FROM quay.io/fedora/fedora-bootc:44
+FROM ${base}
 
 COPY extra /
 COPY ./strace /strace
+
+RUN sed -i 's;ConditionKernelCommandLine=composefs;ConditionKernelCommandLine=|composefs\nConditionKernelCommandLine=|composefs.digest;' /usr/lib/systemd/system/bootc-root-setup.service
 
 RUN set -x; \
     kver=$(cd /usr/lib/modules && echo *); \
     dracut -vf /usr/lib/modules/$kver/initramfs.img $kver;
 
 RUN rm -rf /etc/yum.repos.d/fedora-cisco-openh264.repo
-RUN dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
+
+
+RUN <<EOF 
+source /etc/os-release
+
+if [[ "$ID" == "fedora" ]]; then
+    dnf install -y nu vim xxd strace strings tree binutils systemd-ukify
+elif [[ "$ID" == "centos" ]]; then
+    dnf install -y dnf-plugins-core \
+        && dnf copr enable -y atim/nushell \
+        && dnf install -y \
+            nushell \
+            vim \
+            xxd \
+            strace \
+            tree \
+            binutils \
+            systemd-ukify \
+    && dnf clean all
+fi
+EOF
 
 # Install the new grub-cc binary
 
@@ -52,9 +76,6 @@ COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
 RUN sed -i "s;/usr/bin/bootc;/var/bootc;" /usr/lib/systemd/system/bootc-finalize-staged.service
 COPY bootc /var/bootc
 
-RUN mkdir -p /usr/lib/systemd/boot/efi
-COPY systemd-bootx64.efi /usr/lib/systemd/boot/efi/systemd-bootx64.efi
-
 RUN sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 RUN sed -i '/PermitEmptyPasswords/c\PermitEmptyPasswords yes' /etc/ssh/sshd_config
 RUN sed -i '/PermitRootLogin/c\PermitRootLogin yes' /etc/ssh/sshd_config
@@ -73,13 +94,13 @@ RUN <<RUNEOF
 
 mkdir /etc/repart.d
 
-cat <<EOF > /etc/repart.d/00-bios.conf
-[Partition]
-Type=21686148-6449-6e6f-744e-656564454649
-Label=BIOS-BOOT
-SizeMinBytes=1M
-SizeMaxBytes=1M
-EOF
+# cat <<EOF > /etc/repart.d/00-bios.conf
+# [Partition]
+# Type=21686148-6449-6e6f-744e-656564454649
+# Label=BIOS-BOOT
+# SizeMinBytes=1M
+# SizeMaxBytes=1M
+# EOF
 
 cat <<EOF > /etc/repart.d/01-esp.conf
 [Partition]
@@ -93,6 +114,14 @@ cat <<EOF > /etc/repart.d/02-home.conf
 [Partition]
 Type=home
 Format=ext4
+SizeMinBytes=2048M
+SizeMaxBytes=2048M
+EOF
+
+cat <<EOF > /etc/repart.d/03-swap.conf
+[Partition]
+Type=swap
+Format=swap
 SizeMinBytes=2048M
 SizeMaxBytes=2048M
 EOF

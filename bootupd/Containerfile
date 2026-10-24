@@ -15,7 +15,7 @@ RUN <<EOF
 EOF
 
 RUN rm -rf /var/lib/cache/dnf5
-RUN dnf install -y systemd-boot-unsigned
+RUN dnf install -y systemd-boot-unsigned bootupd
 
 # Install systemd-boot
 RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF

@@ -34,6 +34,7 @@ sudo partprobe "${loopdev}"
 sudo mkfs.fat  "${loopdev}"p1
 sudo mkfs.ext4 "${loopdev}"p2  -L boot -U $BOOTFS_UUID
 sudo mkfs.ext4 "${loopdev}"p3  -L root
+sudo tune2fs -O verity "${loopdev}"p3
 
 sudo mount "${loopdev}"p3 /mnt
 sudo mkdir -p /mnt/boot

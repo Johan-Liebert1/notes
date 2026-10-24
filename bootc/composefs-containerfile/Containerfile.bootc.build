@@ -1,0 +1,43 @@
+# Build bootc from source and produce a derived bootc image.
+#
+# IMPORTANT: the build context must be the bootc source repo, e.g.
+#   podman build -f /home/ppoudyal/notes/bootc/composefs-containerfile/Containerfile.bootc.build \
+#       -t localhost/bootc-built /home/ppoudyal/RedHat/bootc
+#
+# Build deps below mirror upstream: contrib/packaging/bootc.spec (BuildRequires)
+# + contrib/packaging/fedora-extra.txt + hack/install-buildroot.
+
+ARG base=quay.io/centos-bootc/centos-bootc:stream9
+
+# ---- Build stage: install deps, compile, install into /out ----
+FROM ${base} AS buildroot
+
+RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF
+set -euxo pipefail
+
+. /usr/lib/os-release
+# On CentOS/RHEL, ostree-devel and friends live in the CRB repo.
+case "${ID}${ID_LIKE:-}" in
+    *centos*|*rhel*)
+        dnf -y config-manager --set-enabled crb || dnf -y config-manager --enable crb
+        ;;
+esac
+
+dnf -y install \
+    cargo \
+    rust \
+    make \
+    clang-devel \
+    libzstd-devel \
+    ostree-devel \
+    openssl-devel \
+    go-md2man \
+    systemd \
+    git-core \
+    skopeo \
+    ostree \
+    rpm-build \
+    jq
+
+dnf clean all
+EOF

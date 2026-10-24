@@ -43,6 +43,8 @@ RUN <<EOF
     rm -rvf /var/grub-cc.rpm
 EOF
 
+COPY bootupd /usr/sbin/bootupctl
+
 # COPY composefs-finalize.sh /usr/bin
 COPY bootc-finalize-staged.service /etc/systemd/system
 # RUN systemctl enable bootc-finalize-staged.service
@@ -50,8 +52,6 @@ COPY bootc-finalize-staged.service /etc/systemd/system
 COPY bootc /usr/bin
 
 RUN passwd -d root
-
-RUN dnf install -y systemd-ukify systemd-boot-unsigned
 
 RUN echo {{update}} > /usr/share/{{update}}
 
@@ -114,9 +114,26 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
 
     mkdir -p "/out/EFI/Linux/$kver.efi.extra.d"
 
+    # local uki addon #1
     ukify build \
         --cmdline "composefs=${COMPOSEFS_FSVERITY}" \
         --output "/out/EFI/Linux/$kver.efi.extra.d/local-cfs-cmdline.addon.efi"
+
+    ukify build \
+        --cmdline "local_pink=floyd" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/pink-floyd.addon.efi"
+
+    ukify build \
+        --cmdline "local_dream=theater" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/dream-theater.addon.efi"
+
+    ukify build \
+        --cmdline "local_rush=yyz" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/rush.addon.efi"
+
+    ukify build \
+        --cmdline "local_upgrade_number={{update}}" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/local-update-number-{{update}}.addon.efi"
 
     # UKI addon for ignition
     # ukify build \
@@ -127,6 +144,10 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     ukify build \
         --cmdline "my_favourite_cmdline_{{update}}" \
         --output "/out/loader/addons/fav-cmdline.addon.efi"
+
+    ukify build \
+        --cmdline "global_upgrade_number={{update}}" \
+        --output "/out/loader/addons/global-update-number-{{update}}.addon.efi"
 
     ukify build \
         --cmdline "composefs=${COMPOSEFS_FSVERITY}" \
