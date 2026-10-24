@@ -3,8 +3,4 @@ version: 1.6.0
 passwd:
   users:
     - name: core
-      ssh_authorized_keys:
-        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC1iUu4pAJ25YFcyaH8jNO9S0wMu+G26077XFNUDWjRp pragyan@fedora
-      password_hash: "$6$rounds=4096$zF0C3BgYbZ8$uVu9KhW5.ZZK9AnkSfvzZ5zLKH1Zs5PvpxW69pHzBLmct6FbD06tk3ZDx45n2mFLu3sWwMfX2FhXnhNjglfQW/"  # password: "foobar"
-
-
+      password_hash: "$6$sM5wr7Y9Jb2K1.vd$711YfRndQnytTBpFWJlVKkRMkZuOuXLgb7s4rAwO9oiwbu8hXzIlIXGO5vx7AKmgeUUUOxXbSQoUEMBRxEz//1"  # password: "hello"

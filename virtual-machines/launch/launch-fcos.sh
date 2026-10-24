@@ -1,10 +1,10 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 STREAM="stable"
 
-IGNITION_CONFIG="/home/pragyan/notes/virtual-machines/launch/ignition.ign"
+IGNITION_CONFIG=$(find /home/*/notes/virtual-machines/launch -type f -name ignition.ign)
 IMAGE="$HOME/notes/bootc/test.img"
 VM_NAME="composefs-only"
 VCPUS="2"
