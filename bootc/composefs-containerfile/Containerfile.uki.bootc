@@ -135,11 +135,16 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
         --cmdline "local_upgrade_number={{update}}" \
         --output "/out/EFI/Linux/$kver.efi.extra.d/local-update-number-{{update}}.addon.efi"
 
+    ukify build \
+        --cmdline "local_unchanging=1" \
+        --output "/out/EFI/Linux/$kver.efi.extra.d/local-unchanging.addon.efi"
+
     # UKI addon for ignition
     # ukify build \
     #     --cmdline "ignition.firstboot_{{update}} ignition.platform_{{update}}.id=qemu" \
     #     --output "/out/efi/linux/$kver.efi.extra.d/cmdline-extend.addon.efi"
 
+    # global addons
     mkdir -p "/out/loader/addons"
     ukify build \
         --cmdline "my_favourite_cmdline_{{update}}" \
@@ -152,6 +157,11 @@ RUN --mount=type=bind,from=step1,src=/,target=/run/target <<EOF
     ukify build \
         --cmdline "composefs=${COMPOSEFS_FSVERITY}" \
         --output "/out/loader/addons/global-cfs-cmdline.addon.efi"
+
+    # unchanging global addon
+    ukify build \
+        --cmdline "global_unchanging=1" \
+        --output "/out/loader/addons/global-unchanging.addon.efi"
 
     # sbsign \
     #     --key "/run/secrets/key" \

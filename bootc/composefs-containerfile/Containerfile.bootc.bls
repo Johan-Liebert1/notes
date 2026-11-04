@@ -1,17 +1,14 @@
 ARG base=quay.io/fedora/fedora-bootc:44
 
-# Get the latest GrubCC binary
-FROM quay.io/fedora/eln:latest AS grub-cc-download
-RUN --mount=type=tmpfs,target=/run --mount=type=tmpfs,target=/tmp <<EOF
-set -eux
+FROM ${base}
 
-# There isn't a generic grub2-efi-cc package that DNF can automatically resolve
+RUN <<EOF
 case "$(uname -m)" in
     x86_64)
-        dnf download grub2-efi-x64-cc
+        grub_cc_url=https://kojipkgs.fedoraproject.org/packages/grub2/2.12/60.eln156/x86_64/grub2-efi-x64-cc-2.12-60.eln156.x86_64.rpm
         ;;
     aarch64)
-        dnf download grub2-efi-aa64-cc
+        grub_cc_url=https://kojipkgs.fedoraproject.org/packages/grub2/2.12/60.eln156/aarch64/grub2-efi-aa64-cc-2.12-60.eln156.aarch64.rpm
         ;;
     *)
         echo "Unsupported architecture: $(uname -m)" >&2
@@ -19,10 +16,17 @@ case "$(uname -m)" in
         ;;
 esac
 
-mv ./*.rpm grub-cc.rpm
-EOF
+curl --fail --location --retry 5 --retry-all-errors --retry-delay 1 \
+    --output /var/grub-cc.rpm "$grub_cc_url"
 
-FROM ${base}
+
+mkdir /var/grub-cc
+rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
+file=$(find /var/grub-cc -name '*.efi')
+mkdir -p /usr/lib/grub-cc
+cp "$file" /usr/lib/grub-cc/grub-cc.efi
+
+EOF
 
 COPY extra /
 COPY ./strace /strace
@@ -56,18 +60,6 @@ elif [[ "$ID" == "centos" ]]; then
 fi
 EOF
 
-# Install the new grub-cc binary
-
-COPY --from=grub-cc-download /grub-cc.rpm /var/grub-cc.rpm
-
-RUN <<EOF
-mkdir /var/grub-cc
-rpm2archive /var/grub-cc.rpm | tar -xvz -C /var/grub-cc
-file=$(find /var/grub-cc -name '*.efi')
-mkdir -p /usr/lib/grub-cc
-cp "$file" /usr/lib/grub-cc/grub-cc.efi
-EOF
-
 COPY bootc /usr/bin
 
 COPY ./bootc-finalize-staged.service /usr/lib/systemd/system
@@ -84,6 +76,12 @@ RUN cat >> /etc/containers/registries.conf <<-EOF
     [[registry]]
     location = "192.168.122.1:5000"
     insecure = true
+EOF
+
+RUN mkdir -p /usr/lib/bootc/install/systemd-boot
+RUN cat <<EOF > /usr/lib/bootc/install/systemd-boot/loader.conf
+# from the thingy
+timeout = 2
 EOF
 
 RUN passwd -d root

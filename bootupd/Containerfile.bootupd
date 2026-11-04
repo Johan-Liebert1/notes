@@ -1,4 +1,6 @@
 # Copy the bootupd binary
-FROM quay.io/openshift-release-dev/ocp-v4.0-art-dev:latest
-COPY --chmod=755 bootupd /usr/bin/bootupctl
-COPY --chmod=755 bootupd /bin/bootupctl
+FROM quay.io/openshift-release-dev/ocp-v4.0-art-dev:9.6.20261027-0
+
+COPY bootupd-0.2.35-2.el9_6.x86_64.rpm /
+
+RUN dnf install -y /bootupd-0.2.35-2.el9_6.x86_64.rpm
