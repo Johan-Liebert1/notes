@@ -17,6 +17,7 @@ export IMAGE=192.168.122.1:5000/final-image
 export IMAGE=192.168.122.1:5000/bootup-ocp-test-0.2.35-patched:final
 export IMAGE=192.168.122.1:5000/openshift-release-dev/ocp-v4.0-art-dev:9.6
 export IMAGE=192.168.122.1:5000/quay.io/openshift-release-dev/ocp-v4.0-art-dev:9.8 
+export IMAGE=192.168.122.1:5000/quay.io/openshift-release-dev/ocp-v4.0-art-dev:9.6-2026-11-09 
 
 sudo setenforce 0
 

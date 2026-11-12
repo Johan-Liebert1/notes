@@ -1,0 +1,47 @@
+# Put this in root as .clangd
+#
+# clangd configuration for the ostree autotools build.
+#
+# There is no compile_commands.json (no `bear`/`compiledb` installed), so we
+# feed clangd the flags the Makefiles use directly. Paths are absolute because
+# clangd does not expand variables and resolves relative paths unpredictably.
+#
+# If you later generate a compile DB (e.g. `bear -- make` after `./autogen.sh
+# && ./configure`), clangd will prefer it and most of the Add flags below
+# become redundant.
+
+CompileFlags:
+  Add:
+    - -std=gnu99
+    - -D_GNU_SOURCE
+    - -DHAVE_CONFIG_H
+    # config.h and other generated headers live in the build root (== srcroot
+    # for this in-tree build).
+    - -I/home/ppoudyal/RedHat/ostree
+    - -I/home/ppoudyal/RedHat/ostree/src/libostree
+    - -I/home/ppoudyal/RedHat/ostree/src/libotcore
+    - -I/home/ppoudyal/RedHat/ostree/src/libotutil
+    - -I/home/ppoudyal/RedHat/ostree/src/ostree
+    - -I/home/ppoudyal/RedHat/ostree/src/switchroot
+    - -I/home/ppoudyal/RedHat/ostree/libglnx
+    - -I/home/ppoudyal/RedHat/ostree/bsdiff
+    # System deps (output of `pkg-config --cflags glib-2.0 gio-2.0
+    # gio-unix-2.0`); adjust if your prefix differs.
+    - -I/usr/include/glib-2.0
+    - -I/usr/lib64/glib-2.0/include
+    - -I/usr/include/gio-unix-2.0
+    - -I/usr/include/libmount
+    - -I/usr/include/blkid
+    - -I/usr/include/sysprof-6
+    - -DWITH_GZFILEOP
+    - -pthread
+  Remove:
+    # GCC-only flags that clang/clangd chokes on, if a compile DB is present.
+    - -fplugin*
+    - -fsanitize-coverage*
+    - -mno-*
+    - -Werror*
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
