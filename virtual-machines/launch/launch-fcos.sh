@@ -14,6 +14,7 @@ DISK_GB="10"
 SECUREBOOT=false
 ARCH="x86_64"
 BIOS=false
+TPM_PASSTHROUGH=false
 
 # For x86 / aarch64,
 # Can be found at
@@ -78,6 +79,11 @@ while [ ! -z "${1:-}" ]; do
             shift
         ;;
 
+        "--host-tpm" )
+            TPM_PASSTHROUGH=true
+            shift
+        ;;
+
         * )
             echo "Argument $1 not understood"
             exit 1
@@ -125,6 +131,10 @@ if [[ "${SECUREBOOT}" == "true" ]]; then
 elif [[ $BIOS == false ]]; then
     args+=("--boot")
     args+=("uefi,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no")
+fi
+
+if [[ "${TPM_PASSTHROUGH}" == "true" ]]; then
+    args+=("--tpm" "/dev/tpm0")
 fi
 
 # --boot loader=/usr/share/OVMF/OVMF_CODE.fd,loader.readonly=yes,loader.secure=no,nvram=/home/pragyan/.local/share/libvirt/nvram/${VM_NAME}_VARS.fd \
